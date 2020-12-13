@@ -1,14 +1,12 @@
-import Head from 'next/head'
+import { useDispatch } from 'react-redux'
+import { fetchPokemonList } from '../components/Homepage/homeSlice'
+// components
 import Homepage from '../components/Homepage'
 
 export default function Home() {
-  return (
-    <>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Homepage />
-    </>
-  )
+  // fetch initial pokemon list for autocomplete
+  const dispatch = useDispatch()
+  dispatch(fetchPokemonList())
+
+  return <Homepage />
 }

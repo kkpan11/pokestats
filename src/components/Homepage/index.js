@@ -1,23 +1,25 @@
-import Link from 'next/link'
-import { useSelector, shallowEqual } from 'react-redux'
+import { useSelector } from 'react-redux'
+// component
+import { Container, Heading } from './styledHomepage'
+import Autocomplete from './Autocomplete'
+import Particles from '../Particles'
 
 export default function Homepage() {
-  const pokemonList = useSelector(
-    (state) => state.home.pokemonList,
-    shallowEqual
-  )
-  const loadingStatus = useSelector((state) => state.home.status)
+  const loadingStatus = useSelector((state) => state.home.loading)
 
   return (
-    <main>
-      {loadingStatus === 'idle' &&
-        pokemonList.map((e, index) => (
-          <div key={index}>
-            <Link as={`/pokemon/${e.name}`} href="/pokemon/[id]">
-              <a>Navigate to {e.name}'s page</a>
-            </Link>
-          </div>
-        ))}
-    </main>
+    <>
+      {loadingStatus ? (
+        <div>Loading!</div>
+      ) : (
+        <>
+          <Container>
+            <Heading>PokeStats</Heading>
+            <Autocomplete />
+          </Container>
+          <Particles />
+        </>
+      )}
+    </>
   )
 }

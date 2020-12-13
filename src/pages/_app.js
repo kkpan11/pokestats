@@ -1,14 +1,17 @@
 import { Provider } from 'react-redux'
 import store from '../../redux/store'
-import { fetchPokemonList } from '../components/Homepage/homeSlice'
+// Theme
+import ThemeProvider from '../components/Theme'
+// Head
+import Head from '../components/Head'
 
 export default function App({ Component, pageProps }) {
-  // fetch initial pokemon list for autocomplete
-  store.dispatch(fetchPokemonList())
-
   return (
     <Provider store={store}>
-      <Component {...pageProps} />
+      <ThemeProvider>
+        <Head />
+        <Component {...pageProps} />
+      </ThemeProvider>
     </Provider>
   )
 }
