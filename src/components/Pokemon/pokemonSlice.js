@@ -11,7 +11,7 @@ const pokemonAdapter = createEntityAdapter()
 // initial state
 const initialState = pokemonAdapter.getInitialState({
   biology: {
-    data: null,
+    data: {},
     isLoading: true,
     error: {
       status: 'OK',
@@ -19,7 +19,7 @@ const initialState = pokemonAdapter.getInitialState({
     },
   },
   info: {
-    data: null,
+    data: {},
     isLoading: true,
     error: {
       status: 'OK',
@@ -27,7 +27,7 @@ const initialState = pokemonAdapter.getInitialState({
     },
   },
   evolution: {
-    data: null,
+    data: {},
     isLoading: true,
     error: {
       status: 'OK',
@@ -60,6 +60,7 @@ export const fetchPokemonData = createAsyncThunk(
 export const fetchPokemonBiology = createAsyncThunk(
   'home/fetchPokemonBiology',
   async (biologyUrl, { dispatch, rejectWithValue }) => {
+    // await new Promise((resolve) => setTimeout(resolve, 2000))
     try {
       const response = await axios.get(biologyUrl)
       console.log('biology', response.data)
@@ -93,8 +94,8 @@ const pokemonSlice = createSlice({
   name: 'pokemon',
   initialState,
   reducers: {
-    toggleStatus(state, action) {
-      state.info.isLoading = action.payload
+    toggleLoading(state, action) {
+      state.info.isLoading = !state.info.isLoading
     },
   },
   extraReducers: (builder) => {
@@ -120,6 +121,16 @@ const pokemonSlice = createSlice({
       fetchPokemonBiology.fulfilled,
       ({ biology }, { payload }) => {
         biology.data = payload
+        // filter english info
+        const biologyList = biology.data.flavor_text_entries.filter(
+          (entry) => entry.language.name == 'en'
+        )
+        biology.data.flavor_text_entries = biologyList
+        // genus
+        const genusInfo = biology.data.genera.filter(
+          (entry) => entry.language.name == 'en'
+        )
+        biology.data.genera = genusInfo[0].genus
         // stop loading
         biology.isLoading = false
       }
@@ -156,7 +167,7 @@ const pokemonSlice = createSlice({
 })
 
 // export actions
-export const { toggleStatus } = pokemonSlice.actions
+export const { toggleLoading } = pokemonSlice.actions
 
 // export reducer
 export default pokemonSlice.reducer
