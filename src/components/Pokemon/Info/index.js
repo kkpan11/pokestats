@@ -3,15 +3,18 @@ import { useSelector } from 'react-redux'
 import { capitalize } from '../../../helpers/typography'
 // components
 import Loading from '../../Loading'
+import Box from '../../Box'
 import {
   Name,
   ImageContainer,
   Image,
   Genera,
   Flavor,
-  DescriptionList,
+  Ability,
 } from './StyledInfo'
-import Box from '../../Box'
+import { DescriptionList } from '../StyledPokemon'
+import Training from './Training'
+import Breeding from './Breeding'
 
 export default function Info() {
   // pokemon info
@@ -23,7 +26,14 @@ export default function Info() {
 
   // data
   const { types, abilities, id, name, weight, height } = pokemonInfo.data
-  const { genera, flavor_text_entries } = pokemonBio.data
+  const {
+    genera,
+    flavor_text_entries,
+    shape,
+    is_baby,
+    is_legendary,
+    is_mythical,
+  } = pokemonBio.data
 
   // flavor text
   const flavorText = (version) => {
@@ -40,61 +50,80 @@ export default function Info() {
   }
 
   return (
-    <Box as="section" noGutter margin="2rem 0">
-      <Box
-        direction={{ xxs: 'column', lg: 'row' }}
-        align={{ xxs: 'center', lg: 'stretch' }}
-        noGutter
-      >
-        <ImageContainer sizes={{ xxs: 12, lg: 6 }} justify="flex-end" noGutter>
+    <Box
+      as="section"
+      direction={{ xxs: 'column', lg: 'row' }}
+      margin="0 0 2rem"
+      constrained
+    >
+      <Box sizes={5} align="flex-start">
+        <Name>{capitalize(name)}</Name>
+        Type badges go here with some border bottom
+        {pokemonBio.isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {(is_baby || is_legendary || is_mythical) && (
+              <Genera>
+                {is_baby && `Baby `}
+                {is_legendary && `Legendary `}
+                {is_mythical && `Mythical `}
+                Pokemon
+              </Genera>
+            )}
+            {gameVersion && <Flavor>{flavorText(gameVersion)}</Flavor>}
+            <DescriptionList forwardedAs="table" align="flex-start">
+              <tbody>
+                <tr>
+                  <th>National №</th>
+                  <td>{`#${id}`}</td>
+                </tr>
+                <tr>
+                  <th>Category</th>
+                  <td>{genera}</td>
+                </tr>
+                <tr>
+                  <th>Weight</th>
+                  <td>{`${insertDecimal(weight)} kg`}</td>
+                </tr>
+                <tr>
+                  <th>Height</th>
+                  <td>{`${insertDecimal(height)} m`}</td>
+                </tr>
+                <tr>
+                  <th>Abilities</th>
+                  <td>
+                    {abilities.map(({ ability, is_hidden }, i) => {
+                      return (
+                        <Ability isHidden={is_hidden} key={i}>
+                          {`${i + 1}. ${capitalize(ability.name)} `}
+                          {is_hidden && '(Hidden Ability)'}
+                        </Ability>
+                      )
+                    })}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Shape</th>
+                  <td>{capitalize(shape.name)}</td>
+                </tr>
+              </tbody>
+            </DescriptionList>
+          </>
+        )}
+      </Box>
+      <Box sizes={7}>
+        <ImageContainer sizes={12}>
           <Image
             src={`https://pokeres.bastionbot.org/images/pokemon/${id}.png`}
           />
         </ImageContainer>
-        <Box sizes={{ xxs: 12, lg: 6 }} noGutter>
-          <Box grow={0}>
-            <Name>{capitalize(name)}</Name>
-          </Box>
-          {pokemonBio.isLoading ? (
-            <Loading />
-          ) : (
-            <Box justify="flex-start" align="flex-start">
-              <Genera>{genera}</Genera>
-              <Flavor>{gameVersion && flavorText(gameVersion)}</Flavor>
-              <DescriptionList
-                forwardedAs="dl"
-                direction="row"
-                align="flex-start"
-                flexWrap="wrap"
-                grow={0}
-                noGutter
-              >
-                <dt>National ID</dt>
-                <dd>{`#${id}`}</dd>
-                <dt>Category</dt>
-                <dd>{genera}</dd>
-                <dt>Weight</dt>
-                <dd>{`${insertDecimal(weight)} kg`}</dd>
-                <dt>Height</dt>
-                <dd>{`${insertDecimal(height)} m`}</dd>
-                <dt>Abilities</dt>
-                <dd>
-                  {abilities.map(({ ability }, i) => {
-                    return <span key={i}>{capitalize(ability.name)}</span>
-                  })}
-                </dd>
-                <dt>Types</dt>
-                <dd>
-                  {types.map(({ type }, i) => {
-                    return <span key={i}>{capitalize(type.name)}</span>
-                  })}
-                </dd>
-              </DescriptionList>
-            </Box>
-          )}
+
+        <Box direction={{ xxs: 'column', md: 'row' }}>
+          <Training />
+          <Breeding />
         </Box>
       </Box>
-      <Box>Base Stats</Box>
     </Box>
   )
 }
