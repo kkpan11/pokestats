@@ -1,7 +1,25 @@
 import styled, { css } from 'styled-components'
 import Box from '../Box'
 
-const DescriptionList = styled(Box)`
+const SectionTitle = styled.h2`
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+
+  ${({ theme }) => css`
+    @media ${theme.device.xs} {
+      font-size: 2.5rem;
+      line-height: 3rem;
+    }
+    @media ${theme.device.md} {
+      font-size: 3rem;
+      line-height: 3.5rem;
+    }
+  `}
+`
+
+const Table = styled(Box)`
   margin-bottom: 1.5rem;
   font-size: 1rem;
   line-height: 1.2rem;
@@ -24,4 +42,19 @@ const DescriptionList = styled(Box)`
   }
 `
 
-export { DescriptionList }
+const Numbered = styled.span`
+  width: 100%;
+  display: block;
+
+  &:not(:last-of-type) {
+    padding-bottom: 6px;
+  }
+
+  ${({ light }) =>
+    light &&
+    css`
+      font-weight: 300;
+    `}
+`
+
+export { SectionTitle, Table, Numbered }
