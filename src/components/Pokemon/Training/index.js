@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux'
 import { useState, useEffect } from 'react'
 // components
-import Loading from '../../../Loading'
-import Box from '../../../Box'
+import Loading from '../../Loading'
+import Box from '../../Box'
 //helpers
-import { capitalize } from '../.././../../helpers/typography'
+import { capitalize } from '../../../helpers/typography'
 // styles
-import { SectionTitle, Table, Numbered } from '../../StyledPokemon'
+import { SectionTitle, Table, Numbered } from '../StyledPokemon'
 
 export default function Training({ ...rest }) {
   // pokemon info
@@ -39,23 +39,10 @@ export default function Training({ ...rest }) {
           }
         })
         .filter((currItem) => currItem)
-
       // set items state
       setItems(versionItems)
     }
   }, [gameVersion])
-
-  // held items
-  const heldItems = (items) => {
-    return items.map(({ item, version_details }, itemIndex) => {
-      return version_details.map(({ rarity, version }, i) => {
-        // console.log(version.name, gameVersion, version.name === gameVersion)
-        if (version.name === gameVersion) {
-          return <Numbered key={itemIndex}>{capitalize(item.name)}</Numbered>
-        }
-      })
-    })
-  }
 
   // EV yield
   const EVYield = (pokemonStats) => {
@@ -103,7 +90,7 @@ export default function Training({ ...rest }) {
       {pokemonBio.isLoading ? (
         <Loading />
       ) : (
-        <Box align="flex-start" margin="0 0 2rem" {...rest}>
+        <Box align={{ sm: 'center', md: 'flex-start' }} {...rest}>
           <SectionTitle>Training</SectionTitle>
           <Table forwardedAs="table" align="flex-start">
             <tbody>
@@ -134,9 +121,9 @@ export default function Training({ ...rest }) {
                     ? 'None'
                     : items.map((item, i) => (
                         <Numbered key={i}>
-                          {`${capitalize(item.item_details.name)} ( ${
-                            item.version_details.rarity
-                          }% chance )`}
+                          {`${items.length > 1 ? `${++i}. ` : ``}${capitalize(
+                            item.item_details.name
+                          )} ( ${item.version_details.rarity}% chance )`}
                         </Numbered>
                       ))}
                 </td>

@@ -1,11 +1,11 @@
-import styled, { css } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import Box from '../Box'
 
 const SectionTitle = styled.h2`
   font-size: 2rem;
   line-height: 2.5rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 
   ${({ theme }) => css`
     @media ${theme.device.xs} {
@@ -20,18 +20,30 @@ const SectionTitle = styled.h2`
 `
 
 const Table = styled(Box)`
+  position: relative;
+  flex-direction: row;
   margin-bottom: 1.5rem;
   font-size: 1rem;
   line-height: 1.2rem;
   word-break: break-word;
   border-collapse: collapse;
   border-spacing: 0;
+  width: auto;
+
+  & tbody {
+    flex-grow: 1;
+  }
+
+  & tr:not(:last-of-type) {
+    width: 100%;
+    border-bottom: 1px solid #ececec;
+  }
 
   & th {
     padding: 6px 0;
     font-size: 0.875rem;
     font-weight: normal;
-    text-align: right;
+    text-align: left;
     white-space: nowrap;
     vertical-align: top;
   }
@@ -58,4 +70,48 @@ const Numbered = styled.span`
     `}
 `
 
-export { SectionTitle, Table, Numbered }
+// Create the keyframes for floating img
+const float = keyframes`
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px)
+  }
+  100% {
+    transform: translateY(0px)
+  }
+`
+// image
+const ImageContainer = styled(Box)`
+  ${({ theme }) => css`
+    @media ${theme.device.lg} {
+      min-height: 300px;
+    }
+  `}
+`
+const Image = styled.img`
+  max-width: 80%;
+  margin: 1.5rem 0;
+
+  ${({ theme }) => css`
+    @media ${theme.device.xs} {
+      max-width: 65%;
+    }
+    @media ${theme.device.sm} {
+      max-width: 60%;
+    }
+    @media ${theme.device.md} {
+      max-width: 55%;
+    }
+    @media ${theme.device.lg} {
+      max-width: 60%;
+    }
+  `}
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${float} infinite 3s ease-in-out;
+  }
+`
+
+export { SectionTitle, Table, Numbered, ImageContainer, Image }

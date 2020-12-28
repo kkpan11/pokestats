@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux'
 // helpers
-import { capitalize } from '../../../../helpers/typography'
+import { capitalize } from '../../../helpers/typography'
 // components
-import Box from '../../../Box'
-import Loading from '../../../Loading'
-import TypeBadge from '../../../TypeBadge'
+import Box from '../../Box'
+import Loading from '../../Loading'
+import TypeBadge from '../../TypeBadge'
 // styles
-import { Table, Numbered } from '../../StyledPokemon'
+import { Table, Numbered } from '../StyledPokemon'
 import { Name, TypeContainer, Genera, Flavor } from './StyledDetails'
 
 export default function Details({ ...rest }) {
@@ -23,6 +23,7 @@ export default function Details({ ...rest }) {
     genera,
     flavor_text_entries,
     shape,
+    color,
     is_baby,
     is_legendary,
     is_mythical,
@@ -58,7 +59,7 @@ export default function Details({ ...rest }) {
     currAbilities.map(({ ability, is_hidden }, i) => (
       <Numbered light={is_hidden} key={i}>
         {`${i + 1}. ${capitalize(ability.name)} `}
-        {is_hidden && '(Hidden Ability)'}
+        {is_hidden && '( Hidden Ability )'}
       </Numbered>
     ))
 
@@ -114,6 +115,10 @@ export default function Details({ ...rest }) {
               <tr>
                 <th>Shape</th>
                 <td>{capitalize(shape.name)}</td>
+              </tr>
+              <tr>
+                <th>Color</th>
+                <td>{capitalize(color.name)}</td>
               </tr>
             </tbody>
           </Table>

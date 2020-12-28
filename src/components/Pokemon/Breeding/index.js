@@ -1,17 +1,20 @@
 import { useSelector } from 'react-redux'
 // components
-import Loading from '../../../Loading'
-import Box from '../../../Box'
+import Loading from '../../Loading'
+import Box from '../../Box'
 //helpers
-import { capitalize } from '../.././../../helpers/typography'
+import { capitalize } from '../.././../helpers/typography'
 // styles
-import { SectionTitle, Table, Numbered } from '../../StyledPokemon'
+import { SectionTitle, Table, Numbered } from '../StyledPokemon'
 
 export default function Breeding({ ...rest }) {
   // biology
   const pokemonBio = useSelector((state) => state.pokemon.biology)
+  // evolution
+  const pokemonEvo = useSelector((state) => state.pokemon.evolution)
   // data
   const { gender_rate, egg_groups, hatch_counter, habitat } = pokemonBio.data
+  const { baby_trigger_item } = pokemonEvo.data
 
   // gender ratio
   const genderRatio = (rate) =>
@@ -31,10 +34,10 @@ export default function Breeding({ ...rest }) {
 
   return (
     <>
-      {pokemonBio.isLoading ? (
+      {pokemonEvo.isLoading ? (
         <Loading />
       ) : (
-        <Box align="flex-start" margin="0 0 2rem" {...rest}>
+        <Box align={{ sm: 'center', md: 'flex-start' }} {...rest}>
           <SectionTitle>Breeding</SectionTitle>
           <Table forwardedAs="table" align="flex-start">
             <tbody>
@@ -51,6 +54,14 @@ export default function Breeding({ ...rest }) {
               <tr>
                 <th>Egg Cycles</th>
                 <td>{eggCycle(hatch_counter)}</td>
+              </tr>
+              <tr>
+                <th>Baby Trigger Item</th>
+                <td>
+                  {baby_trigger_item
+                    ? capitalize(baby_trigger_item.name)
+                    : 'None'}
+                </td>
               </tr>
               <tr>
                 <th>Habitat</th>
