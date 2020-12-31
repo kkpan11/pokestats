@@ -10,6 +10,7 @@ import Box from '../Box'
 import Details from './Details'
 import Breeding from './Breeding'
 import Training from './Training'
+import Multipliers from './Multipliers'
 import BaseStats from './BaseStats'
 // styles
 import { ImageContainer, Image } from './StyledPokemon'
@@ -20,7 +21,7 @@ export default function Homepage() {
   // dispatch
   const dispatch = useDispatch()
   // pokemon selector
-  const pokemonInfo = useSelector((state) => state.pokemon.info)
+  const pokemonInfo = useSelector(state => state.pokemon.info)
   // data
   const { id } = pokemonInfo.data
 
@@ -64,15 +65,24 @@ export default function Homepage() {
           </Box>
           <Box
             as="section"
-            direction={{ xxs: 'column', md: 'row' }}
+            direction={{ xxs: 'column', lg: 'row' }}
             align="flex-start"
             justify="flex-start"
             margin="1rem 0"
             constrained
           >
-            <Breeding margin={{ xxs: '0 0 2rem', md: '0' }} />
-            <Training margin={{ xxs: '0 0 2rem', md: '0' }} />
-            <Box>Typing</Box>
+            <Breeding
+              margin={{ xxs: '0 0 2rem', lg: '0' }}
+              padding="0 1rem 0 0"
+            />
+            <Training
+              margin={{ xxs: '0 0 2rem', lg: '0' }}
+              padding="0 0.5rem"
+            />
+            <Multipliers
+              margin={{ xxs: '0 0 2rem', lg: '0' }}
+              padding="0 0 0 1rem"
+            />
           </Box>
           <Box
             as="section"
