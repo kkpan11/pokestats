@@ -12,6 +12,7 @@ import Breeding from './Breeding'
 import Training from './Training'
 import Multipliers from './Multipliers'
 import BaseStats from './BaseStats'
+import Moves from './Moves'
 // styles
 import { ImageContainer, Image } from './StyledPokemon'
 
@@ -52,11 +53,7 @@ export default function Homepage() {
             margin="1rem 0"
             constrained
           >
-            <Details
-              sizes={5}
-              align="flex-start"
-              margin={{ xxs: '0 0 2rem', lg: '0' }}
-            />
+            <Details sizes={5} margin={{ xxs: '0 0 2rem', lg: '0' }} />
             <ImageContainer sizes={7} margin={{ xxs: '0 0 2rem', lg: '0' }}>
               <Image
                 src={`https://pokeres.bastionbot.org/images/pokemon/${id}.png`}
@@ -92,8 +89,20 @@ export default function Homepage() {
             margin="1rem 0"
             constrained
           >
-            <BaseStats margin={{ xxs: '0 0 2rem', lg: '0' }} />
-            <Box>Sprites</Box>
+            <BaseStats
+              sizes={{ xxs: 12, lg: 8 }}
+              margin={{ xxs: '0 0 2rem', lg: '0' }}
+            />
+            <Box sizes={{ xxs: 12, lg: 4 }}>Forms</Box>
+          </Box>
+          <Box
+            as="section"
+            align="flex-start"
+            justify="flex-start"
+            margin="1rem 0"
+            constrained
+          >
+            <Moves sizes={12} margin="0 0 2rem" />
           </Box>
         </>
       )}
