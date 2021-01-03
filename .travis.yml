@@ -9,12 +9,4 @@ cache:
     - .next/cache
 script:
   - npm run build
-  - touch out/.nojekyll
-deploy:
-  strategy: git
-  provider: pages
-  skip_cleanup: true
-  token: $github_token
-  local_dir: out
-  on:
-    branch: main
+  - npm run export
