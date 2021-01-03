@@ -9,7 +9,6 @@ cache:
     - .next/cache
 script:
   - npm run build
-  - npm run export
   - touch out/.nojekyll
 deploy:
   strategy: git
