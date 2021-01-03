@@ -112,3 +112,17 @@ export default function Homepage() {
     </Layout>
   )
 }
+
+// This function gets called at build time
+export async function getStaticPaths() {
+  // Call an external API endpoint to get pokemon
+  const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=3')
+  const pokemonList = await res.json()
+
+  // Get the paths we want to pre-render based on pokemon
+  const paths = pokemonList.results.map(pokemon => ({
+    params: { id: pokemon.name },
+  }))
+  // { fallback: true } means other routes should render.
+  return { paths, fallback: true }
+}
