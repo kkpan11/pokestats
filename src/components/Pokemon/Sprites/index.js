@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 // helpers
-import { humanize } from '../../../helpers/typography'
+import { removeUnderscore } from '../../../helpers/typography'
 // components
 import Box from '../../Box'
 import Loading from '../../Loading'
@@ -41,31 +41,25 @@ export default function Sprites({ ...rest }) {
                     typeof sprites[key] !== 'object' && (
                       <SpriteContainer sizes={1.5} key={i}>
                         <Sprite src={sprites[key]} />
-                        <p>{humanize(key)}</p>
+                        <p>{removeUnderscore(key)}</p>
                       </SpriteContainer>
                     )
                 )}
               </Box>
               <Box
                 direction={{ xxs: 'column', md: 'row' }}
-                justify={{ xxs: 'center', md: 'flex-start' }}
-                align="flex-start"
+                align={{ xxs: 'center', md: 'flex-start' }}
               >
                 {(dreamWorld.front_default || dreamWorld.front_female) && (
-                  <Box align={{ xxs: 'center', md: 'flex-start' }} sizes={6}>
+                  <Box align="center" margin="0 0 2rem" sizes={6}>
                     <SectionSubTitle>Dreamworld Artwork</SectionSubTitle>
-                    <Box
-                      direction="row"
-                      justify={{ xxs: 'center', md: 'flex-start' }}
-                      margin="0 0 2rem"
-                      flexWrap="wrap"
-                    >
+                    <Box direction="row" justify="center" flexWrap="wrap">
                       {Object.keys(dreamWorld).map(
                         (key, i) =>
                           dreamWorld[key] && (
                             <SpriteContainer key={i} sizes={6}>
                               <Sprite dreamworld src={dreamWorld[key]} />
-                              <p>{humanize(key)}</p>
+                              <p>{removeUnderscore(key)}</p>
                             </SpriteContainer>
                           )
                       )}
@@ -73,7 +67,7 @@ export default function Sprites({ ...rest }) {
                   </Box>
                 )}
                 {officialArtwork && (
-                  <Box align={{ xxs: 'center', md: 'flex-start' }} sizes={6}>
+                  <Box align="center" sizes={6}>
                     <SectionSubTitle>Official Artwork</SectionSubTitle>
                     <SpriteContainer width={{ xxs: '100%', md: 'auto' }}>
                       <Sprite dreamworld src={officialArtwork} />
