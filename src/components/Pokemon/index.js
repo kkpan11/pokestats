@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 // actions
-import { fetchPokemonData } from './pokemonSlice'
+import { fetchPokemonData, startLoading } from './pokemonSlice'
 import { changeVersion } from '../Header/gameSlice'
 // helpers
 import { mapGenerationToGame } from '../../helpers/gameVersion'
@@ -11,6 +11,7 @@ import Layout from '../Layout'
 import Loading from '../Loading'
 import Box from '../Box'
 import Details from './Details'
+import EvolutionChain from './EvolutionChain'
 import Breeding from './Breeding'
 import Training from './Training'
 import Multipliers from './Multipliers'
@@ -35,9 +36,16 @@ export default function Homepage() {
   const { id, game_indices } = pokemonInfo.data
   const { generation } = pokemonBio.data
 
+  // start loading info, biology and evolution states
+  useEffect(() => {
+    dispatch(startLoading())
+  }, [])
+
   // fetch pokemon data
   useEffect(() => {
     if (router.query.id) {
+      // also start loading when router changes
+      dispatch(startLoading())
       dispatch(fetchPokemonData(router.query.id))
     }
   }, [router])
@@ -81,6 +89,15 @@ export default function Homepage() {
                 src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
               />
             </ImageContainer>
+          </Box>
+          <Box
+            as="section"
+            align="flex-start"
+            justify="flex-start"
+            margin="1rem 0"
+            constrained
+          >
+            <EvolutionChain sizes={12} margin="0 0 2rem" />
           </Box>
           <Box
             as="section"
