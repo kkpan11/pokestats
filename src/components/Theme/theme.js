@@ -1,5 +1,9 @@
 import { breakpoints } from '../Box/config'
 
+const white = '#FFF'
+const black = '#000'
+const lightGrey = 'lightgrey'
+
 const theme = {
   device: {
     xxs: `(min-width: ${breakpoints.xxs}rem)`,
@@ -16,49 +20,67 @@ const theme = {
   },
   autoComplete: {
     input: {
-      color: '#FFF',
-      backgroundColor: '#000',
-      borderColor: '#000',
+      color: white,
+      backgroundColor: black,
+      borderColor: black,
       hover: {
-        color: '#000',
-        backgroundColor: '#FFF',
+        color: black,
+        backgroundColor: white,
       },
     },
     button: {
-      color: '#FFF',
-      backgroundColor: '#000',
-      borderColor: '#000',
+      color: white,
+      backgroundColor: black,
+      borderColor: black,
       hover: {
-        color: '#000',
-        backgroundColor: '#FFF',
+        color: black,
+        backgroundColor: white,
       },
       disabled: {
         color: 'lightgrey',
-        backgroundColor: '#FFF',
+        backgroundColor: white,
       },
     },
     wrapperOption: {
-      color: '#000',
-      backgroundColor: '#fff',
+      color: black,
+      backgroundColor: white,
       hover: {
-        color: '#FFF',
-        backgroundColor: '#000',
+        color: white,
+        backgroundColor: black,
       },
     },
   },
   header: {
-    backgroundColor: '#E3350D',
+    backgroundColor: white,
   },
   homepage: {
     heading: {
-      color: '#FFF',
+      color: white,
+    },
+    pokemonList: {
+      backgroundColor: black,
+      color: white,
     },
   },
   particles: {
-    backgroundColor: '#FFF',
+    backgroundColor: white,
+  },
+  pokemonBox: {
+    activeShadow: 'rgba(0, 0, 0, 0.75)',
+    backgroundColor: white,
+    boxShadow: 'rgba(255, 255, 255, 0.75)',
+    color: black,
+    hoverBorder: black,
+    dark: {
+      activeShadow: 'rgba(255, 255, 255, 0.75)',
+      backgroundColor: black,
+      boxShadow: 'rgba(0, 0, 0, 0.75)',
+      color: white,
+      hoverBorder: white,
+    },
   },
   progressBar: {
-    backgroundColor: '#000',
+    backgroundColor: black,
   },
   typeBadge: {
     backgroundColor: {
@@ -81,7 +103,7 @@ const theme = {
       steel: '#B7B7CE',
       water: '#6390F0',
     },
-    color: '#FFF',
+    color: white,
   },
 }
 

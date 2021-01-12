@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import axios from 'axios'
 // helpers
@@ -8,14 +8,8 @@ import { mapGeneration } from '../../../../helpers/gameVersion'
 import Box from '../../../Box'
 import EvoDetails from './EvolutionDetails'
 // styles
-import {
-  PokeBox,
-  PokeImg,
-  NumberId,
-  PokeName,
-  EvoArrow,
-  PokeGen,
-} from './StyledEvolution'
+import { PokeBox, PokeImg, NumberId, PokeName } from '../../../BaseStyles'
+import { EvoArrow, PokeGen } from './StyledEvolution'
 
 export default function Evolution({
   noArrow = false,
@@ -27,14 +21,29 @@ export default function Evolution({
   const [currSpecies, setCurrSpecies] = useState()
   const [imgSrc, setImgSrc] = useState()
 
+  // ref
+  const isMounted = useRef(null)
+  // mounted effect
+  useEffect(() => {
+    // executed when component mounted
+    isMounted.current = true
+    return () => {
+      // executed when unmount
+      isMounted.current = false
+    }
+  }, [])
+
   // fetch species.url data
   useEffect(() => {
     // get data
     axios.get(species.url).then(newSpecies => {
-      setCurrSpecies(newSpecies.data)
-      setImgSrc(
-        `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${newSpecies.data.id}.png`
-      )
+      // only update states if mounted
+      if (isMounted.current) {
+        setCurrSpecies(newSpecies.data)
+        setImgSrc(
+          `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${newSpecies.data.id}.png`
+        )
+      }
     })
   }, [species])
 
@@ -57,7 +66,7 @@ export default function Evolution({
           )}
           {/** Pokemon box with image and types */}
           <Link as={`/pokemon/${species.name}`} href="/pokemon/[id]" passHref>
-            <PokeBox forwardedAs="a" grow={false} width="auto">
+            <PokeBox forwardedAs="a" grow={false} width="auto" dark>
               <PokeImg src={imgSrc} />
               <NumberId>{`#${currSpecies.id}`}</NumberId>
               <PokeName>{removeDash(currSpecies.name)}</PokeName>
