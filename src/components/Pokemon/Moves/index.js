@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 // helpers
 import { mapVersionToGroup, mapGeneration } from '../../../helpers/gameVersion'
@@ -45,78 +45,109 @@ export default function Moves({ ...rest }) {
   // machine names
   const [machineNames, setMachineNames] = useState()
   // loading
-  const [movesLoading, setMovesLoading] = useState(false)
+  const [movesLoading, setMovesLoading] = useState(true)
+
+  // ref
+  const isMounted = useRef(null)
+  // mounted effect
+  useEffect(() => {
+    // executed when component mounted
+    isMounted.current = true
+    return () => {
+      // executed when unmount
+      isMounted.current = false
+    }
+  }, [])
 
   // fetch move data
   useEffect(() => {
-    setMovesLoading(true)
-    fetchTypeData(moves)
-      .then(movesData => {
-        setMoves(movesData)
-        setMovesLoading(false)
-      })
-      .catch(errors => {
-        // no moves
-        setMovesLoading(false)
-      })
+    if (isMounted.current) {
+      setMovesLoading(true)
+      fetchTypeData(moves)
+        .then(movesData => {
+          setMoves(movesData)
+          //setMovesLoading(false)
+        })
+        .catch(errors => {
+          // no moves
+          setMovesLoading(false)
+        })
+    }
   }, [moves])
 
   // tab changes
   useEffect(() => {
-    // tab changed! update learn method
-    // changing learn method will trigger moves update
-    // start loading first
-    setMovesLoading(true)
-    // update learn method state
-    if (activeTab === 1) {
-      setLearnMethod('level-up')
-    } else if (activeTab === 2) {
-      setLearnMethod('machine')
-    } else if (activeTab === 3) {
-      setLearnMethod('egg')
-    } else if (activeTab === 4) {
-      setLearnMethod('tutor')
+    if (isMounted.current) {
+      // tab changed! update learn method
+      // changing learn method will trigger moves update
+      // start loading first
+      setMovesLoading(true)
+      // update learn method state
+      if (activeTab === 1) {
+        setLearnMethod('level-up')
+      } else if (activeTab === 2) {
+        setLearnMethod('machine')
+      } else if (activeTab === 3) {
+        setLearnMethod('egg')
+      } else if (activeTab === 4) {
+        setLearnMethod('tutor')
+      }
     }
   }, [activeTab])
 
   // current pokemon moves
   useEffect(() => {
-    if (pokemonMoves && learnMethod && gameVersion) {
+    if (isMounted.current && pokemonMoves && learnMethod && gameVersion) {
       // filter moves by learn method and current game version
       filterMoves(
         pokemonMoves,
         learnMethod,
         mapVersionToGroup(gameVersion)
       ).then(moves => {
-        // clear machine names state
-        // when we set new currMoves, these won't match
-        setMachineNames()
-        // update move state to show in table
-        setCurrMoves(moves)
-        // this will trigger a new machine name search
-        // no need to stop loading here
+        if (moves.length) {
+          // clear machine names state
+          // when we set new currMoves, these won't match
+          setMachineNames()
+          // update move state to show in table
+          setCurrMoves(moves)
+          // this will trigger a new machine name search
+        } else {
+          // empty currMoves
+          setCurrMoves([])
+          // stop loading
+          setMovesLoading(false)
+        }
       })
     }
   }, [pokemonMoves, learnMethod, gameVersion])
 
   // current pokemon moves
   useEffect(() => {
-    // if move is from machine then get machine names
-    if (currMoves && learnMethod === 'machine') {
-      // requests from current moves machines
-      getMachineNames(currMoves).then(
-        axios.spread((...responses) => {
-          // get machine names from responses
-          const names = responses.map(res => res.data.item.name)
-          // update machine names state
-          setMachineNames(names)
-          // stop loading
-          setMovesLoading(false)
-        })
-      )
-    } else {
-      // otherwise just stop loading
-      setMovesLoading(false)
+    if (isMounted.current && currMoves.length) {
+      // if move is machine then get machine names
+      if (learnMethod === 'machine') {
+        // requests from current moves machines
+        getMachineNames(currMoves).then(
+          axios.spread((...responses) => {
+            // get machine names from responses
+            const names = responses.map(res => {
+              // if request fails will return null
+              if (res === null) {
+                return '❌'
+              } else {
+                return res.data.item.name
+              }
+            })
+            // update machine names state
+            setMachineNames(names)
+            // stop loading
+            setMovesLoading(false)
+          })
+        )
+      } else {
+        // if not machine just stop loading instead
+        setMovesLoading(false)
+      }
     }
   }, [currMoves])
 
@@ -186,7 +217,7 @@ export default function Moves({ ...rest }) {
         </MovesTable>
       </TableContainer>
       {/** NO MOVES */}
-      {(!moves.length || !currMoves.length) && !movesLoading && (
+      {!movesLoading && currMoves.length === 0 && (
         <SectionMessage>No moves for current game version!</SectionMessage>
       )}
       {/** LOADING */}
