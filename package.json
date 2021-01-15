@@ -3,17 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node server.js",
+    "dev": "next dev",
     "build": "next build",
-    "start": "cross-env NODE_ENV=production node server.js",
+    "start": "node server.js",
     "export": "next export"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.0",
     "axios": "^0.21.1",
-    "cross-env": "^7.0.3",
+    "express": "^4.17.1",
+    "heroku-ssl-redirect": "^0.1.1",
     "next": "10.0.3",
     "next-images": "^1.6.2",
+    "next-pwa": "^5.0.3",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-particles-js": "^3.4.1",
@@ -22,7 +24,7 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "styled-components": "^5.2.1",
-    "webpack": "^5.11.0"
+    "webpack": "^4.0.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.12.10",
@@ -37,7 +39,6 @@
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-styled-components": "^0.0.0",
     "prettier": "^2.2.1",
-    "redux-devtools": "^3.7.0",
-    "terser-webpack-plugin": "^5.0.3"
+    "redux-devtools": "^3.7.0"
   }
 }

@@ -1,25 +1,24 @@
-const { createServer } = require('http')
-const { parse } = require('url')
 const next = require('next')
+const express = require('express')
+const sslRedirect = require('heroku-ssl-redirect').default
 
+const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
-const PORT = process.env.PORT || 3000
 
 app.prepare().then(() => {
-  createServer((req, res) => {
-    // Be sure to pass `true` as the second argument to `url.parse`.
-    // This tells it to parse the query portion of the URL.
-    const parsedUrl = parse(req.url, true)
-    const { pathname, query } = parsedUrl
-    if (pathname === '/home') {
-      app.render(req, res, '/', query)
-    } else {
-      handle(req, res, parsedUrl)
-    }
-  }).listen(PORT, err => {
+  const server = express()
+
+  // redirect to SSL
+  server.use(sslRedirect())
+
+  server.all('*', (req, res) => {
+    return handle(req, res)
+  })
+
+  server.listen(port, err => {
     if (err) throw err
-    console.log(`> Server Started on ${PORT}`)
+    console.log(`> Ready on http://localhost:${port}`)
   })
 })

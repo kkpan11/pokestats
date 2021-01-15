@@ -14,6 +14,14 @@ export default function App({ Component, pageProps }) {
     store.dispatch(fetchPokemonList())
   }, [])
 
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/pokeapi-sw.js')
+      })
+    }
+  }, [])
+
   return (
     <Provider store={store}>
       <ThemeProvider>
