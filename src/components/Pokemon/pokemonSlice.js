@@ -94,10 +94,15 @@ const pokemonSlice = createSlice({
   name: 'pokemon',
   initialState,
   reducers: {
-    startLoading(state, action) {
+    startLoading(state) {
       state.info.isLoading = true
       state.biology.isLoading = true
       state.evolution.isLoading = true
+    },
+    cleanData(state) {
+      state.info.data = {}
+      state.biology.data = {}
+      state.evolution.data = {}
     },
   },
   extraReducers: builder => {
@@ -169,7 +174,7 @@ const pokemonSlice = createSlice({
 })
 
 // export actions
-export const { startLoading } = pokemonSlice.actions
+export const { startLoading, cleanData } = pokemonSlice.actions
 
 // export reducer
 export default pokemonSlice.reducer
