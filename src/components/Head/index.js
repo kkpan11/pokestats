@@ -1,4 +1,5 @@
 import { default as NextHead } from 'next/head'
+import { useRouter } from 'next/router'
 import { useSelector } from 'react-redux'
 // helpers
 import { removeDash } from '../../helpers/typography'
@@ -8,11 +9,13 @@ export default function Heading() {
   const pokemonInfo = useSelector(state => state.pokemon.info)
   // data
   const { name } = pokemonInfo.data
+  // router
+  const router = useRouter()
 
   return (
     <NextHead>
       {/** MUST */}
-      <meta charset="utf-8" />
+      <meta charSet="utf-8" />
       <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       <meta
         name="viewport"
@@ -27,7 +30,7 @@ export default function Heading() {
         content="pokemon, pokedex, pokestats, react, nextjs, styled-components, pokeapi"
       />
       <title>{name && `${removeDash(name)} - `}PokeStats.gg</title>
-      <link rel="canonical" href="https://pokestats.gg" />
+      <link rel="canonical" href={`https://pokestats.gg${router.asPath}`} />
       {/** MANIFEST */}
       <link href="/manifest.json" rel="manifest" />
       {/** ICONS */}

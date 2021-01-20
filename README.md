@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://pokestats.gg">
-    <img alt="pokestats" src="https://raw.githubusercontent.com/andreferreiradlw/pokestats/main/public/static/pokestats_logo.png" height="150px" />
+    <img alt="pokestats" src="https://raw.githubusercontent.com/andreferreiradlw/pokestats/main/public/static/pokestats_logo.png" width="95%" />
   </a>
 </div>
 
@@ -47,6 +47,7 @@
 🧶 Type Page <br />
 🧶 Berry Page <br />
 🧶 Item Page <br />
+🧶 Move Details <br />
 🧶 Dark Mode <br />
 🚫 Generation 8 Pokemon (waiting on [PokéApi's issue](https://github.com/PokeAPI/pokeapi/issues/520)) <br />
 ✏ Locations <br />

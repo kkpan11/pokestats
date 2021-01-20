@@ -100,9 +100,30 @@ const pokemonSlice = createSlice({
       state.evolution.isLoading = true
     },
     cleanData(state) {
-      state.info.data = {}
-      state.biology.data = {}
-      state.evolution.data = {}
+      state.info = {
+        data: {},
+        isLoading: true,
+        error: {
+          status: 'OK',
+          message: null,
+        },
+      }
+      state.biology = {
+        data: {},
+        isLoading: true,
+        error: {
+          status: 'OK',
+          message: null,
+        },
+      }
+      state.evolution = {
+        data: {},
+        isLoading: true,
+        error: {
+          status: 'OK',
+          message: null,
+        },
+      }
     },
   },
   extraReducers: builder => {
