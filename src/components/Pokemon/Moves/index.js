@@ -219,11 +219,17 @@ export default function Moves({ ...rest }) {
       </TableContainer>
       {/** NO MOVES */}
       {!movesLoading && currMoves.length === 0 && (
-        <SectionMessage>No moves for current game version!</SectionMessage>
+        <SectionMessage>
+          No moves for currently selected game version.
+        </SectionMessage>
       )}
       {/** LOADING */}
       {movesLoading && (
-        <Loading height="300px" iconWidth="5%" key="pokemon-moves" />
+        <Loading
+          height="300px"
+          iconWidth={{ xxs: '20%', xs: '15%', md: '10%', lg: '5%' }}
+          key="pokemon-moves"
+        />
       )}
     </Box>
   )
