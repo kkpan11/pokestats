@@ -32,7 +32,7 @@
 </div>
 
 <div align="center">
-  <strong><a href="https://pokestats.gg" target="_blank">PokeStats.gg</a> is an online encyclopedia of Pokémon species containing information such as Pokédex entries, descriptions, evolution chains, moves, stats and much more. It also works offline! 🔌</strong>
+  <strong><a href="https://pokestats.gg" target="_blank">PokeStats.gg</a> is an online encyclopaedia of Pokémon species containing information such as Pokédex entries, descriptions, evolution chains, moves, stats and much more. It also works offline! 🔌</strong>
   <br />
 </div>
 
@@ -42,8 +42,8 @@
 ✅ Infinite Scroll <br />
 ✅ Pokemon Page <br />
 ✅ Offline Support <br />
-🛠️ Loading & 404 Components <br />
-🧶 Framer Motion Animations <br />
+✅ Loading & 404 Components <br />
+🛠️ Framer Motion Animations <br />
 🧶 Type Page <br />
 🧶 Berry Page <br />
 🧶 Item Page <br />
