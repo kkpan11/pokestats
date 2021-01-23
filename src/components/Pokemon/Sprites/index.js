@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux'
-import LazyLoad from 'react-lazyload'
 // helpers
 import { removeUnderscore } from '../../../helpers/typography'
 // components
@@ -24,7 +23,7 @@ export default function Sprites({ ...rest }) {
     <Box align={{ xxs: 'center', lg: 'flex-start' }} {...rest}>
       <SectionTitle>Sprites</SectionTitle>
       {pokemonInfo.isLoading ? (
-        <Loading />
+        <Loading height="300px" iconWidth="5%" key="pokemon-sprites" />
       ) : (
         <>
           {dreamWorld.front_default ||
@@ -43,9 +42,13 @@ export default function Sprites({ ...rest }) {
                     sprites[key] &&
                     typeof sprites[key] !== 'object' && (
                       <SpriteContainer sizes={1.5} key={`${key}-${i}`}>
-                        <LazyLoad height={130} once>
-                          <Sprite alt={key} src={sprites[key]} />
-                        </LazyLoad>
+                        <Sprite
+                          alt={key}
+                          src={sprites[key]}
+                          pixelated
+                          width={130}
+                          iconWidth="40%"
+                        />
                         <p>{removeUnderscore(key)}</p>
                       </SpriteContainer>
                     )
@@ -65,13 +68,14 @@ export default function Sprites({ ...rest }) {
                         animatedSprites[key] &&
                         typeof animatedSprites[key] !== 'object' && (
                           <SpriteContainer sizes={1.5} key={`${key}-${i}`}>
-                            <LazyLoad height={80} once>
-                              <Sprite
-                                alt={key}
-                                animated
-                                src={animatedSprites[key]}
-                              />
-                            </LazyLoad>
+                            <Sprite
+                              alt={key}
+                              src={animatedSprites[key]}
+                              animated
+                              pixelated
+                              width={80}
+                              iconWidth="75%"
+                            />
                             <p>{removeUnderscore(key)}</p>
                           </SpriteContainer>
                         )
@@ -91,15 +95,15 @@ export default function Sprites({ ...rest }) {
                         (key, i) =>
                           dreamWorld[key] && (
                             <SpriteContainer key={`${key}-${i}`} sizes={6}>
-                              <LazyLoad height={180} once>
-                                <Sprite
-                                  alt={`DreamWorld Design ${removeUnderscore(
-                                    key
-                                  )}`}
-                                  dreamworld
-                                  src={dreamWorld[key]}
-                                />
-                              </LazyLoad>
+                              <Sprite
+                                alt={`DreamWorld Design ${removeUnderscore(
+                                  key
+                                )}`}
+                                dreamworld
+                                src={dreamWorld[key]}
+                                height={180}
+                                iconHeight="65%"
+                              />
                               <p>{removeUnderscore(key)}</p>
                             </SpriteContainer>
                           )
@@ -111,13 +115,13 @@ export default function Sprites({ ...rest }) {
                   <Box align="center" sizes={6}>
                     <SectionSubTitle>Official Artwork</SectionSubTitle>
                     <SpriteContainer width={{ xxs: '100%', md: 'auto' }}>
-                      <LazyLoad height={180} once>
-                        <Sprite
-                          alt={`Official Artwork Front Default`}
-                          dreamworld
-                          src={officialArtwork}
-                        />
-                      </LazyLoad>
+                      <Sprite
+                        alt={`Official Artwork Front Default`}
+                        dreamworld
+                        src={officialArtwork}
+                        height={180}
+                        iconHeight="65%"
+                      />
                       <p>Front Default</p>
                     </SpriteContainer>
                   </Box>

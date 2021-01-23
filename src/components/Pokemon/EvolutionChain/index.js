@@ -16,19 +16,14 @@ export default function EvolutionChain({ ...rest }) {
     <Box align={{ xxs: 'center', lg: 'flex-start' }} {...rest}>
       <SectionTitle>Evolution Chain</SectionTitle>
       {pokemonEvo.isLoading ? (
-        <Loading />
+        <Loading height="271px" iconWidth="5%" key="pokemon-evolution" />
       ) : (
         <>
           {!chain.evolves_to.length && (
             <SectionMessage>This Pokémon does not evolve.</SectionMessage>
           )}
           <Box direction={{ xxs: 'column', lg: 'row' }} sizes={12}>
-            <Evolution
-              noArrow
-              species={chain.species}
-              grow={false}
-              width="auto"
-            />
+            <Evolution noArrow species={chain.species} width="auto" />
             {chain.evolves_to.length > 0 && (
               <Box direction={{ xxs: 'row', lg: 'column' }} sizes={9.6}>
                 {chain.evolves_to.map((firstEvo, i) => (

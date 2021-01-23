@@ -1,8 +1,12 @@
-import LazyLoad from 'react-lazyload'
+import styled from 'styled-components'
 // components
 import Header from '../Header'
 import Footer from '../Footer'
 import Box from '../Box'
+
+const LayoutContainer = styled(Box)`
+  min-height: 100vh;
+`
 
 export default function Layout({
   withFooter,
@@ -12,20 +16,12 @@ export default function Layout({
   ...rest
 }) {
   return (
-    <>
-      {withHeader && (
-        <LazyLoad height={200} once>
-          <Header />
-        </LazyLoad>
-      )}
-      <Box as="main" withGutter={withGutter} {...rest}>
+    <LayoutContainer direction="column" noGutter>
+      {withHeader && <Header />}
+      <Box as="main" withGutter={withGutter} flexGrow {...rest}>
         {children}
       </Box>
-      {withFooter && (
-        <LazyLoad height={200} once offset={10}>
-          <Footer />
-        </LazyLoad>
-      )}
-    </>
+      {withFooter && <Footer />}
+    </LayoutContainer>
   )
 }
