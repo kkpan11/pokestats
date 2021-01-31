@@ -2,16 +2,19 @@ import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import LazyLoad from 'react-lazyload'
+import { AnimatePresence } from 'framer-motion'
 // actions
-import { fetchPokemonData, startLoading, cleanData } from './pokemonSlice'
+import { fetchPokemonData, cleanData } from './pokemonSlice'
 import { changeVersion } from '../Header/gameSlice'
 // helpers
 import { mapGenerationToGame } from '../../helpers/gameVersion'
 import { removeDash } from '../../helpers/typography'
+import { pageContainerVariant } from '../../helpers/animations'
 // components
 import Layout from '../Layout'
 import Loading from '../Loading'
 import Box from '../Box'
+import BoxWrapper from '../Box/StyledBox'
 import Details from './Details'
 import FeaturedImage from './FeatureImage'
 import EvolutionChain from './EvolutionChain'
@@ -33,16 +36,15 @@ export default function Homepage() {
   const pokemonInfo = useSelector(state => state.pokemon.info)
   // biology
   const pokemonBio = useSelector(state => state.pokemon.biology)
+  // game version
+  const gameVersion = useSelector(state => state.game.version)
   // data
   const { id, game_indices, name } = pokemonInfo.data
-  const { generation } = pokemonBio.data
+  const { generation, names } = pokemonBio.data
 
-  // start loading info, biology and evolution states
   useEffect(() => {
-    dispatch(startLoading())
-    // on unmount
+    // reset data on unmount
     return () => {
-      dispatch(startLoading())
       dispatch(cleanData())
     }
   }, [])
@@ -50,8 +52,12 @@ export default function Homepage() {
   // fetch pokemon data
   useEffect(() => {
     if (router.query.id) {
-      // also start loading when router changes
-      dispatch(startLoading())
+      // check if previous pokemon data exists
+      if (Object.keys(pokemonInfo.data).length !== 0) {
+        // reset data
+        dispatch(cleanData())
+      }
+      // fetch new pokemon data
       dispatch(fetchPokemonData(router.query.id))
     }
   }, [router])
@@ -60,133 +66,168 @@ export default function Homepage() {
   useEffect(() => {
     if (game_indices && game_indices[0]) {
       // change to first game indice
-      dispatch(changeVersion(game_indices[0].version.name))
+      if (gameVersion !== game_indices[0].version.name)
+        dispatch(changeVersion(game_indices[0].version.name))
     } else if (generation) {
       // if no game indice avaliable change to generation
       let gameGen = mapGenerationToGame(generation.name)
-      dispatch(changeVersion(gameGen))
+      if (gameVersion !== gameGen) dispatch(changeVersion(gameGen))
     }
   }, [generation])
 
   // error handling
   useEffect(() => {
-    if (pokemonInfo.error.status !== 'OK') {
+    if (pokemonInfo.error.status !== 'OK' || id > 809) {
       router.push('/404', router.asPath)
     }
-  }, [pokemonInfo.error])
+  }, [pokemonInfo])
 
   return (
-    <Layout withHeader withFooter>
-      {pokemonInfo.isLoading ? (
-        <Loading
-          text={`Loading ${
-            router.query.id &&
-            router.query.id !== undefined &&
-            removeDash(router.query.id)
-          }`}
-        />
-      ) : (
-        <>
-          <Box
-            as="section"
-            direction={{ xxs: 'column-reverse', lg: 'row' }}
+    <Layout
+      withHeader
+      withFooter
+      withMain={false}
+      key={`layout-pokemon-${router.query.id}`}
+    >
+      <AnimatePresence exitBeforeEnter>
+        {pokemonInfo.isLoading && (
+          <Loading
+            passKey={`loading-pokemon-${router.query.id}`}
+            key={`loading-pokemon-${router.query.id}`}
+            text={router.query.id && `Loading ${removeDash(router.query.id)}`}
+          />
+        )}
+        {!pokemonInfo.isLoading && (
+          <BoxWrapper
+            forwardedAs="main"
+            initial="hidden"
+            animate="visible"
+            exit="fade"
+            variants={pageContainerVariant}
+            key={`pokemon-${router.query.id}`}
+            constrained
+            withGutter
+            direction="column"
             align="center"
-            justify="flex-start"
-            margin="1rem 0"
-            constrained
+            justify="center"
+            margin="0 auto"
+            width="100%"
           >
-            <Details sizes={5} margin={{ xxs: '0 0 2rem', lg: '0' }} />
-            <FeaturedImage
-              sizes={7}
-              margin={{ xxs: '0 0 2rem', lg: '0' }}
-              pokemonName={name}
-              pokemonId={id}
-            />
-          </Box>
-          {/** EVOLUTION CHAIN */}
-          <Box
-            as="section"
-            align="flex-start"
-            justify="flex-start"
-            margin="1rem 0"
-            constrained
-          >
-            <EvolutionChain sizes={12} margin="0 0 2rem" />
-          </Box>
-          {/** BREEDING, TRAINING, MULTIPLIERS */}
-          <Box
-            as="section"
-            direction={{ xxs: 'column', lg: 'row' }}
-            align="flex-start"
-            justify="flex-start"
-            margin="1rem 0"
-            constrained
-          >
-            <Breeding
-              margin={{ xxs: '0 0 2rem', lg: '0' }}
-              padding={{ xxs: '0', lg: '0 2rem 0 0' }}
-            />
-            <Training
-              margin={{ xxs: '0 0 2rem', lg: '0' }}
-              padding={{ xxs: '0', lg: '0 1rem' }}
-            />
-            <Multipliers
-              margin={{ xxs: '0 0 2rem', lg: '0' }}
-              padding={{ xxs: '0', lg: '0 0 0 2rem' }}
-            />
-          </Box>
-          {/** BASESTATS, FORMS */}
-          <Box
-            as="section"
-            direction={{ xxs: 'column', lg: 'row' }}
-            align="flex-start"
-            justify="flex-start"
-            margin="1rem 0"
-            constrained
-          >
-            <BaseStats
-              sizes={{ xxs: 12, lg: 8 }}
-              margin={{ xxs: '0 0 2rem', lg: '0' }}
-              padding={{ xxs: '0', lg: '0 2rem 0 0' }}
-            />
-            <Forms sizes={{ xxs: 12, lg: 4 }} />
-          </Box>
-          {/** MOVES */}
-          <LazyLoad height={500} once offset={200}>
+            <Box
+              as="section"
+              direction={{ xxs: 'column-reverse', lg: 'row' }}
+              align="center"
+              justify="flex-start"
+              margin="1rem 0"
+              minHeight="533px"
+            >
+              <Details
+                sizes={5}
+                margin={{ xxs: '0 0 2rem', lg: '0' }}
+                key={`pokemon-details-${id}`}
+              />
+              <FeaturedImage
+                sizes={7}
+                margin={{ xxs: '0 0 2rem', lg: '0' }}
+                pokemonNames={names}
+                pokemonName={name}
+                pokemonId={id}
+              />
+            </Box>
+            {/** EVOLUTION CHAIN */}
             <Box
               as="section"
               align="flex-start"
               justify="flex-start"
               margin="1rem 0"
-              constrained
+              minHeight="375px"
             >
-              <Moves sizes={12} margin="0 0 2rem" />
+              <LazyLoad height={375} once offset={50}>
+                <EvolutionChain
+                  sizes={12}
+                  margin="0 0 2rem"
+                  key={`pokemon-evolution-${id}`}
+                />
+              </LazyLoad>
             </Box>
-          </LazyLoad>
-          {/** SPRITES */}
-          <LazyLoad height={800} once offset={250}>
+            {/** BREEDING, TRAINING, MULTIPLIERS */}
+            <Box
+              as="section"
+              direction={{ xxs: 'column', lg: 'row' }}
+              align="flex-start"
+              justify="flex-start"
+              margin="1rem 0"
+              minHeight="347px"
+            >
+              <LazyLoad height={347} once offset={100}>
+                <Breeding
+                  margin={{ xxs: '0 0 2rem', lg: '0' }}
+                  padding={{ xxs: '0', lg: '0 2rem 0 0' }}
+                />
+              </LazyLoad>
+              <LazyLoad height={347} once offset={100}>
+                <Training
+                  margin={{ xxs: '0 0 2rem', lg: '0' }}
+                  padding={{ xxs: '0', lg: '0 1rem' }}
+                />
+              </LazyLoad>
+              <LazyLoad height={347} once offset={100}>
+                <Multipliers
+                  margin={{ xxs: '0 0 2rem', lg: '0' }}
+                  padding={{ xxs: '0', lg: '0 0 0 2rem' }}
+                />
+              </LazyLoad>
+            </Box>
+            {/** BASESTATS, FORMS */}
+            <Box
+              as="section"
+              direction={{ xxs: 'column', lg: 'row' }}
+              align="flex-start"
+              justify="flex-start"
+              margin="1rem 0"
+            >
+              <BaseStats
+                sizes={{ xxs: 12, lg: 8 }}
+                margin={{ xxs: '0 0 2rem', lg: '0' }}
+                padding={{ xxs: '0', lg: '0 2rem 0 0' }}
+              />
+              <Forms sizes={{ xxs: 12, lg: 4 }} />
+            </Box>
+            {/** MOVES */}
             <Box
               as="section"
               align="flex-start"
               justify="flex-start"
               margin="1rem 0"
-              constrained
+              minHeight="210px"
             >
-              <Sprites sizes={12} margin="0 0 2rem" />
+              <LazyLoad once offset={500}>
+                <Moves sizes={12} margin="0 0 2rem" />
+              </LazyLoad>
             </Box>
-          </LazyLoad>
-          {/** NAVIGATION */}
-          <Box
-            as="section"
-            align="flex-start"
-            justify="flex-start"
-            margin="1rem 0"
-            constrained
-          >
-            <Navigation sizes={12} margin="0 0 2rem" />
-          </Box>
-        </>
-      )}
+            {/** SPRITES */}
+            <Box
+              as="section"
+              align="flex-start"
+              justify="flex-start"
+              margin="1rem 0"
+            >
+              <LazyLoad height={800} once offset={350}>
+                <Sprites sizes={12} margin="0 0 2rem" />
+              </LazyLoad>
+            </Box>
+            {/** NAVIGATION */}
+            <Box
+              as="section"
+              align="flex-start"
+              justify="flex-start"
+              margin="1rem 0"
+            >
+              <Navigation sizes={12} margin="0 0 2rem" />
+            </Box>
+          </BoxWrapper>
+        )}
+      </AnimatePresence>
     </Layout>
   )
 }

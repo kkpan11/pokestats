@@ -1,15 +1,17 @@
 import { useSelector } from 'react-redux'
+import { AnimatePresence } from 'framer-motion'
 // helpers
 import { capitalize, removeDash } from '../../../helpers/typography'
+import { fadeInUpVariant } from '../../../helpers/animations'
 // components
-import Box from '../../Box'
+import BoxWrapper from '../../Box/StyledBox'
 import Loading from '../../Loading'
 import TypeBadge from '../../TypeBadge'
 // styles
 import { Table, Numbered } from '../../BaseStyles'
 import { Name, TypeContainer, Genera, Flavor } from './StyledDetails'
 
-export default function Details({ ...rest }) {
+export default function Details({ sizes, ...rest }) {
   // pokemon info
   const pokemonInfo = useSelector(state => state.pokemon.info)
   // biology
@@ -39,14 +41,15 @@ export default function Details({ ...rest }) {
     // soft hyphens followed by newlines vanish
     // letter-hyphen-newline becomes letter-hyphen, to preserve real hyphenation
     // any other newline becomes a space
+    // .replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ')
     return versionEntry.length
       ? versionEntry[0].flavor_text
           .replace(/u'\f'/, /u'\n'/)
-          .replace(/u'\u00ad\n'/, /u''/)
-          .replace(/u'\u00ad'/, /u''/)
-          .replace(/u' -\n'/, /u' - '/)
-          .replace(/u'-\n'/, /u'-'/)
-          .replace(/u'\n'/, /u' '/)
+          .replace(/\u00AD/g, '')
+          .replace(/\u000C/g, ' ')
+          .replace(/u' -\n'/, ' - ')
+          .replace(/u'-\n'/, '-')
+          .replace(/(\r\n|\n|\r)/gm, ' ')
       : 'No description available for currently selected generation.'
   }
 
@@ -74,29 +77,47 @@ export default function Details({ ...rest }) {
     ))
 
   return (
-    <Box align={{ xxs: 'center', lg: 'flex-start' }} {...rest}>
-      <Name>{removeDash(name)}</Name>
-      {types.length > 0 && (
-        <TypeContainer
-          width="auto"
-          direction="row"
-          justify="flex-start"
-          flexWrap="wrap"
-          margin="0 0 0.5rem"
-        >
-          {types.map(({ type }, i) => {
-            return (
-              <TypeBadge type={type.name} key={`${type.name}-${i}-details`}>
-                {type.name}
-              </TypeBadge>
-            )
-          })}
-        </TypeContainer>
+    <AnimatePresence exitBeforeEnter>
+      {pokemonBio.isLoading && (
+        <Loading
+          sizes={sizes}
+          height="558px"
+          iconWidth="15%"
+          key={`pokemon-details-loading-${id}`}
+        />
       )}
-      {pokemonBio.isLoading ? (
-        <Loading height="390px" iconWidth="15%" key="pokemon-details" />
-      ) : (
-        <>
+      {!pokemonBio.isLoading && (
+        <BoxWrapper
+          sizes={sizes}
+          direction="column"
+          align={{ xxs: 'center', lg: 'flex-start' }}
+          initial="hidden"
+          animate="show"
+          variants={fadeInUpVariant}
+          key={`pokemon-details-${id}`}
+          {...rest}
+        >
+          <Name>{removeDash(name)}</Name>
+          {types.length > 0 && (
+            <TypeContainer
+              width="auto"
+              direction="row"
+              justify="flex-start"
+              flexWrap="wrap"
+              margin="0 0 0.5rem"
+            >
+              {types.map(({ type }, i) => {
+                return (
+                  <TypeBadge
+                    type={type.name}
+                    key={`${type.name}-${i}-detail-${id}`}
+                  >
+                    {type.name}
+                  </TypeBadge>
+                )
+              })}
+            </TypeContainer>
+          )}
           {(is_baby || is_legendary || is_mythical) && (
             <Genera>
               {is_baby && `Baby `}
@@ -138,8 +159,8 @@ export default function Details({ ...rest }) {
               </tr>
             </tbody>
           </Table>
-        </>
+        </BoxWrapper>
       )}
-    </Box>
+    </AnimatePresence>
   )
 }

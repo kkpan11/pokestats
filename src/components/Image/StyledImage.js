@@ -1,28 +1,34 @@
 import styled, { css } from 'styled-components'
+import { motion } from 'framer-motion'
 // helpers
 import { tumble } from '../BaseStyles/keyframes'
 // svg
 import Egg from '../../assets/svg/egg.svg'
 
-const Image = styled.img`
-  transition: all 0.05s ease-in-out;
+const ImageWrapper = styled(motion.div)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   ${({ width }) =>
-    width &&
     css`
-      width: ${width ? `${width}px` : 'auto'};
+      width: ${width ? `${width}px` : '100%'};
     `}
 
   ${({ height }) =>
     css`
       height: ${height ? `${height}px` : 'auto'};
-      ${height && `min-height: ${height}px;`}
     `}
+`
 
-  ${({ loaded }) =>
-    !loaded &&
+const Image = styled(motion.img)`
+  will-change: opacity;
+  // adjust to wrapper
+  ${({ height }) =>
     css`
-      display: none;
+      width: ${height ? `auto` : '100%'};
+      height: ${height ? `${height}px` : 'auto'};
+      min-height: ${height ? `${height}px` : 'auto'};
     `}
 
   ${({ pixelated }) =>
@@ -32,35 +38,26 @@ const Image = styled.img`
     `}
 `
 
-const Placeholder = styled.div`
+const Placeholder = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 15px 0;
-
-  ${({ width }) =>
-    css`
-      width: ${width ? `${width}px` : '100%'};
-    `}
-
-  ${({ height }) =>
-    css`
-      height: ${height ? `${height}px` : '100%'};
-    `}
+  width: 100%;
+  height: 100%;
 `
 
 const EggIcon = styled(Egg)`
   animation: ${tumble} 5s ease-in-out 0s infinite;
-
-  ${({ iconwidth }) =>
+  ${({ height }) =>
     css`
-      width: ${iconwidth ? `${iconwidth}` : 'auto'};
+      height: ${height ? `${height}px` : 'auto'};
     `}
-
-  ${({ iconheight }) =>
+  // width relative to container
+  ${({ placeholderwidth }) =>
     css`
-      height: ${iconheight ? `${iconheight}` : 'auto'};
+      width: ${placeholderwidth ? `${placeholderwidth}` : 'auto'};
     `}
 `
 
-export { Image, Placeholder, EggIcon }
+export { ImageWrapper, Image, Placeholder, EggIcon }

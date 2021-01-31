@@ -4,8 +4,9 @@ import Link from 'next/link'
 import { removeDash } from '../../../helpers/typography'
 // components
 import Box from '../../Box'
+import Image from '../../Image'
 // styles
-import { BtnAnchor, Title, Arrow, PokemonImg } from './StyledNavigation'
+import { BtnAnchor, Title, Arrow } from './StyledNavigation'
 
 export default function Navigation({ ...rest }) {
   // pokemon selector
@@ -19,7 +20,7 @@ export default function Navigation({ ...rest }) {
 
   return (
     <>
-      {allPokemon.length > 0 && (
+      {!pokemonInfo.isLoading && allPokemon.length && pokemonLength && (
         <Box
           direction={{ xxs: 'column', sm: 'row' }}
           justify={{ xxs: 'flex-start', sm: 'center' }}
@@ -29,19 +30,18 @@ export default function Navigation({ ...rest }) {
             <Link
               as={`/pokemon/${allPokemon[id - 2].name}`}
               href="/pokemon/[id]"
-              passHref
             >
               <BtnAnchor left>
                 <Arrow left>
-                  <PokemonImg
+                  <Image
                     src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
                       id - 1
                     }.png`}
                     alt={allPokemon[id - 2].name}
-                    height={90}
-                    imgHeight={90}
-                    iconHeight="75%"
+                    key={`navigation-left-${allPokemon[id - 2].name}`}
+                    width={100}
                     pixelated
+                    notLazy
                   />
                 </Arrow>
                 <Title right>
@@ -59,15 +59,15 @@ export default function Navigation({ ...rest }) {
             >
               <BtnAnchor right>
                 <Arrow right>
-                  <PokemonImg
+                  <Image
                     src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
                       id + 1
                     }.png`}
                     alt={allPokemon[id].name}
-                    height={90}
-                    imgHeight={90}
-                    iconHeight="75%"
+                    key={`navigation-right-${allPokemon[id].name}`}
+                    width={100}
                     pixelated
+                    notLazy
                   />
                 </Arrow>
                 <Title left>

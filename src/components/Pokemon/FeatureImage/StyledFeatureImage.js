@@ -1,25 +1,21 @@
 import styled, { css } from 'styled-components'
+import { motion } from 'framer-motion'
 // components
 import Box from '../../Box'
-import Image from '../../Image'
 // styles
 import { float } from '../../BaseStyles'
 
-// image
-const FeatureImage = styled(Image)`
-  @media (prefers-reduced-motion: no-preference) {
-    animation: ${float} infinite 3s ease-in-out;
-  }
-`
-
 const ImageContainer = styled(Box)`
+  position: relative;
+  height: 100%;
+
   ${({ theme }) => css`
     @media ${theme.device.lg} {
-      min-height: 300px;
+      min-height: 500px;
     }
   `}
 
-  & ${FeatureImage} {
+  & img {
     max-width: 80%;
     margin: 1.5rem 0;
 
@@ -37,7 +33,38 @@ const ImageContainer = styled(Box)`
         max-width: 60%;
       }
     `}
+
+    @media (prefers-reduced-motion: no-preference) {
+      animation: ${float} infinite 3s ease-in-out;
+    }
   }
 `
 
-export { ImageContainer, FeatureImage }
+const JpnName = styled(motion.span)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: -1;
+  // text
+  word-break: break-all;
+  line-height: 1;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 4rem;
+  font-weight: bold;
+  width: 1em;
+
+  ${({ theme }) => css`
+    color: ${theme.jpnName.color};
+
+    @media ${theme.device.xxs} {
+      display: none;
+    }
+    color: black;
+    @media ${theme.device.md} {
+      display: inline-block;
+    }
+  `}
+`
+
+export { ImageContainer, JpnName }
