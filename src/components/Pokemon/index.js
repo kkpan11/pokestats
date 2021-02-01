@@ -11,7 +11,7 @@ import { mapGenerationToGame } from '../../helpers/gameVersion'
 import { removeDash } from '../../helpers/typography'
 import { pageContainerVariant } from '../../helpers/animations'
 // components
-import Layout from '../Layout'
+import Layout, { MainContainer } from '../Layout'
 import Loading from '../Loading'
 import Box from '../Box'
 import BoxWrapper from '../Box/StyledBox'
@@ -85,7 +85,7 @@ export default function Homepage() {
   return (
     <Layout
       withHeader
-      withFooter
+      withFooter={!pokemonInfo.isLoading}
       withMain={false}
       key={`layout-pokemon-${router.query.id}`}
     >
@@ -98,20 +98,14 @@ export default function Homepage() {
           />
         )}
         {!pokemonInfo.isLoading && (
-          <BoxWrapper
-            forwardedAs="main"
+          <MainContainer
+            constrained
+            withGutter
             initial="hidden"
             animate="visible"
             exit="fade"
             variants={pageContainerVariant}
             key={`pokemon-${router.query.id}`}
-            constrained
-            withGutter
-            direction="column"
-            align="center"
-            justify="center"
-            margin="0 auto"
-            width="100%"
           >
             <Box
               as="section"
@@ -159,24 +153,18 @@ export default function Homepage() {
               margin="1rem 0"
               minHeight="347px"
             >
-              <LazyLoad height={347} once offset={100}>
-                <Breeding
-                  margin={{ xxs: '0 0 2rem', lg: '0' }}
-                  padding={{ xxs: '0', lg: '0 2rem 0 0' }}
-                />
-              </LazyLoad>
-              <LazyLoad height={347} once offset={100}>
-                <Training
-                  margin={{ xxs: '0 0 2rem', lg: '0' }}
-                  padding={{ xxs: '0', lg: '0 1rem' }}
-                />
-              </LazyLoad>
-              <LazyLoad height={347} once offset={100}>
-                <Multipliers
-                  margin={{ xxs: '0 0 2rem', lg: '0' }}
-                  padding={{ xxs: '0', lg: '0 0 0 2rem' }}
-                />
-              </LazyLoad>
+              <Breeding
+                margin={{ xxs: '0 0 2rem', lg: '0' }}
+                padding={{ xxs: '0', lg: '0 2rem 0 0' }}
+              />
+              <Training
+                margin={{ xxs: '0 0 2rem', lg: '0' }}
+                padding={{ xxs: '0', lg: '0 1rem' }}
+              />
+              <Multipliers
+                margin={{ xxs: '0 0 2rem', lg: '0' }}
+                padding={{ xxs: '0', lg: '0 0 0 2rem' }}
+              />
             </Box>
             {/** BASESTATS, FORMS */}
             <Box
@@ -225,7 +213,7 @@ export default function Homepage() {
             >
               <Navigation sizes={12} margin="0 0 2rem" />
             </Box>
-          </BoxWrapper>
+          </MainContainer>
         )}
       </AnimatePresence>
     </Layout>
