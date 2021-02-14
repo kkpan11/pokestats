@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components'
-import { motion } from 'framer-motion'
 // components
 import Box from '../../Box'
 // styles
@@ -40,32 +39,4 @@ const ImageContainer = styled(Box)`
   }
 `
 
-const JpnName = styled(motion.span)`
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: -1;
-  // text
-  word-break: break-all;
-  line-height: 1;
-  text-transform: uppercase;
-  text-align: center;
-  font-size: 3rem;
-  font-weight: bold;
-  user-select: none;
-  width: 1em;
-
-  ${({ theme }) => css`
-    color: ${theme.jpnName.color};
-
-    @media ${theme.device.xxs} {
-      display: none;
-    }
-    color: black;
-    @media ${theme.device.md} {
-      display: inline-block;
-    }
-  `}
-`
-
-export { ImageContainer, JpnName }
+export { ImageContainer }
