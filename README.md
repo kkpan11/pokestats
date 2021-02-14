@@ -44,8 +44,8 @@
 ✅ Offline Support <br />
 ✅ Loading & 404 Components <br />
 ✅ Framer Motion Animations <br />
-🛠️ Type Page <br />
-🧶 Berry Page <br />
+✅ Type Page <br />
+🛠️ Berry Page <br />
 🧶 Item Page <br />
 🧶 Move Details <br />
 🧶 Dark Mode <br />
@@ -90,7 +90,7 @@ Checkout [CONTRIBUTING.md](https://github.com/andreferreiradlw/pokestats/blob/ma
 
 ## Aknowledgements
 
-Thanks to [PokéApi](https://pokeapi.co) for the data and images, [Naramsim](https://github.com/Naramsim) for the images [service worker](https://github.com/PokeAPI/pokeapi-js-wrapper#caching-images) and [duiker101](https://github.com/duiker101/pokemon-type-svg-icons) for the great SVG Type Icons.
+Thanks to [PokéApi](https://pokeapi.co) for the data and images (without it, this project would not be possible), [Naramsim](https://github.com/Naramsim) for the images [service worker](https://github.com/PokeAPI/pokeapi-js-wrapper#caching-images) and [duiker101](https://github.com/duiker101/pokemon-type-svg-icons) for the great SVG Type Icons.
 
 ## License
 
