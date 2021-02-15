@@ -1,8 +1,6 @@
 import styled, { css } from 'styled-components'
 // components
 import BoxWrapper from '../Box/StyledBox'
-// styles
-import { Select } from '../BaseStyles'
 
 const Container = styled(BoxWrapper)`
   max-width: 100%;
@@ -38,7 +36,7 @@ const Input = styled.input`
   font-weight: 400;
   line-height: 1.5;
   height: 50px;
-  border-radius: 0.25rem 0 0 0.25rem;
+  border-radius: 0.25rem;
   outline: none;
 
   ${({ theme }) => css`
@@ -60,14 +58,9 @@ const Input = styled.input`
 
   &::placeholder {
     color: #e6e6e6;
-    font-weight: 200;
+    font-weight: 500;
     font-style: italic;
   }
-`
-
-const OptionSelect = styled(Select)`
-  height: 50px;
-  border-radius: 0 0.25rem 0.25rem 0;
 `
 
 const ListWrapper = styled.div`
@@ -88,7 +81,7 @@ const OptionWrapper = styled.a`
   justify-content: flex-start;
   font-size: 0.875rem;
   cursor: pointer;
-  padding: 0 1rem 0;
+  padding: 0 1rem 0 0.5rem;
 
   ${({ theme }) => {
     const values = theme.autoComplete.wrapperOption
@@ -105,10 +98,16 @@ const OptionWrapper = styled.a`
       }
     `
   }}
+`
 
-  & img {
-    width: 50px;
-  }
+const OptionImg = styled.img`
+  width: 50px;
+
+  ${({ type }) =>
+    type === 'type' &&
+    css`
+      padding: 10px;
+    `}
 `
 
 const Option = styled.span`
@@ -125,9 +124,9 @@ const PokeID = styled.span`
 export {
   Container,
   Input,
-  OptionSelect,
   ListWrapper,
   OptionWrapper,
+  OptionImg,
   Option,
   PokeID,
 }
