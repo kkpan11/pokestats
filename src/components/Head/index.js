@@ -1,6 +1,5 @@
 import { default as NextHead } from 'next/head'
 import { useRouter } from 'next/router'
-import { useSelector } from 'react-redux'
 // helpers
 import { removeDash } from '../../helpers/typography'
 // google analytics
@@ -9,22 +8,19 @@ import { GA_TRACKING_ID } from '../../helpers/analytics'
 export default function Heading({ children }) {
   // router
   const router = useRouter()
-  // redux state
-  const reduxState = useSelector(state => state)
-  // data
-  const { name: pokemonName } = reduxState.pokemon.info.data
-  const { name: typeName } = reduxState.type.data
 
-  const pageTitle = () => {
-    if (pokemonName) return `${removeDash(pokemonName)} (Pokemon) - `
-    else if (typeName) return `${removeDash(typeName)} (Type) - `
-    else return
+  // dynamic page title
+  const pageTitle = ({ pokemonId, typeId }) => {
+    if (pokemonId) return `${removeDash(pokemonId)} (Pokemon) - `
+    else if (typeId) return `${removeDash(typeId)} (Type) - `
+    else return ''
   }
 
   return (
     <NextHead>
       {/* Global Site Tag (gtag.js) - Google Analytics */}
-      {process.env.NODE_ENV === 'production' && (
+      {process.env.NODE_ENV === 'production' &&
+      process.env.NEXT_PUBLIC_ENV_VAR === 'prod_deployment' ? (
         <>
           <script
             async
@@ -43,25 +39,33 @@ export default function Heading({ children }) {
             }}
           />
         </>
+      ) : (
+        <>
+          <meta name="robots" content="noindex, nofollow" />
+          <meta name="googlebot" content="noindex" />
+          <meta name="googlebot-news" content="noindex, nosnippet" />
+        </>
       )}
       {/** MUST */}
       <meta charSet="utf-8" />
-      <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+      <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" />
       <meta
         name="viewport"
         content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
       />
       <meta
         name="description"
-        content="PokeStats.gg is an online encyclopedia of Pokémon species containing information such as Pokédex entries, descriptions, evolution chains, moves, stats and much more. It also works offline!"
+        content="PokeStats.gg is an online encyclopedia of Pokémon species containing information such as Pokédex entries, descriptions, abilities, evolution chains, moves learned, stats and much more!"
       />
       <meta
         name="keywords"
-        content="pokemon, stats, pokedex, pokestats, react, nextjs, styled-components, pokeapi"
+        content="pokemon, Pokémon, stats, pokedex, Pokédex, pokestats, gg, database, pokeapi, moves, abilities, evolutions, locations"
       />
       <title>
-        {pageTitle()}PokeStats.gg, the open sourced PokeApi driven Pokémon
-        encyclopaedia
+        {`${pageTitle(
+          router.query
+        )}PokeStats.gg - The online open-sourced Pokémon
+        encyclopaedia. Pokédex powered by PokeApi.`}
       </title>
       <link rel="canonical" href={`https://pokestats.gg${router.asPath}`} />
       {/** MANIFEST */}
