@@ -23,8 +23,8 @@ export default function Heading({ children }) {
           async
           defer
           data-domain="pokestats.gg"
-          src="https://plausible.io/js/plausible.js"
-        ></script>
+          src="https://track.pokestats.gg/js/index.js"
+        />
       ) : (
         <>
           <meta name="robots" content="noindex, nofollow" />
