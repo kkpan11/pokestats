@@ -86,7 +86,7 @@ export default function Homepage({ pokemonName }) {
       withHeader
       withFooter={!pokemonInfo.isLoading}
       withMain={false}
-      key={`layout-pokemon`}
+      key={`layout-pokemon-${pokemonName}`}
     >
       <AnimatePresence exitBeforeEnter>
         {pokemonInfo.isLoading && (
@@ -118,6 +118,7 @@ export default function Homepage({ pokemonName }) {
                 sizes={5}
                 margin={{ xxs: '0 0 2rem', lg: '0' }}
                 key={`pokemon-details-${pokemonName}`}
+                pokemonName={pokemonName}
               />
               <FeaturedImage
                 sizes={7}

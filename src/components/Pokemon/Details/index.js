@@ -11,7 +11,7 @@ import TypeBadge from '../../TypeBadge'
 import { PageHeading, Table, Numbered } from '../../BaseStyles'
 import { TypeContainer, Genera, Flavor } from './StyledDetails'
 
-export default function Details({ sizes, ...rest }) {
+export default function Details({ pokemonName, sizes, ...rest }) {
   // pokemon info
   const pokemonInfo = useSelector(state => state.pokemon.info)
   // biology
@@ -83,7 +83,7 @@ export default function Details({ sizes, ...rest }) {
           sizes={sizes}
           height="558px"
           iconWidth="15%"
-          key={`pokemon-details-loading-${id}`}
+          key={`pokemon-details-loading-${pokemonName}`}
         />
       )}
       {!pokemonBio.isLoading && (
@@ -94,7 +94,7 @@ export default function Details({ sizes, ...rest }) {
           initial="hidden"
           animate="show"
           variants={fadeInUpVariant}
-          key={`pokemon-details-${id}`}
+          key={`pokemon-details-${pokemonName}`}
           {...rest}
         >
           <PageHeading>{removeDash(name)}</PageHeading>
