@@ -5,11 +5,7 @@ import { AnimatePresence } from 'framer-motion'
 // redux actions
 import { startLoading, stopLoading } from './homeSlice'
 // heplpers
-import {
-  staggerInitialVariant,
-  fadeInUpVariant,
-  getRandomInt,
-} from '../../helpers'
+import { staggerInitialVariant, fadeInUpVariant } from '../../helpers'
 // components
 import Layout from '../Layout'
 import Autocomplete from '../Autocomplete'
@@ -49,7 +45,7 @@ export default function Homepage() {
 
   return (
     <Layout
-      withGutter={false}
+      $withGutter={false}
       withFooter={!isLoading || pokemonLength !== 0}
       key="homepage-layout"
     >
@@ -74,8 +70,8 @@ export default function Homepage() {
             </RepoAnchor>
             <Container
               height="100vh"
-              constrained
-              withGutter
+              $constrained
+              $withGutter
               initial="hidden"
               animate="show"
               variants={staggerInitialVariant}
@@ -90,7 +86,7 @@ export default function Homepage() {
               />
               <Button
                 onClick={routeRandom}
-                dark
+                $dark
                 variants={fadeInUpVariant}
                 key="homepage-random-btn"
               >
