@@ -1,11 +1,7 @@
-const withImages = require('next-images')
-const path = require('path')
+const withImages = require('next-images');
+const path = require('path');
 
-module.exports = withImages({
-  target: 'serverless',
-  images: {
-    disableStaticImages: true,
-  },
+module.exports = {
   env: {
     NEXT_PUBLIC_ENV_VAR: process.env.NEXT_PUBLIC_ENV_VAR,
     NEXT_PUBLIC_GA: process.env.NEXT_PUBLIC_GA,
@@ -15,7 +11,7 @@ module.exports = withImages({
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
-    })
-    return config
+    });
+    return config;
   },
-})
+};
