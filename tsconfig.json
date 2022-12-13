@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/BaseStyles": ["src/components/BaseStyles"],
+      "@/BaseStyles/*": ["src/components/BaseStyles/*"],
+      "@/components": ["src/components"],
+      "@/components/*": ["src/components/*"],
+      "@/assets": ["src/assets"],
+      "@/assets/*": ["src/assets/*"],
+      "@/helpers": ["src/helpers"],
+      "@/helpers/*": ["src/helpers/*"]
+    },
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "incremental": true
+  },
+  "include": ["next-env.d.ts", "environment.d.ts", "src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist", "src/**/*.js", "src/**/*.jsx"]
+}
