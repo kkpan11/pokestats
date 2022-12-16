@@ -1,11 +1,7 @@
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 // types
-import { AppProps } from 'next/app';
-// redux
-import { Provider } from 'react-redux';
-import store from '../../redux/store';
-import { fetchPokemonList } from '@/components/Homepage/homeSlice';
+import type { AppProps } from 'next/app';
 // helpers
 import { pageVariant } from '@/helpers/animations';
 import * as Fathom from 'fathom-client';
@@ -32,19 +28,6 @@ const App = ({ Component, pageProps, router }: AppProps): JSX.Element => {
     // Record a pageview when route changes
     nextRouter.events.on('routeChangeComplete', onRouteChangeComplete);
 
-    // register service worker
-    if (process.env.NODE_ENV !== 'development' && 'serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker
-          .register('/pokeapi-sw.js')
-          .then(() => console.log('PokeStats service worker registered.'))
-          .catch(err => console.dir(err));
-      });
-    }
-    // fetch initial pokemon list on app load
-    // @ts-ignore
-    store.dispatch(fetchPokemonList());
-
     // Unassign event listener
     return () => {
       nextRouter.events.off('routeChangeComplete', onRouteChangeComplete);
@@ -52,23 +35,21 @@ const App = ({ Component, pageProps, router }: AppProps): JSX.Element => {
   }, [nextRouter, publicRuntimeConfig]);
 
   return (
-    <Provider store={store}>
-      <ThemeProvider>
-        {/** @ts-ignore */}
-        <Head />
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={router.route}
-            initial="pageInitial"
-            animate="pageAnimate"
-            exit="pageExit"
-            variants={pageVariant}
-          >
-            <Component {...pageProps} />
-          </motion.div>
-        </AnimatePresence>
-      </ThemeProvider>
-    </Provider>
+    <ThemeProvider>
+      {/** @ts-ignore */}
+      <Head />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={router.route}
+          initial="pageInitial"
+          animate="pageAnimate"
+          exit="pageExit"
+          variants={pageVariant}
+        >
+          <Component {...pageProps} />
+        </motion.div>
+      </AnimatePresence>
+    </ThemeProvider>
   );
 };
 

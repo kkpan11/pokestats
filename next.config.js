@@ -4,7 +4,11 @@ module.exports = {
   publicRuntimeConfig: {
     NEXT_PUBLIC_ANALYTICS: process.env.NEXT_PUBLIC_ANALYTICS,
   },
-  staticPageGenerationTimeout: 1000,
+  compiler: {
+    // Enables the styled-components SWC transform
+    styledComponents: true,
+  },
+  staticPageGenerationTimeout: 90,
   experimental: {
     largePageDataBytes: 300 * 100000,
   },

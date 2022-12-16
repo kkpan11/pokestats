@@ -2,6 +2,7 @@ import { useEffect, useContext } from 'react';
 // types
 import type { PokestatsPokemonPageProps } from '@/pages/pokemon/[pokemonId]';
 // helpers
+import LazyLoad from 'react-lazyload';
 import GameVersionContext from '@/components/Layout/gameVersionContext';
 import { mapGenerationToGame, pageContainerVariant } from '@/helpers';
 // components
@@ -25,10 +26,10 @@ const PokemonPage = ({
   pokemon,
   species,
   evolution,
-  pokemonMoves,
-}: Omit<PokestatsPokemonPageProps, 'allPokemonTypes'>): JSX.Element => {
+}: // pokemonMoves,
+Omit<PokestatsPokemonPageProps, 'allPokemonTypes' | 'pokemonGen'>): JSX.Element => {
   // game version
-  const { gameVersion, setGameVersion } = useContext(GameVersionContext);
+  const { setGameVersion } = useContext(GameVersionContext);
   // data
   const { id, name, stats, types, sprites, game_indices } = pokemon;
   const { names, generation } = species;
@@ -41,7 +42,7 @@ const PokemonPage = ({
       : (pokemonGen = mapGenerationToGame(generation.name));
 
     setGameVersion(pokemonGen);
-  }, [generation, game_indices, gameVersion, setGameVersion]);
+  }, [generation, game_indices, setGameVersion]);
 
   return (
     <AnimatePresence mode="wait">
@@ -76,15 +77,6 @@ const PokemonPage = ({
             pokemonId={id}
           />
         </Box>
-        {/** EVOLUTION CHAIN */}
-        <Box align="flex-start" justify="flex-start" margin="1rem 0" $minHeight="375px">
-          <EvolutionChain
-            sizes={12}
-            margin="0 0 2rem"
-            key={`pokemon-evolution-${name}`}
-            evolutionChain={evolution}
-          />
-        </Box>
         {/** BREEDING, TRAINING, MULTIPLIERS */}
         <Box
           direction={{ xxs: 'column', lg: 'row' }}
@@ -111,6 +103,15 @@ const PokemonPage = ({
             padding={{ xxs: '0', lg: '0 0 0 2rem' }}
           />
         </Box>
+        {/** EVOLUTION CHAIN */}
+        <Box align="flex-start" justify="flex-start" margin="1rem 0" $minHeight="375px">
+          <EvolutionChain
+            sizes={12}
+            margin="0 0 2rem"
+            key={`pokemon-evolution-${name}`}
+            evolutionChain={evolution}
+          />
+        </Box>
         {/** BASESTATS, FORMS */}
         <Box
           direction={{ xxs: 'column', lg: 'row' }}
@@ -128,7 +129,9 @@ const PokemonPage = ({
         </Box>
         {/** MOVES */}
         <Box align="flex-start" justify="flex-start" margin="1rem 0" $minHeight="210px">
-          <Moves pokemonMoves={pokemonMoves} sizes={12} margin="0 0 2rem" />
+          <LazyLoad once offset={650}>
+            <Moves pokemon={pokemon} sizes={12} margin="0 0 2rem" />
+          </LazyLoad>
         </Box>
         {/** SPRITES */}
         <Box align="flex-start" justify="flex-start" margin="1rem 0">

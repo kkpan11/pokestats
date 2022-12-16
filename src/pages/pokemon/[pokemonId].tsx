@@ -1,13 +1,20 @@
+import { useRouter } from 'next/router';
 // types
 import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import type { Pokemon, PokemonType, PokemonMove } from '@/types';
-import type { Pokemon as PokenodePokemon, EvolutionChain, PokemonSpecies } from 'pokenode-ts';
+import type {
+  Pokemon as PokenodePokemon,
+  EvolutionChain,
+  PokemonSpecies,
+  VersionGroup,
+} from 'pokenode-ts';
 // helpers
-import { PokemonClient, EvolutionClient, MoveClient } from 'pokenode-ts';
-import { getIdFromEvolutionChain, getIdFromSpecies, getIdFromMove } from '@/helpers';
+import { PokemonClient, EvolutionClient } from 'pokenode-ts';
+import { getIdFromEvolutionChain, getIdFromSpecies, mapGenerationToGame } from '@/helpers';
 // components
 import Layout from '@/components/Layout';
 import PokemonPage from '@/components/Pokemon';
+import Loading from '@/components/Loading';
 
 export interface PokestatsPokemonPageProps {
   allPokemon: Pokemon[];
@@ -16,19 +23,33 @@ export interface PokestatsPokemonPageProps {
   species: PokemonSpecies;
   evolution: EvolutionChain;
   pokemonMoves: PokemonMove[];
+  pokemonGen: VersionGroup['name'];
 }
 
 const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({
   allPokemonTypes,
   allPokemon,
+  pokemonGen,
   ...props
 }) => {
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return (
+      <Loading
+        height="100vh"
+        text="Loading Pokemon"
+        $iconWidth={{ xxs: '20%', xs: '15%', md: '10%', lg: '5%' }}
+      />
+    );
+  }
+
   return (
     <Layout
-      withHeader
-      withFooter={true}
-      withMain={false}
-      autocompleteList={[...allPokemonTypes, ...allPokemon]}
+      withHeader={{
+        autocompleteList: [].concat(allPokemon, allPokemonTypes),
+        pokemonGen: pokemonGen,
+      }}
     >
       <PokemonPage allPokemon={allPokemon} {...props} />
     </Layout>
@@ -38,7 +59,7 @@ const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({
 export const getStaticPaths: GetStaticPaths = async () => {
   const api = new PokemonClient();
 
-  const pokemonList = await api.listPokemons(0, 809);
+  const pokemonList = await api.listPokemons(0, 151);
   // paths
   const paths = pokemonList.results.map(pokemon => {
     return {
@@ -50,7 +71,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   // return static paths
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 };
 
@@ -58,11 +79,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // clients
   const pokemonClient = new PokemonClient();
   const evolutionClient = new EvolutionClient();
-  const moveClient = new MoveClient();
 
   const pokemonName = params.pokemonId as string;
 
   try {
+    // fetch data
     const [
       { results: allPokemonDataResults },
       { results: allTypesDataResults },
@@ -77,6 +98,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       console.error('Failed to fetch allPokemonData, typesData, pokemonData or pokemonSpecies');
       return { notFound: true };
     }
+
+    if (pokemonDataResults.id > 809) return { notFound: true };
 
     // get evolution chain id from url
     const pokemonSpeciesResults = await pokemonClient.getPokemonSpeciesById(
@@ -98,20 +121,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       return { notFound: true };
     }
 
-    // move requests array
-    let moveRequests = [];
-    // create an axios request for each move
-    pokemonDataResults.moves.forEach(({ move }) =>
-      moveRequests.push(moveClient.getMoveById(getIdFromMove(move.url))),
-    );
-
-    const allPokemonMovesData = await Promise.all(moveRequests);
-
-    if (!allPokemonMovesData) {
-      console.error('Failed to fetch allPokemonMovesData');
-      return { notFound: true };
-    }
-
     // species english flavor text
     pokemonSpeciesResults.flavor_text_entries = pokemonSpeciesResults.flavor_text_entries.filter(
       entry => entry.language.name === 'en',
@@ -121,26 +130,29 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       entry => entry.language.name === 'en',
     );
 
+    const { game_indices } = pokemonDataResults;
+    const { generation } = pokemonSpeciesResults;
+    const pokemonGen = game_indices?.[0]
+      ? game_indices[0].version.name
+      : mapGenerationToGame(generation.name);
+
     return {
       props: {
-        allPokemon: allPokemonDataResults.map((currPokemon, i) => {
-          return { ...currPokemon, id: i + 1, assetType: 'pokemon' };
-        }),
-        allPokemonTypes: allTypesDataResults.map((currType, i) => {
-          return { ...currType, id: i + 1, assetType: 'type' };
-        }),
+        allPokemon: allPokemonDataResults.map((currPokemon, i) => ({
+          ...currPokemon,
+          id: i + 1,
+          assetType: 'pokemon',
+        })),
+        allPokemonTypes: allTypesDataResults.map((currType, i) => ({
+          ...currType,
+          id: i + 1,
+          assetType: 'type',
+        })),
         pokemon: pokemonDataResults,
         species: pokemonSpeciesResults,
         evolution: evolutionDataResults,
-        pokemonMoves: allPokemonMovesData
-          .map((currMove, i) => {
-            // version details from pokemon moves info
-            return {
-              ...currMove,
-              version_group_details: pokemonDataResults.moves[i].version_group_details,
-            };
-          })
-          .filter(data => data), // filter empty
+        pokemonGen,
+        revalidate: 60,
       },
     };
   } catch (error) {
