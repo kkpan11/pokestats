@@ -13,14 +13,14 @@ export interface BoxProps extends HTMLMotionProps<'div'> {
   $flexWrap?: string | Record<string, any>;
   width?: string | Record<string, any>;
   height?: string | Record<string, any>;
-  minHeight?: string | Record<string, any>;
+  $minHeight?: string | Record<string, any>;
   direction?: string | Record<string, any>;
   align?: string | Record<string, any>;
   justify?: string | Record<string, any>;
   gap?: string | Record<string, any>;
   $constrained?: boolean;
   $flexGrow?: boolean;
-  sizes?: number;
+  sizes?: number | Record<string, any>;
   relative?: boolean;
   $withGutter?: boolean;
   debug?: boolean;

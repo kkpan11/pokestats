@@ -25,7 +25,9 @@ const ImageWrapper = styled(Box)`
     `}
 `;
 
-const Image = styled(motion.img)<ImageProps & React.ImgHTMLAttributes<HTMLImageElement>>`
+const Image = styled(motion.img)<
+  { $pixelateImg: ImageProps['pixelateImg'] } & React.ImgHTMLAttributes<HTMLImageElement>
+>`
   will-change: opacity;
   // adjust to wrapper
   ${({ height }) =>
@@ -35,8 +37,8 @@ const Image = styled(motion.img)<ImageProps & React.ImgHTMLAttributes<HTMLImageE
       width: ${height ? `auto` : '100%'};
     `}
 
-  ${({ pixelated }) =>
-    pixelated &&
+  ${({ $pixelateImg }) =>
+    $pixelateImg &&
     css`
       image-rendering: pixelated;
     `}
