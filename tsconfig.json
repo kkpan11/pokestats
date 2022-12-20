@@ -13,7 +13,9 @@
       "@/types": ["types"],
       "@/types/*": ["types/*"],
       "@/pages": ["src/pages"],
-      "@/pages/*": ["src/pages/*"]
+      "@/pages/*": ["src/pages/*"],
+      "@/hooks": ["src/hooks"],
+      "@/hooks/*": ["src/hooks/*"]
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -32,6 +34,12 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "environment.d.ts", "src/**/*.ts", "src/**/*.tsx"],
+  "include": [
+    "types/next-env.d.ts",
+    "types/environment.d.ts",
+    "types/index.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
   "exclude": ["node_modules", "dist", "src/**/*.js", "src/**/*.jsx"]
 }

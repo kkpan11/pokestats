@@ -10,8 +10,15 @@ import type {
 } from 'pokenode-ts';
 // helpers
 import { PokemonClient, EvolutionClient } from 'pokenode-ts';
-import { getIdFromEvolutionChain, getIdFromSpecies, mapGenerationToGame } from '@/helpers';
+import {
+  getIdFromEvolutionChain,
+  getIdFromSpecies,
+  mapGenerationToGame,
+  removeDash,
+} from '@/helpers';
+import { PokestatsPageTitle } from '@/components/Head';
 // components
+import Head from 'next/head';
 import Layout from '@/components/Layout';
 import PokemonPage from '@/components/Pokemon';
 import Loading from '@/components/Loading';
@@ -45,14 +52,19 @@ const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({
   }
 
   return (
-    <Layout
-      withHeader={{
-        autocompleteList: [].concat(allPokemon, allPokemonTypes),
-        pokemonGen: pokemonGen,
-      }}
-    >
-      <PokemonPage allPokemon={allPokemon} {...props} />
-    </Layout>
+    <>
+      <Head>
+        <title>{`${removeDash(props.pokemon.name)} (Pokemon) - ${PokestatsPageTitle}`}</title>
+      </Head>
+      <Layout
+        withHeader={{
+          autocompleteList: [].concat(allPokemon, allPokemonTypes),
+          pokemonGen: pokemonGen,
+        }}
+      >
+        <PokemonPage allPokemon={allPokemon} {...props} />
+      </Layout>
+    </>
   );
 };
 

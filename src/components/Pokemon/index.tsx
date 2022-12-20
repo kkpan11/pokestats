@@ -1,8 +1,9 @@
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useRef } from 'react';
 // types
 import type { PokestatsPokemonPageProps } from '@/pages/pokemon/[pokemonId]';
 // helpers
-import LazyLoad from 'react-lazyload';
+import dynamic from 'next/dynamic';
+import { useIntersectionObserver } from '@/hooks';
 import GameVersionContext from '@/components/Layout/gameVersionContext';
 import { mapGenerationToGame, pageContainerVariant } from '@/helpers';
 // components
@@ -17,7 +18,7 @@ import Training from './Training';
 import Multipliers from './Multipliers';
 import BaseStats from './BaseStats';
 import PokemonForms from './Forms';
-import Moves from './Moves';
+const Moves = dynamic(() => import('./Moves'));
 import Sprites from './Sprites';
 import Navigation from './Navigation';
 
@@ -33,6 +34,10 @@ Omit<PokestatsPokemonPageProps, 'allPokemonTypes' | 'pokemonGen'>): JSX.Element 
   // data
   const { id, name, stats, types, sprites, game_indices } = pokemon;
   const { names, generation } = species;
+  // lazy load moves
+  const ref = useRef<HTMLDivElement | null>(null);
+  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true });
+  const isMovesVisible = !!entry?.isIntersecting;
 
   useEffect(() => {
     let pokemonGen: string;
@@ -128,10 +133,8 @@ Omit<PokestatsPokemonPageProps, 'allPokemonTypes' | 'pokemonGen'>): JSX.Element 
           <PokemonForms species={species} sizes={{ xxs: 12, lg: 4 }} />
         </Box>
         {/** MOVES */}
-        <Box align="flex-start" justify="flex-start" margin="1rem 0" $minHeight="210px">
-          <LazyLoad once offset={650}>
-            <Moves pokemon={pokemon} sizes={12} margin="0 0 2rem" />
-          </LazyLoad>
+        <Box align="flex-start" justify="flex-start" margin="1rem 0" $minHeight="210px" ref={ref}>
+          {isMovesVisible && <Moves pokemon={pokemon} sizes={12} margin="0 0 2rem" />}
         </Box>
         {/** SPRITES */}
         <Box align="flex-start" justify="flex-start" margin="1rem 0">
