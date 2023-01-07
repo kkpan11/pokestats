@@ -7,6 +7,7 @@ import type {
   EvolutionChain,
   PokemonSpecies,
   VersionGroup,
+  Ability,
 } from 'pokenode-ts';
 // helpers
 import { PokemonClient, EvolutionClient } from 'pokenode-ts';
@@ -27,6 +28,7 @@ export interface PokestatsPokemonPageProps {
   allPokemon: Pokemon[];
   allPokemonTypes: PokemonType[];
   pokemon: PokenodePokemon;
+  abilities: Ability[];
   species: PokemonSpecies;
   evolution: EvolutionChain;
   pokemonMoves: PokemonMove[];
@@ -71,7 +73,7 @@ const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({
 export const getStaticPaths: GetStaticPaths = async () => {
   const api = new PokemonClient();
 
-  const pokemonList = await api.listPokemons(0, 151);
+  const pokemonList = await api.listPokemons(0, 250);
   // paths
   const paths = pokemonList.results.map(pokemon => {
     return {
@@ -107,19 +109,28 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     ]);
 
     if (!allPokemonDataResults || !allTypesDataResults || !pokemonDataResults) {
-      console.error('Failed to fetch allPokemonData, typesData, pokemonData or pokemonSpecies');
+      console.error('Failed to fetch allPokemonData, typesData, pokemonData');
       return { notFound: true };
     }
 
     if (pokemonDataResults.id > 809) return { notFound: true };
+
+    // abilities requests array
+    let pokemonAbilities = [];
+    // create an axios request for each ability
+    pokemonDataResults.abilities.forEach(({ ability }) =>
+      pokemonAbilities.push(pokemonClient.getAbilityByName(ability.name)),
+    );
+
+    const pokemonAbilitiesResults = await Promise.all(pokemonAbilities);
 
     // get evolution chain id from url
     const pokemonSpeciesResults = await pokemonClient.getPokemonSpeciesById(
       getIdFromSpecies(pokemonDataResults.species.url),
     );
 
-    if (!pokemonSpeciesResults) {
-      console.error('Failed to fetch pokemonSpeciesResults');
+    if (!pokemonSpeciesResults || !pokemonAbilitiesResults) {
+      console.error('Failed to fetch pokemonSpeciesResults or pokemonAbilitiesResults');
       return { notFound: true };
     }
 
@@ -137,7 +148,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     pokemonSpeciesResults.flavor_text_entries = pokemonSpeciesResults.flavor_text_entries.filter(
       entry => entry.language.name === 'en',
     );
-    // species genus
+    // species english genus
     pokemonSpeciesResults.genera = pokemonSpeciesResults.genera.filter(
       entry => entry.language.name === 'en',
     );
@@ -161,6 +172,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           assetType: 'type',
         })),
         pokemon: pokemonDataResults,
+        abilities: pokemonAbilitiesResults.map(ability => ({
+          name: ability.name,
+          effect_entries: ability.effect_entries.filter(entry => entry.language.name === 'en'),
+        })),
         species: pokemonSpeciesResults,
         evolution: evolutionDataResults,
         pokemonGen,

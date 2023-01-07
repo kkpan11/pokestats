@@ -9,10 +9,14 @@ import { hoverVariant, removeDash, fadeInUpVariant } from '@/helpers';
 import { Button, SectionTitle } from '@/components/BaseStyles';
 // components
 import Box, { BoxProps } from '@/components/Box';
+import BoxWrapper from '@/components/Box/StyledBox';
 import InfiniteScroll from '@/components/InfiniteScroll';
 import TypeMoves from './Moves';
 
-const TabContainer = styled(motion.div)`
+const TabContainer = styled(BoxWrapper)`
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
   width: 100%;
 `;
 
@@ -25,8 +29,8 @@ const TypeTabs = ({ typeInfo, typeMoves, ...rest }: TypeTabsProps) => {
   const { name, pokemon } = typeInfo;
 
   return (
-    <Box align={{ xxs: 'center', lg: 'flex-start' }} {...rest}>
-      <Box direction="row" justify="space-evenly" $flexWrap="wrap" margin="0 0 1rem">
+    <Box align={{ xxs: 'center', lg: 'flex-start' }} $gap="1em" {...rest}>
+      <Box direction="row" justify="space-evenly" $flexWrap="wrap">
         <Button
           $active={currTab === 'pokemon'}
           onClick={() => setCurrTab('pokemon')}

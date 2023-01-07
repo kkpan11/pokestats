@@ -30,7 +30,9 @@ export default styled(motion.div)<BoxProps>`
     direction,
     align,
     justify,
-    gap,
+    $gap,
+    $borderRadius,
+    $background,
   }) => {
     return css`
       // flexbox styles
@@ -42,12 +44,15 @@ export default styled(motion.div)<BoxProps>`
       ${$flexWrap && responsiveProps('flex-wrap', $flexWrap)}
       // spacing
       ${margin && responsiveProps('margin', margin)}
-      ${gap && responsiveProps('gap', gap)}
+      ${$gap && responsiveProps('gap', $gap)}
       ${padding && responsiveProps('padding', padding)}
       // sizing
       ${width && responsiveProps('width', width)}
       ${height && responsiveProps('height', height)}
       ${$minHeight && responsiveProps('min-height', $minHeight)}
+      // others
+      ${$borderRadius && responsiveProps('border-radius', $borderRadius)}
+      ${$background && responsiveProps('background', $background)}
     `;
   }}
 
