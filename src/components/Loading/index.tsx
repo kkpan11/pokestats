@@ -18,12 +18,12 @@ export interface LoadingProps extends BoxProps {
 const Loading = forwardRef(
   (
     {
-      height,
+      flexheight,
       $iconWidth,
       noIcon,
       text,
-      justify = 'center',
-      align = 'center',
+      flexjustify = 'center',
+      flexalign = 'center',
       passKey,
       ...rest
     }: LoadingProps,
@@ -32,9 +32,9 @@ const Loading = forwardRef(
     return (
       <LoadingContainer
         ref={ref}
-        justify={justify}
-        align={align}
-        height={height}
+        flexjustify={flexjustify}
+        flexalign={flexalign}
+        flexheight={flexheight}
         initial="initial"
         animate="animate"
         exit="exit"
@@ -43,7 +43,12 @@ const Loading = forwardRef(
         {...rest}
       >
         {!noIcon && (
-          <BoxWrapper width="100%" justify="center" variants={loadingChild} key={`icon-${passKey}`}>
+          <BoxWrapper
+            width="100%"
+            flexjustify="center"
+            variants={loadingChild}
+            key={`icon-${passKey}`}
+          >
             <PotionIcon $iconWidth={$iconWidth} />
           </BoxWrapper>
         )}

@@ -51,7 +51,9 @@ const Evolution = ({
         if (_isMounted.current) {
           setCurrSpecies(newSpecies);
           setImgSrc(
-            `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${newSpecies.id}.png`,
+            `https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/${newSpecies.id
+              .toString()
+              .padStart(3, '0')}.png`,
           );
         }
       });
@@ -64,10 +66,9 @@ const Evolution = ({
     currSpecies &&
     imgSrc && (
       <BoxWrapper
-        direction={{ xxs: 'column', lg: 'row' }}
-        align="center"
+        flexdirection={{ xxs: 'column', lg: 'row' }}
+        flexalign="center"
         width={{ xxs: 'auto', lg: '100%' }}
-        margin={{ xxs: '0 auto 1rem', lg: 'auto' }}
         initial="hidden"
         animate="show"
         variants={fadeInUpVariant}
@@ -78,11 +79,11 @@ const Evolution = ({
         {!noArrow && (
           <BoxWrapper
             width="auto"
-            $flexGrow
-            direction="column"
-            $flexWrap="nowrap"
-            justify="center"
-            align="center"
+            $flexgrow
+            flexdirection="column"
+            flexwrap="nowrap"
+            flexjustify="center"
+            flexalign="center"
           >
             {evolutionDetails.map((currDetails, i) => (
               <EvolutionDetails key={`evo-details-${i}`} details={currDetails} />

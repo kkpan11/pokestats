@@ -54,18 +54,18 @@ const PokemonList = ({ pokemon, ...rest }: PokemonListProps): JSX.Element => {
       <Box
         $constrained
         $withGutter
-        margin="3rem 0"
-        align="flex-start"
-        justify="flex-start"
-        $gap="1em"
+        flexmargin="3rem 0"
+        flexalign="flex-start"
+        flexjustify="flex-start"
+        flexgap="1em"
       >
         <SectionTitle>{`Select your Pokemon (${showPokemon.length})`}</SectionTitle>
         <SelectContainer
-          direction="row"
-          justify={{ xxs: 'center', sm: 'flex-start' }}
-          $flexWrap="wrap"
+          flexdirection="row"
+          flexjustify={{ xxs: 'center', sm: 'flex-start' }}
+          flexwrap="wrap"
         >
-          <Box direction="row" justify="flex-start" width="auto">
+          <Box flexdirection="row" flexjustify="flex-start" width="auto">
             <label id="generation" htmlFor="gen_select">
               Game Generation:
             </label>
@@ -87,7 +87,7 @@ const PokemonList = ({ pokemon, ...rest }: PokemonListProps): JSX.Element => {
               ))}
             </Select>
           </Box>
-          <Box direction="row" justify="flex-start" width="auto">
+          <Box flexdirection="row" flexjustify="flex-start" width="auto">
             <label id="sorting" htmlFor="sort_pokemon">
               Sort Pokemon:
             </label>
@@ -106,7 +106,7 @@ const PokemonList = ({ pokemon, ...rest }: PokemonListProps): JSX.Element => {
             </Select>
           </Box>
         </SelectContainer>
-        {showPokemon.length > 0 && <InfiniteScroll sizes={12} pokemonList={showPokemon} />}
+        {showPokemon.length > 0 && <InfiniteScroll screensizes={12} pokemonList={showPokemon} />}
       </Box>
     </Container>
   );

@@ -46,7 +46,7 @@ const Homepage = ({ allPokemon, pokemonTypes }: HomepageProps): JSX.Element => {
         <Github />
       </RepoAnchor>
       <Container
-        height="100vh"
+        flexheight="100vh"
         $constrained
         $withGutter
         initial="hidden"

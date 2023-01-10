@@ -9,11 +9,11 @@ import GitHub from '@/assets/svg/github.svg';
 const Footer = (): JSX.Element => (
   <FooterContainer>
     <Box
-      direction={{ xxs: 'column', sm: 'row' }}
-      align={{ xxs: 'flex-start', sm: 'center' }}
-      justify={{ xxs: 'center', sm: 'space-between' }}
-      margin="auto"
-      sizes={12}
+      flexdirection={{ xxs: 'column', sm: 'row' }}
+      flexalign={{ xxs: 'flex-start', sm: 'center' }}
+      flexjustify={{ xxs: 'center', sm: 'space-between' }}
+      flexmargin="auto"
+      screensizes={12}
       $constrained
       $withGutter
     >
