@@ -1,9 +1,7 @@
-import { useEffect, useContext, useRef } from 'react';
+import { useEffect, useContext } from 'react';
 // types
 import type { PokestatsPokemonPageProps } from '@/pages/pokemon/[pokemonId]';
 // helpers
-import dynamic from 'next/dynamic';
-// import { useIntersectionObserver } from '@/hooks';
 import GameVersionContext from '@/components/Layout/gameVersionContext';
 import { mapGenerationToGame, pageContainerVariant } from '@/helpers';
 // components
@@ -18,7 +16,6 @@ import Training from './Training';
 import Multipliers from './Multipliers';
 import BaseStats from './BaseStats';
 import PokemonForms from './Forms';
-// const Moves = dynamic(() => import('./Moves'));
 import Moves from './Moves';
 import Sprites from './Sprites';
 import Navigation from './Navigation';
@@ -28,17 +25,14 @@ const PokemonPage = ({
   pokemon,
   abilities,
   species,
-  evolution,
+  evolutionChain,
 }: Omit<PokestatsPokemonPageProps, 'allPokemonTypes' | 'pokemonGen'>): JSX.Element => {
   // game version
   const { setGameVersion } = useContext(GameVersionContext);
   // data
   const { id, name, stats, types, sprites, game_indices } = pokemon;
   const { names, generation, varieties } = species;
-  // lazy load moves
-  // const movesRef = useRef<HTMLDivElement | null>(null);
-  // const entry = useIntersectionObserver(movesRef, { freezeOnceVisible: true });
-  // const isMovesVisible = !!entry?.isIntersecting;
+  const { babyTriggerItem } = evolutionChain;
 
   useEffect(() => {
     let pokemonGen: string;
@@ -88,7 +82,7 @@ const PokemonPage = ({
           flexjustify="flex-start"
           flexgap="2em"
         >
-          <Breeding species={species} evolutionChain={evolution} />
+          <Breeding species={species} babyTriggerItem={babyTriggerItem} />
           <Training pokemon={pokemon} species={species} />
           <Multipliers pokemonTypes={types} />
         </Box>
@@ -98,7 +92,7 @@ const PokemonPage = ({
             screensizes={12}
             key={`pokemon-evolution-${name}`}
             pokemonName={name}
-            evolutionChain={evolution}
+            evolutionChain={evolutionChain}
           />
         </Box>
         {/** BASESTATS, FORMS */}
