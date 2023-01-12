@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
 // types
 import type { Pokemon } from '@/types';
-import type { BoxProps } from '@/components/Box';
 // helpers
 import { generations, mapIdToGeneration } from '@/helpers';
 // components
-import Box from '@/components/Box';
+import Box, { BoxProps } from '@/components/Box';
 import InfiniteScroll from '@/components/InfiniteScroll';
 // styles
 import { SectionTitle, Select } from '@/components/BaseStyles';
-import { Container, SelectContainer } from './StyledPokemonList';
+import { SelectContainer } from './StyledPokemonList';
 
 const sortItems = (list: Pokemon[], sortProperty: string): Pokemon[] =>
   [...list].sort((a, b) => {
@@ -50,22 +49,23 @@ const PokemonList = ({ pokemon, ...rest }: PokemonListProps): JSX.Element => {
   }, [gen, pokemon, sortBy]);
 
   return (
-    <Container {...rest}>
-      <Box
-        $constrained
-        $withGutter
-        flexmargin="3rem 0"
-        flexalign="flex-start"
-        flexjustify="flex-start"
-        flexgap="1em"
-      >
+    <Box
+      $constrained
+      $withGutter
+      flexalign="flex-start"
+      flexjustify="flex-start"
+      flexgap="3em"
+      {...rest}
+    >
+      <Box flexalign="flex-start" flexjustify="flex-start" flexgap="1em">
         <SectionTitle>{`Select your Pokemon (${showPokemon.length})`}</SectionTitle>
         <SelectContainer
           flexdirection="row"
           flexjustify={{ xxs: 'center', sm: 'flex-start' }}
           flexwrap="wrap"
+          flexgap="2em"
         >
-          <Box flexdirection="row" flexjustify="flex-start" width="auto">
+          <Box flexdirection="row" flexjustify="flex-start" width="auto" flexgap="0.5em">
             <label id="generation" htmlFor="gen_select">
               Game Generation:
             </label>
@@ -87,7 +87,7 @@ const PokemonList = ({ pokemon, ...rest }: PokemonListProps): JSX.Element => {
               ))}
             </Select>
           </Box>
-          <Box flexdirection="row" flexjustify="flex-start" width="auto">
+          <Box flexdirection="row" flexjustify="flex-start" width="auto" flexgap="0.5em">
             <label id="sorting" htmlFor="sort_pokemon">
               Sort Pokemon:
             </label>
@@ -106,9 +106,9 @@ const PokemonList = ({ pokemon, ...rest }: PokemonListProps): JSX.Element => {
             </Select>
           </Box>
         </SelectContainer>
-        {showPokemon.length > 0 && <InfiniteScroll screensizes={12} pokemonList={showPokemon} />}
       </Box>
-    </Container>
+      {showPokemon.length > 0 && <InfiniteScroll screensizes={12} pokemonList={showPokemon} />}
+    </Box>
   );
 };
 
