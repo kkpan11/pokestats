@@ -29,12 +29,6 @@ const PokestatsHead = ({ children }: PokestatsHeadProps): JSX.Element => {
       />
       <title>{PokestatsPageTitle}</title>
       <meta name="robots" content="max-image-preview:large" />
-      {/** FONTS */}
-      <link rel="preload" href="/fonts/Montserrat-Regular.ttf" as="font" crossOrigin="" />
-      <link rel="preload" href="/fonts/Montserrat-Medium.ttf" as="font" crossOrigin="" />
-      <link rel="preload" href="/fonts/Quicksand-SemiBold.ttf" as="font" crossOrigin="" />
-      <link rel="preload" href="/fonts/JosefinSans-Bold.ttf" as="font" crossOrigin="" />
-      <link rel="preload" href="/fonts/JosefinSans-BoldItalic.ttf" as="font" crossOrigin="" />
       {/** MANIFEST */}
       <link href="/manifest.json" rel="manifest" />
       {/** ICONS */}

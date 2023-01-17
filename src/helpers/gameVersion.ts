@@ -1,5 +1,3 @@
-import { version } from 'os';
-
 const gameVersions = [
   {
     name: 'Red',
@@ -282,8 +280,8 @@ const mapIdToGeneration = (id: number): string => {
   }
 };
 
-const mapVersionToGroup = (currentVersion: string): string[] =>
-  gameVersions.filter(version => version.value === currentVersion).map(version => version.group);
+const mapVersionToGroup = (currentVersion: string): string =>
+  gameVersions.filter(version => version.value === currentVersion).map(version => version.group)[0];
 
 const mapGeneration = (generationValue: string): string =>
   generations
