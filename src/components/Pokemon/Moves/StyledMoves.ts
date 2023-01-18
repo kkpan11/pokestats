@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
-import { motion } from 'framer-motion';
 // components
+import { motion } from 'framer-motion';
 import Box from '@/components/Box';
 
 const TableBody = styled.tbody``;
@@ -69,6 +69,6 @@ const MovesTable = styled.table`
   `}
 `;
 
-const TabContainer = styled(Box)``;
+const TitleContainer = styled(Box)``;
 
-export { TableContainer, MovesTable, TableBody, NameTH, NameTD, TableRow, TabContainer };
+export { TableContainer, MovesTable, TableBody, NameTH, NameTD, TableRow, TitleContainer };
