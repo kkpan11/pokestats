@@ -3,7 +3,7 @@ import { useEffect, useContext } from 'react';
 import type { PokestatsPokemonPageProps } from '@/pages/pokemon/[pokemonId]';
 // helpers
 import GameVersionContext from '@/components/Layout/gameVersionContext';
-import { mapGenerationToGame, pageContainerVariant } from '@/helpers';
+import { mapGenerationToGame, pageContainerVariant, findPokemonName } from '@/helpers';
 // styles
 import { Divider } from '@/components/BaseStyles';
 // components
@@ -35,6 +35,8 @@ const PokemonPage = ({
   const { id, name, stats, types, sprites, game_indices } = pokemon;
   const { names, generation, varieties } = species;
   const { babyTriggerItem } = evolutionChain;
+
+  const currPokemonName = findPokemonName(species);
 
   useEffect(() => {
     let pokemonGen: string;
@@ -75,7 +77,7 @@ const PokemonPage = ({
           <FeaturedImage
             screensizes={{ xxs: 12, lg: 7 }}
             specieNames={names}
-            pokemonName={name}
+            pokemonName={currPokemonName}
             pokemonId={id}
           />
         </Box>
@@ -99,7 +101,12 @@ const PokemonPage = ({
           flexgap="2em"
         >
           <BaseStats stats={stats} screensizes={{ xxs: 12, lg: 8 }} />
-          <PokemonForms pokemonId={id} species={species} screensizes={{ xxs: 12, lg: 4 }} />
+          <PokemonForms
+            pokemonId={id}
+            pokemonName={currPokemonName}
+            species={species}
+            screensizes={{ xxs: 12, lg: 4 }}
+          />
         </Box>
         <Divider />
         {/** EVOLUTION CHAIN */}
@@ -107,7 +114,7 @@ const PokemonPage = ({
           <EvolutionChain
             screensizes={12}
             key={`pokemon-evolution-${name}`}
-            pokemonName={name}
+            pokemonName={currPokemonName}
             evolutionChain={evolutionChain}
           />
         </Box>
