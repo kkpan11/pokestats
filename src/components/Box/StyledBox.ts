@@ -4,17 +4,6 @@ import type { BoxProps } from './index';
 // helpers
 import { responsiveProps, flexStyle } from '@/helpers';
 import { motion } from 'framer-motion';
-// config
-import { boxConfig } from './config';
-
-const debugStyle = () => css`
-  background-color: #5901ad40;
-  outline: #fff solid 1px;
-`;
-
-const gutterStyle = () => css`
-  ${responsiveProps('padding', boxConfig.gutterWidth)}
-`;
 
 const BoxWrapper = styled(motion.div)<BoxProps>`
   /** dynamic styles */
@@ -55,10 +44,10 @@ const BoxWrapper = styled(motion.div)<BoxProps>`
   `}
 
   /** column-based flex size */
-  ${({ $constrained, screensizes }) =>
-    $constrained
+  ${({ constrained, screensizes }) =>
+    constrained
       ? css`
-          // flex-basis: 100%;
+          flex-basis: 100%;
         `
       : screensizes
       ? flexStyle(screensizes)
@@ -66,20 +55,20 @@ const BoxWrapper = styled(motion.div)<BoxProps>`
           flex-basis: auto;
         `}
   
-  ${({ $constrained, screensizes, $flexgrow }) =>
-    !$constrained &&
+  ${({ constrained, screensizes, $flexgrow }) =>
+    !constrained &&
     !screensizes &&
     $flexgrow &&
     css`
       flex-grow: 1;
     `}
   
-  /** $constrained max-width */
-  ${({ $constrained, $flexgrow }) =>
-    $constrained &&
+  /** constrained max-width */
+  ${({ constrained, $flexgrow, theme }) =>
+    constrained &&
     css`
       ${$flexgrow && 'flex-grow: 1;'}
-      max-width: ${boxConfig.$constrained};
+      ${responsiveProps('max-width', theme.layout.constrained)}}
     `};
 
   /** Position */
@@ -90,10 +79,12 @@ const BoxWrapper = styled(motion.div)<BoxProps>`
     `}
 
   /** gutter */
-  ${({ flexpadding, $withGutter }) => !flexpadding && $withGutter && gutterStyle()}
-
-  /** debug */
-  ${({ $debug }) => $debug && debugStyle()}
+  ${({ flexpadding, $withGutter, theme }) =>
+    !flexpadding &&
+    $withGutter &&
+    css`
+      ${responsiveProps('padding', theme.layout.gutterWidth)}
+    `}
 `;
 
 export default BoxWrapper;

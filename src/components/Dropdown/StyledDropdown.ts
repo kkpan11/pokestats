@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 // types
 import type { DropdownProps } from './index';
 // components
-import { motion } from 'framer-motion';
 import Box from '@/components/Box';
 // icons
 import Chevron from 'public/static/iconLibrary/chevron.svg';
@@ -42,9 +41,9 @@ const SelectButton = styled.button<{ $isOpen: Boolean; $isSmall?: DropdownProps[
   z-index: 2;
 
   ${({ theme }) => css`
-    background: ${theme.colors.white};
-    border: 2px solid ${theme.colors.black};
-    color: ${theme.colors.black};
+    background: ${theme.colors.primary.main};
+    border: 2px solid ${theme.colors.secondary.main};
+    color: ${theme.colors.primary.contrastText};
   `}
 
   ${({ $isOpen }) =>
@@ -60,12 +59,18 @@ const SelectButton = styled.button<{ $isOpen: Boolean; $isSmall?: DropdownProps[
     `}
 
   &:hover {
-    background: ${({ theme }) => theme.colors.mercury};
+    background: ${({ theme }) => theme.colors.primary.light};
     cursor: pointer;
   }
 `;
 
-const SelectDropdown = styled(motion.ul)`
+const SelectDropdown = styled.ul`
+  ${({ theme }) => css`
+    background: ${theme.colors.primary.main};
+    border: 2px solid ${theme.colors.secondary.main};
+    color: ${theme.colors.primary.contrastText};
+  `}
+
   border-radius: 0 0 5px 5px;
   border-top: none;
   font-size: 1em;
@@ -76,12 +81,6 @@ const SelectDropdown = styled(motion.ul)`
   padding: 0;
   position: absolute;
   z-index: 1;
-
-  ${({ theme }) => css`
-    background: ${theme.colors.white};
-    border: 2px solid ${theme.colors.black};
-    color: ${theme.colors.black};
-  `}
 `;
 
 const SelectDropdownItem = styled.li<{
@@ -91,12 +90,12 @@ const SelectDropdownItem = styled.li<{
   ${({ $isSelected, theme }) =>
     $isSelected
       ? css`
-          background: ${theme.colors.black};
-          color: ${theme.colors.white};
+          background: ${theme.colors.secondary.main};
+          color: ${theme.colors.secondary.contrastText};
         `
       : css`
           &:hover {
-            background: ${theme.colors.mercury};
+            background: ${theme.colors.primary.light};
           }
         `}
 

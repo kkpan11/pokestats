@@ -4,6 +4,8 @@ import type { PokestatsPokemonPageProps } from '@/pages/pokemon/[pokemonId]';
 // helpers
 import GameVersionContext from '@/components/Layout/gameVersionContext';
 import { mapGenerationToGame, pageContainerVariant } from '@/helpers';
+// styles
+import { Divider } from '@/components/BaseStyles';
 // components
 import { AnimatePresence } from 'framer-motion';
 import { MainContainer } from '@/components/Layout';
@@ -47,7 +49,7 @@ const PokemonPage = ({
   return (
     <AnimatePresence mode="wait">
       <MainContainer
-        $constrained
+        constrained
         $withGutter
         initial="hidden"
         animate="visible"
@@ -55,6 +57,7 @@ const PokemonPage = ({
         variants={pageContainerVariant}
         key={`pokemon-${name}`}
       >
+        <Divider />
         <Box
           flexdirection={{ xxs: 'column-reverse', lg: 'row' }}
           flexalign="center"
@@ -67,6 +70,7 @@ const PokemonPage = ({
             pokemon={pokemon}
             abilities={abilities}
             species={species}
+            // $emphasizedBg={mainType}
           />
           <FeaturedImage
             screensizes={{ xxs: 12, lg: 7 }}
@@ -75,17 +79,29 @@ const PokemonPage = ({
             pokemonId={id}
           />
         </Box>
+        <Divider />
         {/** BREEDING, TRAINING, MULTIPLIERS */}
         <Box
           flexdirection={{ xxs: 'column', lg: 'row' }}
-          flexalign="flex-start"
-          flexjustify="flex-start"
+          flexalign="stretch"
+          flexjustify="space-between"
           flexgap="2em"
         >
           <Breeding species={species} babyTriggerItem={babyTriggerItem} />
           <Training pokemon={pokemon} species={species} />
           <Multipliers pokemonTypes={types} />
         </Box>
+        {/** BASESTATS, FORMS */}
+        <Box
+          flexdirection={{ xxs: 'column', lg: 'row' }}
+          flexalign="stretch"
+          flexjustify="space-between"
+          flexgap="2em"
+        >
+          <BaseStats stats={stats} screensizes={{ xxs: 12, lg: 8 }} />
+          <PokemonForms pokemonId={id} species={species} screensizes={{ xxs: 12, lg: 4 }} />
+        </Box>
+        <Divider />
         {/** EVOLUTION CHAIN */}
         <Box flexalign="flex-start" flexjustify="flex-start">
           <EvolutionChain
@@ -95,20 +111,12 @@ const PokemonPage = ({
             evolutionChain={evolutionChain}
           />
         </Box>
-        {/** BASESTATS, FORMS */}
-        <Box
-          flexdirection={{ xxs: 'column', lg: 'row' }}
-          flexalign="flex-start"
-          flexjustify="flex-start"
-          flexgap="2em"
-        >
-          <BaseStats stats={stats} screensizes={{ xxs: 12, lg: 8 }} />
-          <PokemonForms pokemonId={id} species={species} screensizes={{ xxs: 12, lg: 4 }} />
-        </Box>
+        <Divider />
         {/** MOVES */}
         <Box flexalign="flex-start" flexjustify="flex-start">
           <Moves pokemon={pokemon} screensizes={12} />
         </Box>
+        <Divider />
         {/** SPRITES */}
         <Box flexalign="flex-start" flexjustify="flex-start">
           <Sprites pokemonSprites={sprites} pokemonId={id} forms={varieties} screensizes={12} />
@@ -117,6 +125,7 @@ const PokemonPage = ({
         <Box flexalign="flex-start" flexjustify="flex-start">
           <Navigation allPokemon={allPokemon} pokemonId={id} screensizes={12} />
         </Box>
+        <Divider />
       </MainContainer>
     </AnimatePresence>
   );
