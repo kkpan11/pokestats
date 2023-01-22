@@ -7,9 +7,8 @@ import { useForwardedRef } from '@/helpers';
 import BoxWrapper from './StyledBox';
 
 export interface BoxProps extends HTMLMotionProps<'div'> {
-  constrained?: boolean;
+  $contained?: boolean;
   $flexgrow?: boolean;
-  $hide?: boolean;
   $isRelative?: boolean;
   $withGutter?: boolean;
   backgroundcolor?: CSSProperties['background'] | Record<string, CSSProperties['background']>;
@@ -18,6 +17,7 @@ export interface BoxProps extends HTMLMotionProps<'div'> {
   flexalign?: CSSProperties['alignItems'] | Record<string, CSSProperties['alignItems']>;
   flexalignself?: CSSProperties['alignSelf'] | Record<string, CSSProperties['alignSelf']>;
   flexdirection?: CSSProperties['flexDirection'] | Record<string, CSSProperties['flexDirection']>;
+  flexdisplay?: CSSProperties['display'] | Record<string, CSSProperties['display']>;
   flexgap?: CSSProperties['gap'] | Record<string, CSSProperties['gap']>;
   flexheight?: CSSProperties['height'] | Record<string, CSSProperties['height']>;
   flexjustify?: CSSProperties['justifyContent'] | Record<string, CSSProperties['justifyContent']>;
@@ -25,6 +25,7 @@ export interface BoxProps extends HTMLMotionProps<'div'> {
   flexpadding?: CSSProperties['padding'] | Record<string, CSSProperties['padding']>;
   flexwrap?: CSSProperties['flexWrap'] | Record<string, CSSProperties['flexWrap']>;
   minheight?: CSSProperties['minHeight'] | Record<string, CSSProperties['minHeight']>;
+  $parentGap?: CSSProperties['gap'];
   screensizes?: number | Record<string, number>;
   width?: CSSProperties['width'] | Record<string, CSSProperties['width']>;
 }

@@ -9,10 +9,10 @@ import BoxWrapper from '@/components/Box/StyledBox';
 import ArrowDownIcon from 'public/static/iconLibrary/arrow_down.svg';
 
 const Container = styled(BoxWrapper)`
-  height: 100vh;
+  height: 50vh;
   justify-content: center;
   margin: auto;
-  min-height: 100vh;
+  min-height: 50vh;
   position: relative;
   z-index: 1;
 `;
@@ -36,12 +36,16 @@ const GithubLink = styled(motion.a)`
   }
 `;
 
-const ScrollDown = styled(ArrowDownIcon)`
-  animation: ${bounce} 1.5s ease-in-out 0s infinite;
+const ScrollContainer = styled(motion.div)`
   bottom: 10px;
   left: 50%;
   position: absolute;
   transform: translate(-50%, -50%);
+`;
+
+const ScrollDown = styled(ArrowDownIcon)`
+  animation: ${bounce} 1.5s ease-in-out 0s infinite;
+
   width: 40px;
 `;
 
@@ -52,4 +56,4 @@ const ListContainer = styled(Box)`
   `}
 `;
 
-export { Container, GithubLink, ScrollDown, ListContainer };
+export { Container, GithubLink, ScrollContainer, ScrollDown, ListContainer };

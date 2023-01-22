@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useState, useEffect } from 'react';
 // types
 import type { BoxProps } from '@/components/Box';
 import type { PokestatsPokemonPageProps } from '@/pages/pokemon/[pokemonId]';
@@ -12,6 +12,7 @@ import {
   mapGeneration,
   formatFlavorText,
   findPokemonName,
+  prefixId,
 } from '@/helpers';
 // components
 import Box from '@/components/Box';
@@ -19,7 +20,14 @@ import BoxWrapper from '@/components/Box/StyledBox';
 import TypeBadge from '@/components/TypeBadge';
 // styles
 import { PageHeading, Table, Numbered, UppercasedTd } from '@/components/BaseStyles';
-import { TypeContainer, AbilityName, Genera, Flavor } from './StyledDetails';
+import {
+  TypeContainer,
+  IconContainer,
+  CriesIcon,
+  AbilityName,
+  Genera,
+  Flavor,
+} from './StyledDetails';
 
 interface PokemonDetailsProps extends BoxProps {
   pokemon: PokestatsPokemonPageProps['pokemon'];
@@ -47,7 +55,17 @@ const PokemonDetails = ({
     is_mythical,
     generation,
   } = species;
-  // memo
+  // load pokemon cry sound
+  const [cry, setCry] = useState(null);
+  useEffect(() => {
+    setCry(
+      new Audio(
+        `https://raw.githubusercontent.com/andreferreiradlw/pokestats_media/main/assets/cries/${id}.${
+          id >= 722 ? 'wav' : 'mp3'
+        }`,
+      ),
+    );
+  }, []);
   const generationName = useMemo(() => mapGeneration(generation?.name), [generation]);
   const flavorText = useMemo(() => {
     // @ts-ignore
@@ -115,7 +133,26 @@ const PokemonDetails = ({
               ))}
             </TypeContainer>
           )}
-          <PageHeading>{findPokemonName(species)}</PageHeading>
+          <Box
+            flexdirection="row"
+            flexjustify="flex-start"
+            flexalign="center"
+            flexgap="0.5em"
+            width="auto"
+          >
+            <PageHeading>{findPokemonName(species)}</PageHeading>
+            {id <= 802 && (
+              <IconContainer
+                whileHover="hover"
+                whileTap="tap"
+                variants={fadeInUpVariant}
+                key="cries-icon-container-pokemon"
+                onClick={() => cry?.play()}
+              >
+                <CriesIcon />
+              </IconContainer>
+            )}
+          </Box>
         </Box>
         {(is_baby || is_legendary || is_mythical) && (
           <Genera>

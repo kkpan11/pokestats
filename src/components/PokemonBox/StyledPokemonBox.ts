@@ -10,12 +10,13 @@ const PokeBox = styled(motion.div)<{
   $dark?: PokemonBoxProps['$dark'];
 }>`
   align-items: center;
-  border: 1px solid transparent;
+  /* border: 1px solid transparent; */
+  border: 1px solid ${({ theme }) => theme.colors.primary.light};
   border-radius: 5px;
   display: flex;
   flex-basis: auto;
   flex-direction: column;
-  font-weight: 600;
+  font-weight: 500;
   gap: 0.5em;
   justify-content: center;
   max-width: 175px;
