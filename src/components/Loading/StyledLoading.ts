@@ -4,12 +4,20 @@ import type { LoadingProps } from './index';
 // components
 import BoxWrapper from '@/components/Box/StyledBox';
 // styles
-import { SectionSubTitle, ellipsis, rotate, riseUp, pokeballShake } from '@/components/BaseStyles';
+import {
+  SectionSubTitle,
+  ellipsis,
+  shake,
+  riseUp,
+  pokeballShake,
+  rotate,
+} from '@/components/BaseStyles';
 // helpers
 import { responsiveProps } from '@/helpers';
 // svg
 import Potion from 'public/static/iconLibrary/potion.svg';
 import Pokeball from 'public/static/iconLibrary/pokeball.svg';
+import Record from 'public/static/iconLibrary/record.svg';
 
 const LoadingContainer = styled(BoxWrapper)`
   align-items: center;
@@ -33,8 +41,8 @@ const LoadingContainer = styled(BoxWrapper)`
 const PotionIcon = styled(Potion)<{ $iconwidth?: LoadingProps['$iconWidth'] }>`
   height: auto;
   ${({ $iconWidth }) => $iconWidth && responsiveProps('width', $iconWidth)}
-  // rotation
-  animation: 20s ${rotate} 0ms infinite ease-in-out;
+  // shake
+  animation: 20s ${shake} 0ms infinite ease-in-out;
   // rise up
   circle {
     animation: ${riseUp} 2s infinite linear;
@@ -62,6 +70,17 @@ const PokeballIcon = styled(Pokeball)<{ $iconwidth?: LoadingProps['$iconWidth'] 
   ${({ $iconWidth }) => $iconWidth && responsiveProps('width', $iconWidth)}
 `;
 
+const RecordIcon = styled(Record)<{ $iconwidth?: LoadingProps['$iconWidth'] }>`
+  height: auto;
+  ${({ $iconWidth }) => $iconWidth && responsiveProps('width', $iconWidth)}
+
+  .record_svg__roll {
+    animation: 2s linear 0ms infinite ${rotate};
+    transform-box: fill-box;
+    transform-origin: center center;
+  }
+`;
+
 const Text = styled(SectionSubTitle)`
   &:after {
     animation: ${ellipsis} 1.25s infinite;
@@ -72,4 +91,4 @@ const Text = styled(SectionSubTitle)`
   }
 `;
 
-export { LoadingContainer, PotionIcon, Text, PokeballIcon };
+export { LoadingContainer, PotionIcon, Text, PokeballIcon, RecordIcon };

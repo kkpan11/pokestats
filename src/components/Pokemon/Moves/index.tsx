@@ -6,31 +6,21 @@ import { MoveClient, MoveLearnMethod, Pokemon, Move } from 'pokenode-ts';
 import GameVersionContext from '@/components/Layout/gameVersionContext';
 import {
   mapVersionToGroup,
-  mapGeneration,
   filterMoves,
   FilteredMove,
   getMachineNames,
-  removeDash,
   fadeInUpVariant,
   getIdFromMove,
 } from '@/helpers';
+// styles
+import { SectionTitle, SectionMessage } from '@/BaseStyles';
+import { TitleContainer } from './StyledMoves';
 // components
 import { AnimatePresence } from 'framer-motion';
 import Box, { BoxProps } from '@/components/Box';
 import Loading from '@/components/Loading';
-import TypeBadge from '@/components/TypeBadge';
 import Dropdown from '@/components/Dropdown';
-// styles
-import { SectionTitle, SectionMessage, UppercasedTd } from '@/components/BaseStyles';
-import {
-  TableContainer,
-  MovesTable,
-  NameTH,
-  NameTD,
-  TableRow,
-  TitleContainer,
-  TableBody,
-} from './StyledMoves';
+import MovesTable from '@/components/MovesTable';
 
 const LearnMethodOptions = [
   { label: 'Level Up', value: 'level-up' },
@@ -38,17 +28,6 @@ const LearnMethodOptions = [
   { label: 'Egg', value: 'egg' },
   { label: 'Tutor', value: 'tutor' },
 ];
-
-const mapMethodName = (methodName: MoveLearnMethod['name']): string => {
-  switch (methodName) {
-    case 'level-up':
-      return 'Level';
-    case 'machine':
-      return 'Machine';
-    default:
-      return '-';
-  }
-};
 
 interface PokemonMovesProps extends BoxProps {
   pokemon: Pokemon;
@@ -80,11 +59,6 @@ const PokemonMoves = ({ pokemon, ...rest }: PokemonMovesProps): JSX.Element => {
       _isMounted.current = false;
     };
   }, []);
-
-  useEffect(() => {
-    // console.log(pokemon);
-    // console.log('genMoves', genMoves);
-  }, [genMoves]);
 
   useEffect(() => {
     if (!movesLoading) setMovesLoading(true);
@@ -174,72 +148,16 @@ const PokemonMoves = ({ pokemon, ...rest }: PokemonMovesProps): JSX.Element => {
       )}
       <AnimatePresence mode="wait">
         {genMoves?.[learnMethod]?.length ? (
-          <TableContainer
+          <MovesTable
+            moves={genMoves[learnMethod]}
+            machineNames={machineNames}
+            learnMethod={learnMethod}
             initial="hidden"
             animate="show"
             exit="exit"
             variants={fadeInUpVariant}
             key={`moves-${learnMethod}-table-container`}
-          >
-            <MovesTable>
-              <thead>
-                <tr>
-                  <th>{mapMethodName(learnMethod)}</th>
-                  <NameTH>Name</NameTH>
-                  <th>Type</th>
-                  <th>Category</th>
-                  <th>Power</th>
-                  <th>PP</th>
-                  <th>Accuracy</th>
-                  <th>Priority</th>
-                  <th>Generation</th>
-                </tr>
-              </thead>
-              <TableBody>
-                {genMoves[learnMethod].map((move: PokemonMove, i: number) => (
-                  <TableRow key={`${learnMethod}-${move.name}-${i}`}>
-                    {/* @ts-ignore **/}
-                    {learnMethod === 'level-up' && <td>{move.level_learned_at}</td>}
-                    {learnMethod === 'machine' &&
-                      (machineNames?.[i] ? (
-                        <td>
-                          <Box
-                            flexdirection="row"
-                            flexjustify="space-between"
-                            width="75%"
-                            flexmargin="0 auto"
-                            flexgap="0.1em"
-                          >
-                            <span>{machineNames[i].toUpperCase()}</span>
-                            <img
-                              src={`https://raw.githubusercontent.com/msikma/pokesprite/master/items/${
-                                machineNames[i].includes('hm') ? 'hm' : 'tm'
-                              }/${move.type.name}.png`}
-                              alt={move.type.name}
-                              width="30"
-                            />
-                          </Box>
-                        </td>
-                      ) : (
-                        <td>...</td>
-                      ))}
-                    {learnMethod === 'egg' && <td>-</td>}
-                    {learnMethod === 'tutor' && <td>-</td>}
-                    <NameTD>{removeDash(move.name)}</NameTD>
-                    <td>
-                      <TypeBadge flexmargin="0" $iconOnly $typename={move.type.name} />
-                    </td>
-                    <UppercasedTd>{move.damage_class.name}</UppercasedTd>
-                    <td>{move.power || '-'}</td>
-                    <td>{move.pp || '-'}</td>
-                    <td>{move.accuracy || '-'}</td>
-                    <td>{move.priority}</td>
-                    <td>{mapGeneration(move.generation.name)}</td>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </MovesTable>
-          </TableContainer>
+          />
         ) : (
           <SectionMessage
             initial="hidden"

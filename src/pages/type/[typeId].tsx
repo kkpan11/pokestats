@@ -3,7 +3,13 @@ import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import type { Pokemon, PokemonType } from '@/types';
 // helpers
 import { PokemonClient, MoveClient, Type, Move } from 'pokenode-ts';
-import { getIdFromMove, getIdFromPokemon, removeDash } from '@/helpers';
+import {
+  findEnglishName,
+  getIdFromMove,
+  getIdFromPokemon,
+  getIdFromURL,
+  removeDuplicateMoves,
+} from '@/helpers';
 import { PokestatsPageTitle } from '@/components/Head';
 // components
 import Head from 'next/head';
@@ -21,7 +27,7 @@ export interface PokestatsTypePageProps {
 }
 
 const PokestatsTypePage: NextPage<PokestatsTypePageProps> = ({ autocompleteList, ...props }) => {
-  const typeName = removeDash(props.typeInfo.name);
+  const typeName = findEnglishName(props.typeInfo.names);
   const pageTitle = `${typeName} (Type) - ${PokestatsPageTitle}`;
   const pageDescription = `The ${typeName} type ( Japanese: ${
     props.typeInfo.names.find(name => name.language.name === 'ja-Hrkt').name
@@ -78,15 +84,20 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   try {
     // fetch data
-    const [{ results: allPokemonDataResults }, { results: allTypesDataResults }, typeData] =
-      await Promise.all([
-        pokemonClient.listPokemons(0, 905),
-        pokemonClient.listTypes(),
-        pokemonClient.getTypeByName(typeName),
-      ]);
+    const [
+      { results: allPokemonDataResults },
+      { results: allTypesDataResults },
+      typeData,
+      { results: allMovesDataResults },
+    ] = await Promise.all([
+      pokemonClient.listPokemons(0, 905),
+      pokemonClient.listTypes(),
+      pokemonClient.getTypeByName(typeName),
+      moveClient.listMoves(0, 850),
+    ]);
 
-    if (!allPokemonDataResults || !allTypesDataResults || !typeData) {
-      console.error('Failed to fetch typeData');
+    if (!allPokemonDataResults || !allTypesDataResults || !allMovesDataResults || !typeData) {
+      console.log('Failed to fetch typeData');
       return { notFound: true };
     }
 
@@ -127,6 +138,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
             id: i + 1,
             assetType: 'type',
           })),
+          ...removeDuplicateMoves(allMovesDataResults).map((currMove, i) => ({
+            ...currMove,
+            id: getIdFromURL(currMove.url, 'move'),
+            assetType: 'move',
+          })),
         ],
         typeInfo: { ...typeData, pokemon: pokemonListWithId },
         typeMoves: allPokemonMovesData,
@@ -134,7 +150,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       },
     };
   } catch (error) {
-    console.error(error);
+    console.log(error);
     // redirects to 404 page
     return { notFound: true };
   }

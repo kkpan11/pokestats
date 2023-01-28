@@ -1,7 +1,7 @@
 // types
 import type { PokestatsPokemonPageProps } from '@/pages/pokemon/[pokemonId]';
 // helpers
-import { pageContainerVariant, findPokemonName } from '@/helpers';
+import { pageContainerVariant, findEnglishName } from '@/helpers';
 // styles
 import { Divider } from '@/components/BaseStyles';
 // components
@@ -26,13 +26,13 @@ const PokemonPage = ({
   abilities,
   species,
   evolutionChain,
-}: Omit<PokestatsPokemonPageProps, 'allPokemonTypes' | 'pokemonGen'>): JSX.Element => {
+}: Omit<PokestatsPokemonPageProps, 'autocompleteList' | 'pokemonGen'>): JSX.Element => {
   // data
   const { id, name, stats, types, sprites } = pokemon;
   const { names, varieties } = species;
   const { babyTriggerItem } = evolutionChain;
 
-  const currPokemonName = findPokemonName(species);
+  const currPokemonName = findEnglishName(names);
 
   return (
     <AnimatePresence mode="wait">

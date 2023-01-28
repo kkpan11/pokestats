@@ -6,14 +6,8 @@ import { staggerInitialVariant, fadeInUpVariant, getRandomInt } from '@/helpers'
 // types
 import type { PokestatsHomepageProps } from '@/pages/index';
 // styles
-import {
-  Container,
-  GithubLink,
-  ScrollContainer,
-  ScrollDown,
-  ListContainer,
-} from './styledHomepage';
-import { MainHeading, Button, Divider } from '@/components/BaseStyles';
+import { Container, GithubLink, ListContainer, Pokeball } from './styledHomepage';
+import { MainHeading, Button, Divider } from '@/BaseStyles';
 // components
 import Autocomplete from '@/components/Autocomplete';
 import Particles from '@/components/Particles';
@@ -23,7 +17,7 @@ import Box from '@/components/Box';
 // icons
 import Github from 'public/static/iconLibrary/github.svg';
 
-const Homepage = ({ allPokemon, pokemonTypes }: PokestatsHomepageProps): JSX.Element => {
+const Homepage = ({ allPokemon, pokemonTypes, allMoves }: PokestatsHomepageProps): JSX.Element => {
   // router
   const router = useRouter();
   // memo
@@ -48,7 +42,7 @@ const Homepage = ({ allPokemon, pokemonTypes }: PokestatsHomepageProps): JSX.Ele
   };
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       <GithubLink
         href="https://github.com/andreferreiradlw/pokestats"
         target="_blank"
@@ -79,31 +73,28 @@ const Homepage = ({ allPokemon, pokemonTypes }: PokestatsHomepageProps): JSX.Ele
           PokeStats
         </MainHeading>
         <Autocomplete
-          filterList={[...allPokemon, ...pokemonTypes]}
+          filterList={[...allPokemon, ...pokemonTypes, ...allMoves]}
           variants={fadeInUpVariant}
           key="homepage-autocomplete"
         />
         <Button onClick={routeRandom} $dark variants={fadeInUpVariant} key="homepage-random-btn">
-          Random Pokemon!
+          Random Pokemon
+          <Pokeball />
         </Button>
       </Container>
-      <ListContainer flexpadding="1.5em 0" key="homepage-list-container">
-        <Box
-          $contained
-          $withGutter
-          flexgap="1.5em"
-          initial="hidden"
-          animate="show"
-          variants={staggerInitialVariant}
-          key="homepage-list-container-inner"
-        >
-          <TypeList types={pokemonTypes} variants={fadeInUpVariant} key="homepage-type-list" />
-          <Divider variants={fadeInUpVariant} key="homepage-divider" />
-          <PokemonList
-            pokemon={allPokemon}
-            variants={fadeInUpVariant}
-            key="homepage-pokemon-list"
-          />
+      <ListContainer
+        flexpadding="1.5em 0"
+        flexalign="center"
+        flexjustify="center"
+        key="homepage-list-container"
+        initial="hidden"
+        animate="show"
+        variants={fadeInUpVariant}
+      >
+        <Box $contained $withGutter flexgap="1.5em">
+          <TypeList types={pokemonTypes} />
+          <Divider />
+          <PokemonList pokemon={allPokemon} />
           <Divider />
         </Box>
       </ListContainer>

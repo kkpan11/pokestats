@@ -1,25 +1,25 @@
 import { useRouter } from 'next/router';
 // types
 import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import type { Pokemon, PokemonType, PokemonMove } from '@/types';
+import type { Pokemon, PokemonType, PokemonMove, MoveType } from '@/types';
 import type {
   Pokemon as PokenodePokemon,
   EvolutionChain,
   PokemonSpecies,
-  VersionGroup,
   Ability,
   EvolutionDetail,
 } from 'pokenode-ts';
 // helpers
-import { PokemonClient, EvolutionClient } from 'pokenode-ts';
+import { PokemonClient, EvolutionClient, MoveClient } from 'pokenode-ts';
 import {
   getIdFromEvolutionChain,
   getIdFromSpecies,
-  mapGenerationToGame,
   prefixId,
   formatFlavorText,
   gameVersions,
-  findPokemonName,
+  findEnglishName,
+  removeDuplicateMoves,
+  getIdFromURL,
 } from '@/helpers';
 import { PokestatsPageTitle } from '@/components/Head';
 // components
@@ -30,7 +30,7 @@ import Loading from '@/components/Loading';
 
 export interface PokestatsPokemonPageProps {
   allPokemon: Pokemon[];
-  allPokemonTypes: PokemonType[];
+  autocompleteList: (PokemonType | MoveType)[];
   pokemon: PokenodePokemon;
   abilities: Ability[];
   species: PokemonSpecies;
@@ -51,7 +51,7 @@ export interface PokestatsPokemonPageProps {
 }
 
 const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({
-  allPokemonTypes,
+  autocompleteList,
   allPokemon,
   ...props
 }) => {
@@ -61,16 +61,16 @@ const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({
     return (
       <Loading
         flexheight="100vh"
-        pokeball
+        icon="pokeball"
         text="Catching Pokémon"
         $iconWidth={{ xxs: '20%', xs: '15%', md: '10%', lg: '5%' }}
       />
     );
   }
 
-  const pokemonName = findPokemonName(props.species);
+  const pokemonName = findEnglishName(props.species.names);
   const pageTitle = `${pokemonName} (Pokémon #${props.pokemon.id}) - ${PokestatsPageTitle}`;
-  const pageDescription = formatFlavorText(props.species.flavor_text_entries[0]?.flavor_text);
+  const pageDescription = formatFlavorText(props.species.flavor_text_entries.at(-1)?.flavor_text);
   const generationDescriptions = gameVersions
     .filter(version => version.genValue === props.species.generation.name)
     .map(game => game.label)
@@ -83,7 +83,7 @@ const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({
         <meta name="description" content={pageDescription} />
         <meta
           name="keywords"
-          content={`${pokemonName}, Pokemon, Pokémon, Pokédex, Pokestats, ${generationDescriptions}`}
+          content={`${pokemonName}, ${pokemonName} gg, Pokemon, Pokémon, Pokédex, Pokestats, Pokestats gg, ${pokemonName} Shiny, ${generationDescriptions}`}
         />
         {/** Open Graph */}
         <meta property="og:title" content={pageTitle} />
@@ -97,7 +97,7 @@ const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({
       </Head>
       <Layout
         withHeader={{
-          autocompleteList: [].concat(allPokemon, allPokemonTypes),
+          autocompleteList: [...allPokemon, ...autocompleteList],
           currPokemon: props.species,
         }}
       >
@@ -130,6 +130,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // clients
   const pokemonClient = new PokemonClient();
   const evolutionClient = new EvolutionClient();
+  const moveClient = new MoveClient();
 
   const pokemonName = params.pokemonId as string;
 
@@ -139,14 +140,21 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       { results: allPokemonDataResults },
       { results: allTypesDataResults },
       pokemonDataResults,
+      { results: allMovesDataResults },
     ] = await Promise.all([
       pokemonClient.listPokemons(0, 905),
       pokemonClient.listTypes(),
       pokemonClient.getPokemonByName(pokemonName),
+      moveClient.listMoves(0, 850),
     ]);
 
-    if (!allPokemonDataResults || !allTypesDataResults || !pokemonDataResults) {
-      console.error('Failed to fetch allPokemonData, typesData, pokemonData');
+    if (
+      !allPokemonDataResults ||
+      !allTypesDataResults ||
+      !allMovesDataResults ||
+      !pokemonDataResults
+    ) {
+      console.log('Failed to fetch allPokemonData, typesData, pokemonData');
       return { notFound: true };
     }
 
@@ -167,7 +175,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     );
 
     if (!pokemonSpeciesResults || !pokemonAbilitiesResults) {
-      console.error('Failed to fetch pokemonSpeciesResults or pokemonAbilitiesResults');
+      console.log('Failed to fetch pokemonSpeciesResults or pokemonAbilitiesResults');
       return { notFound: true };
     }
 
@@ -177,7 +185,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     );
 
     if (!evolutionDataResults) {
-      console.error('Failed to fetch evolutionData');
+      console.log('Failed to fetch evolutionData');
       return { notFound: true };
     }
 
@@ -256,11 +264,18 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           id: i + 1,
           assetType: 'pokemon',
         })),
-        allPokemonTypes: allTypesDataResults.map((currType, i) => ({
-          ...currType,
-          id: i + 1,
-          assetType: 'type',
-        })),
+        autocompleteList: [
+          ...allTypesDataResults.map((currType, i) => ({
+            ...currType,
+            id: i + 1,
+            assetType: 'type',
+          })),
+          ...removeDuplicateMoves(allMovesDataResults).map((currMove, i) => ({
+            ...currMove,
+            id: getIdFromURL(currMove.url, 'move'),
+            assetType: 'move',
+          })),
+        ],
         pokemon: pokemonDataResults,
         abilities: pokemonAbilitiesResults.map(ability => ({
           name: ability.name,
@@ -272,7 +287,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       },
     };
   } catch (error) {
-    console.error(error);
+    console.log(error);
     // redirects to 404 page
     return { notFound: true };
   }

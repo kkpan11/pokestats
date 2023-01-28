@@ -27,13 +27,13 @@ const Table = styled(motion.table)`
     font-weight: 600;
     min-height: 45px;
     text-align: left;
-    white-space: nowrap;
+    padding: 0.5em 1em 0.5em 0;
   }
 
   td {
     font-weight: normal;
     min-height: 45px;
-    padding: 8px 16px;
+    padding: 0.5em 1em;
     white-space: pre-line;
 
     p {
@@ -43,7 +43,7 @@ const Table = styled(motion.table)`
 
   ${({ theme }) => css`
     @media ${theme.device.md} {
-      /* width: 50%; */
+      white-space: nowrap;
     }
     @media ${theme.device.lg} {
       width: 100%;
