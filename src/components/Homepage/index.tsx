@@ -2,6 +2,7 @@ import { useMemo, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { AnimatePresence } from 'framer-motion';
 // heplpers
+import { usePlausible } from 'next-plausible';
 import { staggerInitialVariant, fadeInUpVariant, getRandomInt } from '@/helpers';
 // types
 import type { PokestatsHomepageProps } from '@/pages/index';
@@ -20,6 +21,8 @@ import Github from 'public/static/iconLibrary/github.svg';
 const Homepage = ({ allPokemon, pokemonTypes, allMoves }: PokestatsHomepageProps): JSX.Element => {
   // router
   const router = useRouter();
+  // analytics
+  const plausible = usePlausible();
   // memo
   const randomPokemonUrl = useMemo(
     () => `/pokemon/${allPokemon[getRandomInt(1, allPokemon.length)].name}`,
@@ -29,17 +32,6 @@ const Homepage = ({ allPokemon, pokemonTypes, allMoves }: PokestatsHomepageProps
   useEffect(() => {
     if (router && randomPokemonUrl) router.prefetch(randomPokemonUrl);
   }, [randomPokemonUrl, router]);
-
-  const routeRandom = () => {
-    if (process.env.NODE_ENV === 'production' && window?.plausible)
-      window.plausible('Random Pokemon');
-    router.push(randomPokemonUrl);
-  };
-
-  const githubClick = () => {
-    if (process.env.NODE_ENV === 'production' && window?.plausible)
-      window.plausible('Github Homepage');
-  };
 
   return (
     <AnimatePresence mode="wait">
@@ -53,7 +45,7 @@ const Homepage = ({ allPokemon, pokemonTypes, allMoves }: PokestatsHomepageProps
         whileTap="tap"
         variants={fadeInUpVariant}
         key="homepage-github"
-        onClick={githubClick}
+        onClick={() => plausible('Github Homepage')}
       >
         <Github />
       </GithubLink>
@@ -77,7 +69,15 @@ const Homepage = ({ allPokemon, pokemonTypes, allMoves }: PokestatsHomepageProps
           variants={fadeInUpVariant}
           key="homepage-autocomplete"
         />
-        <Button onClick={routeRandom} $dark variants={fadeInUpVariant} key="homepage-random-btn">
+        <Button
+          onClick={() => {
+            plausible('Random Pokemon');
+            router.push(randomPokemonUrl);
+          }}
+          $dark
+          variants={fadeInUpVariant}
+          key="homepage-random-btn"
+        >
           Random Pokemon
           <Pokeball />
         </Button>

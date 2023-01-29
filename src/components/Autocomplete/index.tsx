@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect, CSSProperties, useCallback } from 'react';
 // helpers
+import { usePlausible } from 'next-plausible';
 import { removeDash, prefixId, fadeInDownVariant } from '@/helpers';
 // types
 import type { Pokemon, PokemonType, MoveType } from '@/types';
@@ -58,6 +59,8 @@ const AutocompleteIcon = ({ assetType, name, id }: AutocompleteIconProps): JSX.E
 const Autocomplete = ({ filterList, ...rest }: AutocompleteProps): JSX.Element => {
   // router
   const router = useRouter();
+  // analytics
+  const plausible = usePlausible();
   // search state
   const [search, setSearch] = useState('');
   // filtered state
@@ -114,6 +117,8 @@ const Autocomplete = ({ filterList, ...rest }: AutocompleteProps): JSX.Element =
             router.push(`/${filtered[activeOption].assetType}/${filtered[activeOption].name}`);
         // clean filtered state
         resetStates();
+        // goals
+        plausible('Autocomplete Selection');
       } // up arrow
       else if (e.key === 'ArrowUp') {
         // stop window from scrolling
@@ -172,7 +177,10 @@ const Autocomplete = ({ filterList, ...rest }: AutocompleteProps): JSX.Element =
               <OptionWrapper
                 href={`/${assetType}/${name}`}
                 key={`${assetType}-${id}-${name}-${i}`}
-                onClick={() => resetStates()}
+                onClick={() => {
+                  resetStates();
+                  plausible('Autocomplete Selection');
+                }}
                 onFocus={() => setActiveOption(i)}
                 onKeyDown={e => handleKeyDown(e)}
                 ref={currOption => currOption && i === activeOption && currOption.focus()}

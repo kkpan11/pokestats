@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useRouter } from 'next/router';
 // types
 import type { Move, MoveLearnMethod } from 'pokenode-ts';
 // helpers
-import { removeDash, mapGeneration, fadeInUpVariant, FilteredMove } from '@/helpers';
+import { usePlausible } from 'next-plausible';
+import { removeDash, mapGeneration, fadeInUpVariant, rowVariant, FilteredMove } from '@/helpers';
 // styles
 import { SectionMessage, UppercasedTd } from '@/components/BaseStyles';
 import {
@@ -19,6 +20,7 @@ import {
 import { AnimatePresence, HTMLMotionProps } from 'framer-motion';
 import TypeBadge from '@/components/TypeBadge';
 import Box from '@/components/Box';
+import Link from 'next/link';
 
 interface TypeMovesProps extends HTMLMotionProps<'div'> {
   moves: (FilteredMove | Move)[];
@@ -29,6 +31,8 @@ interface TypeMovesProps extends HTMLMotionProps<'div'> {
 const MovesTable = ({ moves, learnMethod, machineNames, ...rest }: TypeMovesProps): JSX.Element => {
   // router
   const router = useRouter();
+  // analytics
+  const plausible = usePlausible();
   // memo
   const mapMethodName = useMemo(() => {
     if (learnMethod) {
@@ -45,8 +49,12 @@ const MovesTable = ({ moves, learnMethod, machineNames, ...rest }: TypeMovesProp
     }
   }, [learnMethod]);
 
-  const onCellClick = (moveName: Move['name'], id: Move['id']) =>
-    id <= 850 && router.push(`/move/${moveName}`);
+  const onCellClick = (moveName: Move['name'], id: Move['id']) => {
+    if (id <= 850) {
+      plausible('Move Table Click');
+      router.push(`/move/${moveName}`);
+    }
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -72,11 +80,20 @@ const MovesTable = ({ moves, learnMethod, machineNames, ...rest }: TypeMovesProp
                 router.prefetch(`/move/${move.name}`);
 
                 return (
-                  <TableRow key={`type-${move.name}-${i}`}>
+                  <TableRow
+                    whileHover="hover"
+                    whileTap="tap"
+                    variants={rowVariant}
+                    key={`type-${move.name}-${i}`}
+                  >
                     {learnMethod && (
                       <>
-                        {/** @ts-ignore */}
-                        {learnMethod === 'level-up' && <td>{move?.level_learned_at}</td>}
+                        {learnMethod === 'level-up' && (
+                          <DataCell onClick={() => onCellClick(move.name, move.id)}>
+                            {/** @ts-ignore */}
+                            {move?.level_learned_at}
+                          </DataCell>
+                        )}
                         {learnMethod === 'machine' &&
                           (!!machineNames?.length && machineNames?.[i] ? (
                             <DataCell onClick={() => onCellClick(move.name, move.id)}>
@@ -100,8 +117,12 @@ const MovesTable = ({ moves, learnMethod, machineNames, ...rest }: TypeMovesProp
                           ) : (
                             <DataCell onClick={() => onCellClick(move.name, move.id)}>...</DataCell>
                           ))}
-                        {learnMethod === 'egg' && <td>-</td>}
-                        {learnMethod === 'tutor' && <td>-</td>}
+                        {learnMethod === 'egg' && (
+                          <DataCell onClick={() => onCellClick(move.name, move.id)}>-</DataCell>
+                        )}
+                        {learnMethod === 'tutor' && (
+                          <DataCell onClick={() => onCellClick(move.name, move.id)}>-</DataCell>
+                        )}
                       </>
                     )}
                     <NameTD onClick={() => onCellClick(move.name, move.id)}>
@@ -126,7 +147,10 @@ const MovesTable = ({ moves, learnMethod, machineNames, ...rest }: TypeMovesProp
                       {move.priority}
                     </DataCell>
                     <DataCell onClick={() => onCellClick(move.name, move.id)}>
-                      {mapGeneration(move.generation.name)}
+                      {/** leaving this anchor for SEO purposes */}
+                      <Link href={`/move/${move.name}`} prefetch={false}>
+                        {mapGeneration(move.generation.name)}
+                      </Link>
                     </DataCell>
                   </TableRow>
                 );

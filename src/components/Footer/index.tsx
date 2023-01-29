@@ -1,4 +1,5 @@
 // helpers
+import { usePlausible } from 'next-plausible';
 import { fadeInUpVariant } from '@/helpers';
 // styles
 import { FooterContainer, PokestatsIcon, Anchor } from './StyledFooter';
@@ -9,14 +10,8 @@ import ImageNext from '@/components/ImageNext';
 import { motion } from 'framer-motion';
 
 const Footer = (): JSX.Element => {
-  const githubClick = () => {
-    if (process.env.NODE_ENV === 'production' && window?.plausible)
-      window.plausible('Github Footer');
-  };
-  const pokeapiClick = () => {
-    if (process.env.NODE_ENV === 'production' && window?.plausible)
-      window.plausible('Pokeapi Footer');
-  };
+  // analytics
+  const plausible = usePlausible();
 
   return (
     <FooterContainer>
@@ -40,7 +35,7 @@ const Footer = (): JSX.Element => {
                 href="https://github.com/andreferreiradlw/pokestats"
                 target="_blank"
                 rel="noopener"
-                onClick={githubClick}
+                onClick={() => plausible('Github Footer')}
               >
                 Pokestats
               </Anchor>
@@ -68,7 +63,7 @@ const Footer = (): JSX.Element => {
               href="https://pokeapi.co/"
               target="_blank"
               rel="noopener"
-              onClick={pokeapiClick}
+              onClick={() => plausible('Pokeapi Footer')}
             >
               <ImageNext src="/static/pokeapi_logo.png" alt="PokeApi Logo" height={25} />
             </Anchor>

@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 // types
 import type { PokemonSpecies } from 'pokenode-ts';
 // helpers
+import { usePlausible } from 'next-plausible';
 import GameVersionContext from '@/components/Layout/gameVersionContext';
 import { gameVersions, checkIfEarlierGen, mapGenerationToGame } from '@/helpers';
 // components
@@ -23,6 +24,9 @@ const HeaderComponent = ({
   currPokemon,
   ...rest
 }: HeaderComponentProps): JSX.Element => {
+  // analytics
+  const plausible = usePlausible();
+  // gen
   const pokemonGen = currPokemon?.generation.name;
   // game version
   const { gameVersion, setGameVersion } = useContext(GameVersionContext);
@@ -65,7 +69,10 @@ const HeaderComponent = ({
               label="Game Version"
               options={dropdownOptions}
               value={gameVersion}
-              onChange={e => setGameVersion(e.target.value)}
+              onChange={e => {
+                setGameVersion(e.target.value);
+                plausible('Game Version Select');
+              }}
               minWidth="190px"
             />
           )}

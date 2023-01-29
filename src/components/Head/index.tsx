@@ -12,7 +12,7 @@ const PokestatsHead = ({ children }: PokestatsHeadProps): JSX.Element => {
     <Head>
       {process.env.NODE_ENV === 'production' && (
         <>
-          <script defer data-domain="pokestats.gg" src="https://plausible.io/js/script.js" />
+          <script defer data-domain="pokestats.gg" src="/js/script.js" />
           <Script>{`window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`}</Script>
         </>
       )}
