@@ -1,9 +1,7 @@
 // types
 import type { PokestatsPokemonPageProps } from '@/pages/pokemon/[pokemonId]';
 // helpers
-import { pageContainerVariant, findEnglishName } from '@/helpers';
-// styles
-import { Divider } from '@/components/BaseStyles';
+import { pageContainerVariant } from '@/helpers';
 // components
 import { AnimatePresence } from 'framer-motion';
 import { MainContainer } from '@/components/Layout';
@@ -19,6 +17,7 @@ import PokemonForms from './Forms';
 import Moves from './Moves';
 import Sprites from './Sprites';
 import Navigation from './Navigation';
+import { Divider } from '@mui/material';
 
 const PokemonPage = ({
   allPokemon,
@@ -30,8 +29,6 @@ const PokemonPage = ({
   // data
   const { id, name, stats, types, sprites } = pokemon;
   const { names, varieties } = species;
-
-  const currPokemonName = findEnglishName(names);
 
   return (
     <AnimatePresence mode="wait">
@@ -58,12 +55,7 @@ const PokemonPage = ({
             abilities={abilities}
             species={species}
           />
-          <FeaturedImage
-            screensizes={{ xxs: 12, lg: 7 }}
-            specieNames={names}
-            pokemonName={currPokemonName}
-            pokemonId={id}
-          />
+          <FeaturedImage screensizes={{ xxs: 12, lg: 7 }} specieNames={names} pokemonId={id} />
         </Box>
         <Divider />
         {/** BREEDING, TRAINING, MULTIPLIERS */}
@@ -93,7 +85,6 @@ const PokemonPage = ({
           />
           <PokemonForms
             pokemonId={id}
-            pokemonName={currPokemonName}
             species={species}
             screensizes={{ xxs: 12, md: 6, lg: 4 }}
             $parentGap="2em"
@@ -108,7 +99,7 @@ const PokemonPage = ({
         <Divider />
         {/** MOVES */}
         <Box flexalign="flex-start" flexjustify="flex-start">
-          <Moves pokemon={pokemon} species={species} />
+          <Moves pokemon={pokemon} />
         </Box>
         <Divider />
         {/** SPRITES */}

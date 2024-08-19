@@ -1,11 +1,10 @@
-import { useState, useMemo, CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 // types
-import type { MoveType, Pokemon, PokemonType } from '@/types';
 import type { BoxProps } from '@/components/Box';
 import type { PokemonSpecies } from 'pokenode-ts';
 // helpers
-import GameVersionContext from './gameVersionContext';
-import { fadeInOutUpVariant, mapGeneration, scrollToTop } from '@/helpers';
+import { GameVersionProvider } from '@/context';
+import { fadeInOutUpVariant, scrollToTop } from '@/helpers';
 // styles
 import { LayoutContainer, MainContainer, ScrollButton } from './StyledLayout';
 // hooks
@@ -20,36 +19,24 @@ import { AnimatePresence } from 'framer-motion';
 
 interface LayoutProps extends BoxProps {
   layoutGap?: CSSProperties['gap'];
-  withHeader?: {
-    currPokemon?: PokemonSpecies;
-    autocompleteList: (Pokemon | PokemonType | MoveType)[];
-  };
+  currPokemon?: PokemonSpecies;
+  withHeader?: boolean;
 }
 
 const Layout = ({
   layoutGap = '1.5em',
   withHeader,
+  currPokemon,
   children,
   ...rest
 }: LayoutProps): JSX.Element => {
-  const pokemonGen = mapGeneration(withHeader?.currPokemon?.generation?.name);
-  // game version
-  const [gameVersion, setGameVersion] = useState(pokemonGen);
   // hooks
   const isClient = useIsClient();
   const { width } = useWindowSize();
   const scrollPosition = useScrollPosition();
 
-  const VersionContextValue = useMemo(
-    () => ({
-      gameVersion,
-      setGameVersion,
-    }),
-    [gameVersion, setGameVersion],
-  );
-
   return (
-    <GameVersionContext.Provider value={VersionContextValue}>
+    <GameVersionProvider pokemon={currPokemon}>
       <LayoutContainer
         flexdirection="column"
         width="100%"
@@ -57,12 +44,7 @@ const Layout = ({
         $isRelative
         {...rest}
       >
-        {withHeader && (
-          <Header
-            autocompleteList={withHeader.autocompleteList}
-            currPokemon={withHeader?.currPokemon}
-          />
-        )}
+        {withHeader && <Header currPokemon={currPokemon} />}
         {children}
         <Footer />
         <AnimatePresence>
@@ -82,7 +64,7 @@ const Layout = ({
           )}
         </AnimatePresence>
       </LayoutContainer>
-    </GameVersionContext.Provider>
+    </GameVersionProvider>
   );
 };
 

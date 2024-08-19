@@ -14,7 +14,6 @@ import {
   formatFlavorText,
   gameVersions,
   findEnglishName,
-  fetchAutocompleteData,
   getResourceId,
 } from '@/helpers';
 // components
@@ -34,11 +33,7 @@ export interface PokestatsPokemonPageProps {
   evolutionData: EvolutionChain;
 }
 
-const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({
-  autocompleteList,
-  allPokemon,
-  ...props
-}) => {
+const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({ allPokemon, ...props }) => {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -79,12 +74,7 @@ const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({
           )}.png`}
         />
       </Head>
-      <Layout
-        withHeader={{
-          autocompleteList: [...allPokemon, ...autocompleteList],
-          currPokemon: props.species,
-        }}
-      >
+      <Layout withHeader currPokemon={props.species}>
         <PokemonPage allPokemon={allPokemon} {...props} />
       </Layout>
     </>
@@ -114,10 +104,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   try {
     // fetch data
-    const pokemonDataResults = await PokemonApi.getByName(pokemonName);
-    const { allMovesData, allPokemonData, allTypesData } = await fetchAutocompleteData();
+    const [pokemonDataResults, { results: allPokemonData }] = await Promise.all([
+      PokemonApi.getByName(pokemonName),
+      PokemonApi.listPokemons(0, 905),
+    ]);
 
-    if (!allPokemonData || !allTypesData || !allMovesData || !pokemonDataResults) {
+    if (!allPokemonData || !pokemonDataResults) {
       console.log('Failed to fetch allPokemonData, typesData, pokemonData');
       return { notFound: true };
     }
@@ -158,7 +150,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     return {
       props: {
         allPokemon: allPokemonData,
-        autocompleteList: [...allTypesData, ...allMovesData],
         pokemon: pokemonDataResults,
         abilities: pokemonAbilitiesResults.map(ability => ({
           name: ability.name,
