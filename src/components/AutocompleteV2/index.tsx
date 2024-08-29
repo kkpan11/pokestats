@@ -17,7 +17,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
-
+import LoadingV2 from '../LoadingV2';
 // styles
 import {
   Container,
@@ -27,8 +27,8 @@ import {
   OptionWrapper,
   PokeID,
 } from './styledAutocompleteV2';
+// icons
 import TypeIcon from '../TypeIcon';
-import Loading from '../Loading';
 
 export interface AutocompleteV2Props extends HTMLMotionProps<'div'> {
   width?: CSSProperties['width'];
@@ -108,14 +108,21 @@ const AutocompleteV2 = ({
             <TextField
               placeholder={placeholder || 'Search Pokestats'}
               autoComplete="off"
-              InputProps={{
-                ...InputProps,
-                endAdornment: (
-                  <>
-                    {isLoading && <Loading $iconWidth="30px" $flexgrow={false} width="auto" />}
-                    {InputProps.endAdornment}
-                  </>
-                ),
+              slotProps={{
+                input: {
+                  ...InputProps,
+                  endAdornment: (
+                    <>
+                      {isLoading && (
+                        <LoadingV2
+                          $iconWidth={autocompleteOptions?.size === 'small' ? 3 : 5}
+                          py={0}
+                        />
+                      )}
+                      {InputProps.endAdornment}
+                    </>
+                  ),
+                },
               }}
               {...fieldProps}
             />

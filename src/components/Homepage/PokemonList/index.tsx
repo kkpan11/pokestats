@@ -3,13 +3,14 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { NamedAPIResource } from 'pokenode-ts';
 // helpers
 import { usePlausible } from 'next-plausible';
-import { generationOptions, getResourceId, mapIdToGeneration } from '@/helpers';
+import { fadeInUpVariant, generationOptions, getResourceId, mapIdToGeneration } from '@/helpers';
 // components
-import { Grid, GridProps, SelectChangeEvent, Typography } from '@mui/material';
+import { Grid2, Grid2Props, SelectChangeEvent, Typography } from '@mui/material';
 import InfiniteScroll from '@/components/InfiniteScroll';
 import DropdownV2 from '@/components/DropdownV2';
+import { motion } from 'framer-motion';
 
-interface PokemonListProps extends GridProps {
+interface PokemonListProps extends Grid2Props {
   pokemon: NamedAPIResource[];
 }
 
@@ -64,11 +65,20 @@ const PokemonList = ({ pokemon, ...rest }: PokemonListProps): JSX.Element => {
   }, [filteredPokemon, sortBy]);
 
   return (
-    <Grid container {...rest}>
+    <Grid2
+      container
+      direction="column"
+      gap={4}
+      component={motion.div}
+      initial="hidden"
+      animate="show"
+      variants={fadeInUpVariant}
+      {...rest}
+    >
       <Typography variant="sectionTitle">
         {`Select your Pokemon (${sortedAndFilteredPokemon.length})`}
       </Typography>
-      <Grid item container flexDirection="row" flexWrap="wrap" gap={{ xs: '1em', md: '2em' }}>
+      <Grid2 container wrap="wrap" gap={{ xs: 2, md: 4 }}>
         <DropdownV2
           label="Game Generation"
           options={generationOptions}
@@ -84,11 +94,11 @@ const PokemonList = ({ pokemon, ...rest }: PokemonListProps): JSX.Element => {
           value={sortBy}
           onChange={handleSortChange}
         />
-      </Grid>
+      </Grid2>
       {sortedAndFilteredPokemon.length > 0 && (
-        <InfiniteScroll item pokemonList={sortedAndFilteredPokemon} />
+        <InfiniteScroll pokemonList={sortedAndFilteredPokemon} />
       )}
-    </Grid>
+    </Grid2>
   );
 };
 

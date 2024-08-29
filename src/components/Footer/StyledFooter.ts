@@ -1,30 +1,51 @@
-import styled from 'styled-components';
-// styles
+// helpers
 import { riseUp } from '@/components/BaseStyles';
+import { styled } from '@mui/material/styles';
 // components
-import BoxWrapper from '../Box/StyledBox';
-// icons
+import { Container, Stack } from '@mui/material';
+import Link from 'next/link';
+// svg
 import Potion from 'public/static/iconLibrary/potion.svg';
 
-const FooterContainer = styled.footer`
-  align-items: center;
-  background: ${({ theme }) => theme.colors.primary.main};
-  display: flex;
-  flex-direction: column;
-  font-weight: 500;
-  gap: ${({ theme }) => theme.layout.gap};
-  justify-content: center;
-  padding-bottom: ${({ theme }) => theme.layout.gap};
-  width: 100%;
-`;
+const FooterContainer = styled('footer')(({ theme }) => ({
+  background: theme.palette.background.default,
+  fontWeight: theme.typography.fontWeightMedium,
+  paddingBottom: theme.spacing(2),
+  paddingTop: theme.spacing(2),
+  width: '100%',
+}));
 
-const Anchor = styled(BoxWrapper)`
-  white-space: nowrap;
+const FooterContainerInner = styled(Container)(({ theme }) => ({
+  alignItems: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+  justifyContent: 'center',
+}));
 
-  &:hover {
-    text-decoration: underline;
-  }
-`;
+const FooterContent = styled(Stack)(({ theme }) => ({
+  alignItems: 'center',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+  justifyContent: 'center',
+  textAlign: 'center',
+  width: '100%',
+
+  [theme.breakpoints.up('md')]: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    textAlign: 'left',
+  },
+}));
+
+const Anchor = styled(Link)({
+  whiteSpace: 'nowrap',
+
+  '&:hover': {
+    textDecoration: 'underline',
+  },
+});
 
 const PokestatsIcon = styled(Potion)`
   height: auto;
@@ -50,4 +71,4 @@ const PokestatsIcon = styled(Potion)`
   }
 `;
 
-export { FooterContainer, PokestatsIcon, Anchor };
+export { FooterContainer, FooterContainerInner, FooterContent, PokestatsIcon, Anchor };

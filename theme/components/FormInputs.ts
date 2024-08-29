@@ -15,6 +15,7 @@ const FormInputs: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: '0.5em',
+        flexWrap: 'wrap',
       },
     },
   },
@@ -24,12 +25,11 @@ const FormInputs: {
     },
     styleOverrides: {
       root: ({ theme }) => ({
-        color: theme.palette.secondary.main,
         position: 'relative',
         transform: 'none',
-        fontWeight: theme.typography.fontWeightMedium,
+        fontWeight: theme.typography.fontWeightBold,
         [`&.${inputLabelClasses.focused}`]: {
-          color: theme.palette.secondary.main,
+          color: 'inherit',
         },
       }),
     },
@@ -56,7 +56,7 @@ const FormInputs: {
         padding: 0,
       },
       inputRoot: ({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme.palette.background.default,
       }),
     },
   },

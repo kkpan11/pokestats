@@ -1,27 +1,26 @@
-import { css, Stack, styled, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-const Container = styled(Stack)(
-  ({ theme }) => css`
-    &:not(:last-child) {
-      border-bottom: 1px solid ${theme.palette.primary.light};
-      padding-bottom: 0.5em;
-    }
-  `,
-);
+const Container = styled(Stack)(({ theme }) => ({
+  '&:not(:last-child)': {
+    borderBottom: `1px solid ${theme.palette.primary.light}`,
+    paddingBottom: '0.5em',
+  },
+}));
 
-const Details = styled(Typography)`
-  font-weight: 500;
-  text-align: center;
-  white-space: normal;
-  word-break: break-word;
+const Details = styled(Typography)({
+  fontWeight: 500,
+  textAlign: 'center',
+  whiteSpace: 'normal',
+  wordBreak: 'break-word',
 
-  &:first-letter {
-    text-transform: uppercase;
-  }
-`;
+  '&:first-letter': {
+    textTransform: 'uppercase',
+  },
+});
 
-const ItemImage = styled('img')`
-  width: 50px;
-`;
+const ItemImage = styled('img')({
+  width: '50px',
+});
 
 export { Container, Details, ItemImage };

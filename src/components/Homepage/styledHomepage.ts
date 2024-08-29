@@ -1,58 +1,54 @@
-import styled, { css } from 'styled-components';
-// helpers
 import { rotate } from '@/BaseStyles';
-// components
 import { motion } from 'framer-motion';
-import BoxWrapper from '@/components/Box/StyledBox';
-// icons
 import PokeballIcon from 'public/static/iconLibrary/pokeball.svg';
+import { Stack } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-const Container = styled(BoxWrapper)`
-  height: 50vh;
-  justify-content: center;
-  margin: auto;
-  min-height: 50vh;
-  position: relative;
-  width: 100%;
-  z-index: 1;
-`;
+const FirstSection = styled(Stack)({
+  alignItems: 'center',
+  gap: '1em',
+  height: '50vh',
+  justifyContent: 'center',
+  margin: 'auto',
+  minHeight: '50vh',
+  position: 'relative',
+  width: '100%',
+});
 
-const GithubLink = styled(motion.a)`
-  position: absolute;
-  right: 20px;
-  top: 20px;
+const SecondSection = styled(Stack)(({ theme }) => ({
+  alignItems: 'center',
+  backgroundColor: theme.palette.background.default,
+  justifyContent: 'center',
+  width: '100%',
+}));
 
-  &:hover svg {
-    ${({ theme }) => css`
-      background: ${theme.colors.secondary.main};
-      fill: ${theme.colors.primary.main};
-    `}
-  }
+const GithubLink = styled(motion.a)(({ theme }) => ({
+  position: 'absolute',
+  right: '20px',
+  top: '20px',
+  zIndex: 3,
 
-  svg {
-    border-radius: 25%;
-    height: auto;
-    width: 30px;
+  svg: {
+    background: theme.palette.background.default,
+    borderRadius: '25%',
+    fill: theme.palette.secondary.main,
+    height: 'auto',
+    width: '30px',
 
-    ${({ theme }) => css`
-      @media ${theme.device.sm} {
-        width: 50px;
-      }
-    `}
-  }
-`;
+    [theme.breakpoints.up('sm')]: {
+      width: '50px',
+    },
 
-const ListContainer = styled(BoxWrapper)`
-  ${({ theme }) => css`
-    background: ${theme.colors.primary.main};
-    color: ${theme.colors.primary.contrastText};
-  `}
-`;
+    '&:hover': {
+      background: theme.palette.secondary.main,
+      fill: theme.palette.background.default,
+    },
+  },
+}));
 
 const Pokeball = styled(PokeballIcon)`
-  width: 1em;
-  // rotation
   animation: 3s ${rotate} 0ms infinite linear;
+  width: 1em;
 `;
 
-export { Container, GithubLink, ListContainer, Pokeball };
+export { FirstSection, SecondSection, GithubLink, Pokeball };

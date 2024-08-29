@@ -5,7 +5,7 @@ import type { MapAreas } from '@/types/imageMapper';
 // helpers
 import { capitalise, fadeInUpVariant, pageContainerVariant, removeDash } from '@/helpers';
 // styles
-import { Button, Divider, PageHeading, SectionSubTitle, SectionTitle } from '@/BaseStyles';
+import { Divider, PageHeading, SectionSubTitle, SectionTitle } from '@/BaseStyles';
 import {
   ImageContainer,
   CurrentLocation,
@@ -19,10 +19,11 @@ import { AnimatePresence } from 'framer-motion';
 import { MainContainer } from '@/components/Layout';
 import Box from '@/components/Box';
 import ImageMapper from '@/components/ImageMapper';
+import NewMapper from '@/components/ImageMapper/newMapper';
+import CustomButton from '@/components/CustomButton';
 // data
 import kantoZones from './kanto-zones.json';
 import LocationTable from '@/components/LocationTable';
-import NewMapper from '@/components/ImageMapper/newMapper';
 
 const mapLocationToMusic = (locationKey: string): string => {
   switch (locationKey) {
@@ -207,7 +208,7 @@ const KantoGen1 = ({
                 setting of the first generation of games and can also be explored in Generations II,
                 III, IV, and VII.
               </p>
-              <Button onClick={handleHighlightsClick}>Toggle Highlights</Button>
+              <CustomButton onClick={handleHighlightsClick}>Toggle Highlights</CustomButton>
               {showAllAreas ? 'true' : 'false'}
             </Box>
             <ImageContainer width="auto">
@@ -311,7 +312,6 @@ const KantoGen1 = ({
                   <LocationTable location={currArea} screensizes={8} />
                 ) : (
                   <MapImage
-                    containerProps={{ screensizes: 6 }}
                     alt={`Map view of ${currArea.label}`}
                     src={`https://raw.githubusercontent.com/andreferreiradlw/pokestats_media/main/assets/regions/kanto/gen1/${currArea.key}.png`}
                   />
