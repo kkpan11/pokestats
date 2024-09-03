@@ -14,6 +14,7 @@ import MovesTable from '@/components/MovesTable';
 import { Grid2, Grid2Props, Typography } from '@mui/material';
 import DropdownV2 from '@/components/DropdownV2';
 import GameGenSelect from '@/components/GameGenSelect';
+import MovesTableV2 from '@/components/MovesTableV2';
 
 const LearnMethodOptions = [
   { label: 'Level Up', value: 'level-up' },
@@ -84,6 +85,9 @@ const PokemonMoves = ({ pokemon, ...rest }: PokemonMovesProps): JSX.Element => {
             >
               {`No ${learnMethod} moves for currently selected game version.`}
             </Typography>
+          )}
+          {filteredMoves.length > 0 && (
+            <MovesTableV2 moves={filteredMoves} machineNames={machines} learnMethod={learnMethod} />
           )}
         </AnimatePresence>
       )}

@@ -141,7 +141,6 @@ const MovesTable = ({ moves, learnMethod, machineNames, ...rest }: TypeMovesProp
                     </NameTD>
                     <DataCell>
                       <TypeBadge
-                        flexmargin="0"
                         $iconOnly
                         $typename={move.type.name as keyof Theme['palette']['types']}
                       />

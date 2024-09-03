@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import type { TypeBadgeProps } from './index';
 
 const Badge = styled(motion.a)<TypeBadgeProps>(
-  ({ theme, $typename, $fill, $iconOnly, $iconWidth, $iconHeight, flexmargin }) => ({
+  ({ theme, $typename, $fill, $iconOnly, $iconWidth, $iconHeight }) => ({
     alignItems: 'center',
     borderRadius: '4px',
     display: 'flex',
@@ -28,8 +28,6 @@ const Badge = styled(motion.a)<TypeBadgeProps>(
     '&:active': {
       boxShadow: theme.shadows[1],
     },
-
-    ...(flexmargin && { margin: flexmargin }),
 
     [theme.breakpoints.up('md')]: {
       padding: $iconOnly ? '0.3em' : '0.5em',

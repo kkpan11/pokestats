@@ -13,7 +13,6 @@ export interface TypeBadgeProps {
   $iconHeight?: string;
   $typename: keyof Theme['palette']['types'];
   hideIcon?: boolean;
-  flexmargin?: string;
   $fill?: boolean;
 }
 
