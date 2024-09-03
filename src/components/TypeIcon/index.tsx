@@ -1,6 +1,6 @@
+import { Theme } from '@mui/material';
 import dynamic from 'next/dynamic';
-// types
-import type { Type } from 'pokenode-ts';
+
 // icons
 const Bug = dynamic(() => import('public/static/typeIcons/bug.svg'));
 const Dark = dynamic(() => import('public/static/typeIcons/dark.svg'));
@@ -47,11 +47,11 @@ const iconTypes = {
 };
 
 interface TypeIconProps {
-  type: Type['name'];
+  type: keyof Theme['palette']['types'];
 }
 
-const TypeIcon = ({ type, ...rest }: TypeIconProps): JSX.Element => {
-  let Icon = iconTypes[type];
+const TypeIcon = ({ type, ...rest }: TypeIconProps): JSX.Element | null => {
+  const Icon = iconTypes[type];
 
   if (!Icon) return null;
 

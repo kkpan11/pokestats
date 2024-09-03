@@ -12,7 +12,7 @@ import PokemonForms from './Forms';
 import Moves from './Moves';
 import Sprites from './Sprites';
 import Navigation from './Navigation';
-import { Divider, Stack } from '@mui/material';
+import { Divider, Grid2, Stack } from '@mui/material';
 
 const PokemonPage = ({
   allPokemon,
@@ -22,59 +22,45 @@ const PokemonPage = ({
   evolutionData,
 }: Omit<PokestatsPokemonPageProps, 'autocompleteList' | 'pokemonGen'>): JSX.Element => {
   // data
-  const { id, name, stats, types, sprites } = pokemon;
+  const { id, stats, types, sprites } = pokemon;
   const { names, varieties } = species;
 
   return (
     <Stack divider={<Divider />} gap={4} py={2}>
-      <Stack
+      <Grid2
+        container
         direction={{ xxs: 'column-reverse', lg: 'row' }}
         alignItems="center"
         justifyContent="flex-start"
-        gap="2em"
+        spacing={4}
       >
         <Details
-          screensizes={{ xxs: 12, lg: 5 }}
-          key={`pokemon-details-${name}`}
+          size={{ xxs: 12, lg: 5 }}
           pokemon={pokemon}
           abilities={abilities}
           species={species}
         />
-        <FeaturedImage screensizes={{ xxs: 12, lg: 7 }} specieNames={names} pokemonId={id} />
-      </Stack>
+        <FeaturedImage size={{ xxs: 12, lg: 7 }} specieNames={names} pokemonId={id} />
+      </Grid2>
       {/** BREEDING, TRAINING, MULTIPLIERS */}
-      <Stack
+      <Grid2
+        container
         direction={{ xxs: 'column', md: 'row' }}
         alignItems="stretch"
         justifyContent="space-between"
-        gap="2em"
-        flexWrap="wrap"
+        spacing={4}
+        wrap="wrap"
       >
         <Breeding
           species={species}
           babyTriggerItem={evolutionData.baby_trigger_item}
-          screensizes={{ xxs: 12, md: 6, lg: 4 }}
-          $parentGap="2em"
+          size={{ xxs: 12, md: 6, lg: 4 }}
         />
-        <Training
-          pokemon={pokemon}
-          species={species}
-          screensizes={{ xxs: 12, md: 6, lg: 4 }}
-          $parentGap="2em"
-        />
-        <Multipliers
-          pokemonTypes={types}
-          screensizes={{ xxs: 12, md: 6, lg: 4 }}
-          $parentGap="2em"
-        />
-        <PokemonForms
-          pokemonId={id}
-          species={species}
-          screensizes={{ xxs: 12, md: 6, lg: 4 }}
-          $parentGap="2em"
-        />
-        <BaseStats stats={stats} screensizes={{ xxs: 12, lg: 8 }} />
-      </Stack>
+        <Training pokemon={pokemon} species={species} size={{ xxs: 12, md: 6, lg: 4 }} />
+        <Multipliers pokemonTypes={types} size={{ xxs: 12, md: 6, lg: 4 }} />
+        <PokemonForms pokemonId={id} species={species} size={{ xxs: 12, md: 6, lg: 4 }} />
+        <BaseStats stats={stats} size={{ xxs: 12, lg: 8 }} />
+      </Grid2>
       {/** EVOLUTION CHAIN */}
       <Stack alignItems="flex-start" justifyContent="flex-start">
         <EvolutionChain evolutionChain={evolutionData} pokemonSpecies={species} />
@@ -84,7 +70,7 @@ const PokemonPage = ({
         <Moves pokemon={pokemon} />
       </Stack>
       {/** SPRITES & NAVIGATION */}
-      <Stack alignItems="flex-start" justifyContent="flex-start" gap={2}>
+      <Stack alignItems="flex-start" justifyContent="flex-start" gap={4}>
         <Sprites pokemonSprites={sprites} pokemonId={id} forms={varieties} />
         <Navigation allPokemon={allPokemon} pokemonId={id} />
       </Stack>

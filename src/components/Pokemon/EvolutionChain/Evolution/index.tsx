@@ -1,7 +1,8 @@
 // types
 import type { PokemonSpecies, EvolutionDetail } from 'pokenode-ts';
 // helpers
-import { fadeInUpVariant, findEnglishName } from '@/helpers';
+import { findEnglishName } from '@/helpers';
+import { fadeInUpVariant } from '@/animations';
 import { EvolutionContainer, EvoDetailsContainer, EvoArrow } from './StyledEvolution';
 // components
 import PokemonBox from '@/components/PokemonBox';
@@ -10,7 +11,7 @@ import { HTMLMotionProps } from 'framer-motion';
 
 export interface EvolutionProps extends HTMLMotionProps<'div'> {
   noArrow?: boolean;
-  species: PokemonSpecies;
+  species?: PokemonSpecies;
   evolutionDetails?: EvolutionDetail[];
 }
 
@@ -19,11 +20,12 @@ const Evolution = ({
   species,
   evolutionDetails,
   ...rest
-}: EvolutionProps): JSX.Element => {
+}: EvolutionProps): JSX.Element | null => {
+  if (!species) return null;
   // data
   const { id, name, generation, varieties, names } = species;
 
-  const pokemonName = findEnglishName(names);
+  const pokemonName = findEnglishName(names) || '';
 
   return (
     <EvolutionContainer
@@ -36,7 +38,7 @@ const Evolution = ({
       {!noArrow && (
         <EvoDetailsContainer>
           <EvolutionDetails details={evolutionDetails} />
-          <EvoArrow />
+          <EvoArrow fontSize="large" className="evo-arrow" />
         </EvoDetailsContainer>
       )}
       <PokemonBox

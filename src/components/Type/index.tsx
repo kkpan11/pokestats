@@ -8,8 +8,7 @@ import TypeRelations from './Relations';
 import TypeIcon from './TypeIcon';
 import Tabs from './Tabs';
 // styles
-import { PageHeading } from '@/components/BaseStyles';
-import { Divider, Grid2, Stack } from '@mui/material';
+import { Divider, Grid2, Stack, Theme, Typography } from '@mui/material';
 
 export type TypePageProps = Omit<PokestatsTypePageProps, 'autocompleteList'>;
 
@@ -23,7 +22,7 @@ const TypePage = ({ typeData }: TypePageProps): JSX.Element => {
     <Stack divider={<Divider />} gap={4} py={2}>
       <Grid2 container spacing={4} direction="column">
         <Grid2>
-          <PageHeading>{typeName}</PageHeading>
+          <Typography variant="pageHeading">{typeName}</Typography>
         </Grid2>
         <Grid2 container spacing={2} direction={{ xxs: 'column-reverse', lg: 'row' }} size={12}>
           <Grid2 size={{ xxs: 12, lg: 3 }}>
@@ -33,11 +32,11 @@ const TypePage = ({ typeData }: TypePageProps): JSX.Element => {
             <TypeRelations relations={damage_relations} />
           </Grid2>
           <Grid2 size={{ xxs: 12, lg: 3 }}>
-            <TypeIcon typeName={name} otherNames={names} />
+            <TypeIcon typeName={name as keyof Theme['palette']['types']} otherNames={names} />
           </Grid2>
         </Grid2>
       </Grid2>
-      <Tabs typeData={typeData} typeName={typeName} screensizes={12} />
+      <Tabs typeData={typeData} typeName={typeName as keyof Theme['palette']['types']} />
     </Stack>
   );
 };

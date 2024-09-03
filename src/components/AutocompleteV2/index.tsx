@@ -1,13 +1,14 @@
+import { CSSProperties } from 'react';
 // types
 import type { HTMLMotionProps } from 'framer-motion';
-import type { CSSProperties } from '@mui/styled-engine-sc';
 import type { MoveType, Pokemon, PokemonType } from '@/types';
 // hooks
 import { useRouter } from 'next/router';
 import { usePlausible } from 'next-plausible';
 import { AutocompleteListOption, useAutocompleteOptions } from '@/hooks';
 // helpers
-import { fadeInDownVariant, removeDash } from '@/helpers';
+import { removeDash } from '@/helpers';
+import { fadeInDownVariant } from '@/animations';
 // components
 import {
   Autocomplete,
@@ -16,8 +17,9 @@ import {
   createFilterOptions,
   Stack,
   TextField,
+  Theme,
 } from '@mui/material';
-import LoadingV2 from '../LoadingV2';
+import Loading from '@/components/Loading';
 // styles
 import {
   Container,
@@ -44,7 +46,7 @@ interface AutocompleteIconProps {
   id?: number;
 }
 
-const AutocompleteIcon = ({ assetType, name, id }: AutocompleteIconProps): JSX.Element => {
+const AutocompleteIcon = ({ assetType, name, id }: AutocompleteIconProps): JSX.Element | null => {
   switch (assetType) {
     case 'pokemon':
       return (
@@ -54,7 +56,7 @@ const AutocompleteIcon = ({ assetType, name, id }: AutocompleteIconProps): JSX.E
         />
       );
     case 'type':
-      return <TypeIcon type={name} />;
+      return <TypeIcon type={name as keyof Theme['palette']['types']} />;
     case 'move':
       return (
         <ItemIcon
@@ -114,7 +116,8 @@ const AutocompleteV2 = ({
                   endAdornment: (
                     <>
                       {isLoading && (
-                        <LoadingV2
+                        <Loading
+                          alignItems="flex-end"
                           $iconWidth={autocompleteOptions?.size === 'small' ? 3 : 5}
                           py={0}
                         />
@@ -137,6 +140,7 @@ const AutocompleteV2 = ({
             {assetType === 'pokemon' && <PokeID variant="h5">{`#${id}`}</PokeID>}
           </OptionWrapper>
         )}
+        // @ts-expect-error
         ListboxComponent={ListWrapper}
         ListboxProps={{
           // @ts-expect-error: cannot set custom props for ListboxComponent

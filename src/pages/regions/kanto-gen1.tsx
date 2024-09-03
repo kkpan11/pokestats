@@ -1,12 +1,12 @@
 // types
 import type { GetStaticProps, NextPage } from 'next';
 // helpers
+import { findEnglishName, getResourceId } from '@/helpers';
 import { Location as PokenodeLocation, LocationArea, LocationClient, Region } from 'pokenode-ts';
 // components
 import Head from 'next/head';
-import Layout from '@/components/Layout';
 import KantoGen1 from '@/components/RegionsPage/KantoGen1';
-import { findEnglishName, getIdFromURL } from '@/helpers';
+import LayoutV2 from '@/components/LayoutV2';
 
 export interface Location {
   key: string;
@@ -28,9 +28,9 @@ const PokestatsRegionsPage: NextPage<PokestatsKantoGen1PageProps> = props => {
           content="The Kanto region (Japanese: カントー地方 Kanto region) is a region of the Pokémon world. Kanto is located east of Johto, which together form a joint landmass that is south of Sinnoh."
         />
       </Head>
-      <Layout withHeader $withGutter={false} layoutGap="0">
+      <LayoutV2 withHeader key="kanto-gen1-region">
         <KantoGen1 {...props} />
-      </Layout>
+      </LayoutV2>
     </>
   );
 };
@@ -45,10 +45,10 @@ export const getStaticProps: GetStaticProps<PokestatsKantoGen1PageProps> = async
       return { notFound: true };
     }
 
-    let locations = [];
+    const locations: Promise<PokenodeLocation>[] = [];
     // create an axios request for each region location
     kantoData.locations.forEach(({ url }) =>
-      locations.push(locationClient.getLocationById(getIdFromURL(url, 'location'))),
+      locations.push(locationClient.getLocationById(getResourceId(url))),
     );
 
     const kantoLocationsData: PokenodeLocation[] = await Promise.all(locations);
@@ -71,9 +71,7 @@ export const getStaticProps: GetStaticProps<PokestatsKantoGen1PageProps> = async
         if (id > 234) return;
 
         const locationAreaData = await Promise.all(
-          areas.map(async ({ url }) =>
-            locationClient.getLocationAreaById(getIdFromURL(url, 'location-area')),
-          ),
+          areas.map(({ url }) => locationClient.getLocationAreaById(getResourceId(url))),
         );
 
         if (locationAreaData.length) {
@@ -105,9 +103,9 @@ export const getStaticProps: GetStaticProps<PokestatsKantoGen1PageProps> = async
         // add location area data
         regionLocationAreas.push({
           key: locationName,
-          label: findEnglishName(names),
+          label: findEnglishName(names) || '',
           locationId: id,
-          locationAreas: locationAreaData.length ? locationAreaData : null,
+          locationAreas: locationAreaData,
         });
       }),
     );

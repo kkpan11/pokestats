@@ -2,8 +2,9 @@ import { useMemo, useEffect } from 'react';
 import { useRouter } from 'next/router';
 // heplpers
 import { usePlausible } from 'next-plausible';
-import { getRandomInt, hoverVariant } from '@/helpers';
+import { getRandomInt } from '@/helpers';
 import { usePokemonList } from '@/hooks';
+import { hoverVariant } from '@/animations';
 // types
 import type { PokestatsHomepageProps } from '@/pages/index';
 // styles
@@ -13,11 +14,11 @@ import PokemonList from './PokemonList';
 import TypeList from './TypeList';
 import AutocompleteV2 from '../AutocompleteV2';
 import { Container, Divider, Stack, Typography } from '@mui/material';
-import LoadingV2 from '../LoadingV2';
-// icons
-import Github from 'public/static/iconLibrary/github.svg';
 import { AnimatePresence } from 'framer-motion';
 import CustomButton from '@/components/CustomButton';
+import Loading from '@/components/Loading';
+// icons
+import Github from 'public/static/iconLibrary/github.svg';
 
 const Homepage = ({ pokemonTypes }: PokestatsHomepageProps): JSX.Element => {
   // hooks
@@ -60,8 +61,9 @@ const Homepage = ({ pokemonTypes }: PokestatsHomepageProps): JSX.Element => {
           }}
           variant="contained"
           color="secondary"
+          size="large"
         >
-          Random Pokemon
+          Random Pokémon
           <Pokeball />
         </CustomButton>
       </FirstSection>
@@ -70,7 +72,7 @@ const Homepage = ({ pokemonTypes }: PokestatsHomepageProps): JSX.Element => {
           <Stack gap="1.5em" padding={{ xs: 2, md: 4 }} divider={<Divider />}>
             <TypeList types={pokemonTypes} />
             <AnimatePresence mode="wait">
-              {isLoading ? <LoadingV2 $iconWidth={12} /> : <PokemonList pokemon={allPokemon} />}
+              {isLoading ? <Loading $iconWidth={12} /> : <PokemonList pokemon={allPokemon!} />}
             </AnimatePresence>
           </Stack>
         </Container>

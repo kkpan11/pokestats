@@ -1,14 +1,19 @@
 import { useState, useContext, useMemo } from 'react';
-import { MoveLearnMethod, Pokemon } from 'pokenode-ts';
+// types
+import type { MoveLearnMethod, Pokemon } from 'pokenode-ts';
+// helpers
+import { fadeInUpVariant } from '@/animations';
 import { GameVersionContext } from '@/context';
-import { mapVersionToGroup, filterMoves, fadeInUpVariant } from '@/helpers';
+import { mapVersionToGroup, filterMoves } from '@/helpers';
+// hooks
+import { useMachines, usePokemonMoves } from '@/hooks';
+// components
 import { AnimatePresence, motion } from 'framer-motion';
 import Loading from '@/components/Loading';
 import MovesTable from '@/components/MovesTable';
 import { Grid2, Grid2Props, Typography } from '@mui/material';
 import DropdownV2 from '@/components/DropdownV2';
 import GameGenSelect from '@/components/GameGenSelect';
-import { useMachines, usePokemonMoves } from '@/hooks';
 
 const LearnMethodOptions = [
   { label: 'Level Up', value: 'level-up' },
@@ -62,7 +67,7 @@ const PokemonMoves = ({ pokemon, ...rest }: PokemonMovesProps): JSX.Element => {
         <GameGenSelect />
       </Grid2>
       {movesLoading || machinesLoading ? (
-        <Loading flexheight="100%" $iconWidth={{ xxs: '20%', xs: '15%', md: '10%', lg: '5%' }} />
+        <Loading height="100%" $iconWidth={{ xxs: '20%', xs: '15%', md: '10%', lg: '5%' }} />
       ) : (
         <AnimatePresence mode="wait">
           {filteredMoves.length ? (

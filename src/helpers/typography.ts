@@ -1,6 +1,3 @@
-// data
-import itemMapData from '@/components/Pokemon/Training/item-icons.json';
-
 // capitalises first letter of every word
 const capitalise = (str: string): string => str.replace(/(^\w|\s\w)/g, m => m.toUpperCase());
 
@@ -8,51 +5,39 @@ const capitalise = (str: string): string => str.replace(/(^\w|\s\w)/g, m => m.to
 const removeUnderscore = (str: string): string => str.replace(/_/g, ' ');
 
 // remove dashes
-const removeDash = (str: string): string => str?.replace(/-/g, ' ');
-
-// return text between parenthesis
-const betweentParenthesis = (str: string): string => {
-  const match = str.match(/\((.*)\)/)?.pop();
-  // if no parenthesis, return original str
-  return match || null;
+const removeDash = (str?: string): string => {
+  if (typeof str !== 'string') return ''; // Return an empty string if the input is undefined or not a string
+  return str.replace(/-/g, ' '); // Replace all dashes with spaces
 };
+// return text between parenthesis
+const betweentParenthesis = (str: string) => str.match(/\((.*)\)/)?.pop();
 
 // formats game ROMs flavor text
-const formatFlavorText = (text: string): string =>
-  text
+const formatFlavorText = (text?: string): string => {
+  if (!text) return '';
+
+  return text
     .replace(/\u00AD/g, '')
     .replace(/\u000C/g, ' ')
     .replace(/u' -\n'/, ' - ')
     .replace(/u'-\n'/, '-')
     .replace(/(\r\n|\n|\r)/gm, ' ');
+};
 
 // prefixes id with zeros by length
 const prefixId = (id: number, length = 3): string => id.toString().padStart(length, '0');
 
-// map item pokeapi slug to correct pokesprites url
-const itemMapUrl = (itemSlug: string): string => {
-  let itemMatch;
+const createSentence = (elements: string[], lastDivider = 'and', prefix = 'has'): string => {
+  if (elements.length === 0) return ''; // Handle empty array
+  if (elements.length === 1) return `${prefix} ${elements[0]}`; // Handle single element
 
-  for (const category of Object.keys(itemMapData)) {
-    for (const categoryItem of Object.keys(itemMapData[category])) {
-      const currItem = itemMapData[category][categoryItem];
-      if (currItem.icon.slug === itemSlug) {
-        itemMatch = currItem.icon;
-        break;
-      }
-    }
-    if (itemMatch) break;
-  }
+  const allButLastTwo = elements.slice(0, -2); // All elements except the last two
+  const lastTwo = elements.slice(-2).join(` ${lastDivider} `); // Last two elements joined by the lastDivider
 
-  // return formatted url
-  return itemMatch ? `${itemMatch.set}/${itemMatch.filename}` : 'other-item/poke-doll.png';
+  const middlePart = allButLastTwo.length ? `${allButLastTwo.join(', ')}, ` : ''; // Middle part with comma separation if there are more than two elements
+
+  return `${prefix} ${middlePart}${lastTwo}`; // Construct the final sentence
 };
-
-// creates sentences with commas based on string array
-const createSentence = (elements: string[], lastDivider = 'and', prefix = 'has'): string =>
-  `${prefix} ${elements.slice(0, -2).join(', ')} ${
-    elements.slice(0, -2).length ? ', ' : ''
-  } ${elements.slice(-2).join(` ${lastDivider} `)}`;
 
 export {
   capitalise,
@@ -61,6 +46,5 @@ export {
   betweentParenthesis,
   formatFlavorText,
   prefixId,
-  itemMapUrl,
   createSentence,
 };

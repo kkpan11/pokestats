@@ -1,16 +1,17 @@
+import { useMemo } from 'react';
 // types
 import type { Pokemon, PokemonSpecies } from 'pokenode-ts';
-import type { BoxProps } from '@/components/Box';
-import { useMemo } from 'react';
 // helpers
-import { scaleInVariant, prefixId } from '@/helpers';
+import { prefixId } from '@/helpers';
+import { scaleInVariant } from '@/animations';
 // styles
 import { JpnName } from '@/components/BaseStyles';
 import { ImageContainer } from './StyledFeatureImage';
 // components
 import ImageNext from '@/components/ImageNext';
+import { Grid2Props } from '@mui/material';
 
-interface FeaturedImageProps extends BoxProps {
+interface FeaturedImageProps extends Grid2Props {
   specieNames: PokemonSpecies['names'];
   pokemonId: Pokemon['id'];
 }
@@ -18,11 +19,11 @@ interface FeaturedImageProps extends BoxProps {
 const FeaturedImage = ({ specieNames, pokemonId, ...rest }: FeaturedImageProps): JSX.Element => {
   // memo
   const englishName = useMemo(
-    () => specieNames?.find(name => name.language.name === 'en').name,
+    () => specieNames.find(name => name.language.name === 'en')?.name,
     [specieNames],
   );
   const hiraganaName = useMemo(
-    () => specieNames?.find(name => name.language.name === 'ja').name,
+    () => specieNames.find(name => name.language.name === 'ja')?.name,
     [specieNames],
   );
 
@@ -32,7 +33,7 @@ const FeaturedImage = ({ specieNames, pokemonId, ...rest }: FeaturedImageProps):
         priority
         loading="eager"
         placeholderwidth="20%"
-        alt={englishName}
+        alt={englishName!}
         src={`https://raw.githubusercontent.com/andreferreiradlw/pokestats_media/main/assets/images/${prefixId(
           pokemonId,
         )}.png`}

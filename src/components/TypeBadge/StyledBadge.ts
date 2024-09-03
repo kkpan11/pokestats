@@ -1,91 +1,50 @@
-import styled, { css } from 'styled-components';
+import { styled, alpha } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 // types
-import type { Type } from 'pokenode-ts';
 import type { TypeBadgeProps } from './index';
-// styles
-import { float as floatAnim } from '@/components/BaseStyles';
-// components
-import Link from 'next/link';
 
-const isDarkBackground = (type: Type['name']): boolean =>
-  !!type.match(/^(dark|dragon|fighting|ghost|poison|shadow|unknown)$/);
+const Badge = styled(motion.a)<TypeBadgeProps>(
+  ({ theme, $typename, $fill, $iconOnly, $iconWidth, $iconHeight, flexmargin }) => ({
+    alignItems: 'center',
+    borderRadius: '4px',
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '0.5em',
+    justifyContent: 'center',
+    textTransform: 'capitalize',
+    transition: 'background 0.25s ease-in-out, box-shadow 0.03s ease-in-out',
+    padding: $iconOnly ? '0.3em' : '0.25em',
+    background: $fill
+      ? theme.palette.types[$typename]
+      : alpha(theme.palette.types[$typename], 0.75),
+    border: `1px solid ${theme.palette.primary.main}`,
+    color: theme.palette.getContrastText(theme.palette.types[$typename]),
 
-const Anchor = styled(Link)``;
+    '&:hover': {
+      background: $fill ? theme.palette.types[$typename] : theme.palette.types[$typename],
+      boxShadow: theme.shadows[3],
+    },
 
-const Badge = styled(motion.div)<TypeBadgeProps>`
-  align-items: center;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: row;
-  font-family: 'Quicksand', sans-serif;
-  font-size: 1em;
-  font-weight: 600;
-  gap: 0.5em;
-  justify-content: center;
-  text-transform: capitalize;
-  transform: background 0.5 ease-in-out;
-  transition: box-shadow 0.05s ease-in-out;
-  width: auto;
+    '&:active': {
+      boxShadow: theme.shadows[1],
+    },
 
-  ${({ theme, $typename, $fill }) => css`
-    ${!$fill && `background: ${theme.colors.typesHalf[$typename]};`};
-    border: 1px solid ${theme.colors.primary.main};
-    color: ${isDarkBackground($typename) ? theme.colors.lightText : theme.colors.darkText};
+    ...(flexmargin && { margin: flexmargin }),
 
-    &:hover {
-      ${!$fill && `background: ${theme.colors.types[$typename]};`}
-      box-shadow: ${theme.colors.defaultBoxShadow};
-    }
+    [theme.breakpoints.up('md')]: {
+      padding: $iconOnly ? '0.3em' : '0.5em',
+    },
 
-    &:active {
-      box-shadow: ${theme.colors.defaultInsetBoxShadow};
-    }
-  `}
+    '& svg': {
+      height: $iconOnly ? $iconHeight || '15px' : $iconHeight || '25px',
+      width: $iconOnly ? $iconWidth || '15px' : $iconWidth || '25px',
 
-  ${({ theme, $iconOnly, flexmargin }) =>
-    $iconOnly
-      ? css`
-          display: inline-flex;
-          ${flexmargin && `margin: ${flexmargin};`}
-          padding: 0.3em;
-        `
-      : css`
-          ${flexmargin && `margin: ${flexmargin};`}
-          padding: 0.25em;
+      '& path': {
+        fill: theme.palette.common.white,
+        stroke: theme.palette.common.black,
+      },
+    },
+  }),
+);
 
-          @media ${theme.device.md} {
-            padding: 0.5em;
-          }
-        `}
-
-  ${({ $float }) =>
-    $float &&
-    css`
-      @media (prefers-reduced-motion: no-preference) {
-        animation: ${floatAnim} infinite 3s ease-in-out;
-      }
-    `}
-
-  & svg {
-    ${({ $iconOnly, $iconWidth, $iconHeight }) =>
-      !$iconOnly
-        ? css`
-            height: ${$iconHeight || '25px'};
-            width: ${$iconWidth || '25px'};
-          `
-        : css`
-            height: ${$iconHeight || '15px'};
-            width: ${$iconWidth || '15px'};
-          `}
-
-    path {
-      ${({ theme, $typename, $fill }) => css`
-        fill: ${$fill ? theme.colors.types[$typename] : theme.colors.primary.main};
-        stroke: ${theme.colors.primary.contrastText};
-      `};
-    }
-  }
-`;
-
-export { Anchor, Badge };
+export { Badge };

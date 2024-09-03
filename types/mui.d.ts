@@ -1,5 +1,6 @@
 import '@mui/material';
 
+// Extend the MUI BreakpointOverrides to include custom breakpoints
 declare module '@mui/material/styles' {
   interface BreakpointOverrides {
     xxs: true;
@@ -11,6 +12,7 @@ declare module '@mui/material/styles' {
     xxl: true;
   }
 
+  // Extend the MUI TypographyVariants and TypographyVariantsOptions
   interface TypographyVariants {
     mainHeading: React.CSSProperties;
     pageHeading: React.CSSProperties;
@@ -19,7 +21,6 @@ declare module '@mui/material/styles' {
     sectionMessage: React.CSSProperties;
   }
 
-  // allow configuration using `createTheme`
   interface TypographyVariantsOptions {
     mainHeading?: React.CSSProperties;
     pageHeading?: React.CSSProperties;
@@ -27,9 +28,71 @@ declare module '@mui/material/styles' {
     sectionSubTitle?: React.CSSProperties;
     sectionMessage?: React.CSSProperties;
   }
+
+  // Extend the MUI Palette interface to add custom `types` colors and `games` colors
+  interface Palette {
+    types: {
+      bug: string;
+      dark: string;
+      dragon: string;
+      electric: string;
+      fairy: string;
+      fighting: string;
+      fire: string;
+      flying: string;
+      ghost: string;
+      grass: string;
+      ground: string;
+      ice: string;
+      normal: string;
+      poison: string;
+      psychic: string;
+      rock: string;
+      shadow: string;
+      steel: string;
+      unknown: string;
+      water: string;
+    };
+    games: {
+      red: string;
+      blue: string;
+      yellow: string;
+    };
+  }
+
+  // Extend the MUI PaletteOptions interface to add custom `types` colors and `games` colors
+  interface PaletteOptions {
+    types?: {
+      bug?: string;
+      dark?: string;
+      dragon?: string;
+      electric?: string;
+      fairy?: string;
+      fighting?: string;
+      fire?: string;
+      flying?: string;
+      ghost?: string;
+      grass?: string;
+      ground?: string;
+      ice?: string;
+      normal?: string;
+      poison?: string;
+      psychic?: string;
+      rock?: string;
+      shadow?: string;
+      steel?: string;
+      unknown?: string;
+      water?: string;
+    };
+    games?: {
+      red?: string;
+      blue?: string;
+      yellow?: string;
+    };
+  }
 }
 
-// Update the Typography's variant prop options
+// Update the Typography's variant prop options to include custom variants
 declare module '@mui/material/Typography' {
   interface TypographyPropsVariantOverrides {
     mainHeading: true;

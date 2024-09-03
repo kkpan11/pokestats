@@ -1,86 +1,78 @@
-import styled, { css } from 'styled-components';
+import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 
-// simple table styles
-const Table = styled(motion.table)`
-  border-spacing: 0;
-  display: table;
-  font-size: 1em;
-  line-height: 1.2em;
-  width: 100%;
-  word-break: keep-all;
+// Simple table styles using MUI styled
+const Table = styled(motion.table)(({ theme }) => ({
+  borderSpacing: 0,
+  display: 'table',
+  fontSize: '1em',
+  lineHeight: '1.2em',
+  width: '100%',
+  wordBreak: 'keep-all',
+  'border-collapse': 'collapse',
 
-  tbody {
-    flex-grow: 1;
-  }
+  '& tr span': {
+    // fontWeight: 400,
+  },
 
-  tr span {
-    font-weight: 400;
-  }
+  '& tr:not(:last-of-type)': {
+    borderBottom: `1px solid ${theme.palette.secondary.light}`,
+    width: '100%',
+  },
 
-  tr:not(:last-of-type) {
-    border-bottom: 1px solid ${({ theme }) => theme.colors.primary.light};
-    width: 100%;
-  }
+  '& th': {
+    fontSize: '1em',
+    fontWeight: 600,
+    minHeight: '45px',
+    textAlign: 'left',
+    padding: '0.5em 1em 0.5em 0',
+  },
 
-  th {
-    font-size: 1em;
-    font-weight: 600;
-    min-height: 45px;
-    text-align: left;
-    padding: 0.5em 1em 0.5em 0;
-  }
+  '& td': {
+    fontWeight: 'normal',
+    minHeight: '45px',
+    padding: '0.5em 1em',
+    whiteSpace: 'pre-line',
 
-  td {
-    font-weight: normal;
-    min-height: 45px;
-    padding: 0.5em 1em;
-    white-space: pre-line;
+    '& p': {
+      lineHeight: '1.5em',
+    },
+  },
 
-    p {
-      line-height: 1.5em;
-    }
-  }
+  [theme.breakpoints.up('md')]: {
+    whiteSpace: 'nowrap',
+  },
 
-  ${({ theme }) => css`
-    @media ${theme.device.md} {
-      white-space: nowrap;
-    }
-    @media ${theme.device.lg} {
-      width: 100%;
-      overflow-x: hidden;
-    }
-  `}
-`;
+  [theme.breakpoints.up('lg')]: {
+    width: '100%',
+    overflowX: 'hidden',
+  },
+}));
 
-const Numbered = styled.div<{ light?: boolean }>`
-  display: block;
-  width: 100%;
+const Numbered = styled('div', {
+  shouldForwardProp: prop => prop !== 'light',
+})<{ light?: boolean }>(({ light }) => ({
+  display: 'block',
+  width: '100%',
 
-  span {
-    font-weight: 300;
-  }
+  '& span': {
+    fontWeight: 300,
+  },
 
-  &:not(:last-of-type) {
-    padding-bottom: 6px;
-  }
+  '&:not(:last-of-type)': {
+    paddingBottom: '6px',
+  },
 
-  ${({ light }) =>
-    light &&
-    css`
-      font-weight: 300;
-    `}
-`;
+  ...(light && {
+    fontWeight: 300,
+  }),
+}));
 
-const TypesCell = styled.td`
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5em;
-`;
+const TypesCell = styled('td')({
+  alignItems: 'center',
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '0.5em',
+});
 
-const UppercasedTd = styled.td`
-  text-transform: capitalize;
-`;
-
-export { Table, Numbered, TypesCell, UppercasedTd };
+export { Table, Numbered, TypesCell };

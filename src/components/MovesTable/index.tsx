@@ -1,9 +1,13 @@
 import { useMemo, useCallback } from 'react';
+// hooks
 import { useRouter } from 'next/router';
-import type { Move, MoveLearnMethod } from 'pokenode-ts';
 import { usePlausible } from 'next-plausible';
-import { removeDash, mapGeneration, fadeInUpVariant, rowVariant, FilteredMove } from '@/helpers';
-import { UppercasedTd } from '@/components/BaseStyles';
+// types
+import type { Move, MoveLearnMethod } from 'pokenode-ts';
+// helpers
+import { removeDash, mapGeneration, FilteredMove } from '@/helpers';
+import { fadeInUpVariant, rowVariant } from '@/animations';
+// styles
 import {
   TableContainer,
   MovesTableEl,
@@ -13,10 +17,10 @@ import {
   NameTD,
   TableRow,
 } from './StyledMovesTable';
+// components
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
 import TypeBadge from '@/components/TypeBadge';
-import Box from '@/components/Box';
-import { Typography } from '@mui/material';
+import { Stack, Theme, Typography } from '@mui/material';
 
 interface TypeMovesProps extends HTMLMotionProps<'div'> {
   moves: (FilteredMove | Move)[];
@@ -59,7 +63,7 @@ const MovesTable = ({ moves, learnMethod, machineNames, ...rest }: TypeMovesProp
         case 'level-up':
           return (
             <DataCell onClick={() => onCellClick(move.name, move.id)}>
-              {/** @ts-ignore */}
+              {/** @ts-expect-error */}
               {move?.level_learned_at || '-'}
             </DataCell>
           );
@@ -67,12 +71,12 @@ const MovesTable = ({ moves, learnMethod, machineNames, ...rest }: TypeMovesProp
           return (
             <DataCell onClick={() => onCellClick(move.name, move.id)}>
               {!!machineNames?.length && machineNames[index] ? (
-                <Box
-                  flexdirection="row"
-                  flexjustify="space-between"
+                <Stack
+                  flexDirection="row"
+                  justifyContent="space-between"
                   width="75%"
-                  flexmargin="0 auto"
-                  flexgap="0.1em"
+                  margin="0 auto"
+                  gap={0.2}
                 >
                   <span>{machineNames[index].toUpperCase()}</span>
                   <img
@@ -80,7 +84,7 @@ const MovesTable = ({ moves, learnMethod, machineNames, ...rest }: TypeMovesProp
                     alt={move.type.name}
                     width="30"
                   />
-                </Box>
+                </Stack>
               ) : (
                 '-'
               )}
@@ -136,11 +140,19 @@ const MovesTable = ({ moves, learnMethod, machineNames, ...rest }: TypeMovesProp
                       {removeDash(move.name)}
                     </NameTD>
                     <DataCell>
-                      <TypeBadge flexmargin="0" $iconOnly $typename={move.type.name} />
+                      <TypeBadge
+                        flexmargin="0"
+                        $iconOnly
+                        $typename={move.type.name as keyof Theme['palette']['types']}
+                      />
                     </DataCell>
-                    <UppercasedTd onClick={() => onCellClick(move.name, move.id)}>
-                      {move.damage_class.name}
-                    </UppercasedTd>
+                    <Typography
+                      textTransform="capitalize"
+                      component="td"
+                      onClick={() => onCellClick(move.name, move.id)}
+                    >
+                      {move.damage_class?.name}
+                    </Typography>
                     <DataCell onClick={() => onCellClick(move.name, move.id)}>
                       {move.power || '-'}
                     </DataCell>
@@ -154,7 +166,7 @@ const MovesTable = ({ moves, learnMethod, machineNames, ...rest }: TypeMovesProp
                       {move.priority}
                     </DataCell>
                     <DataCell onClick={() => onCellClick(move.name, move.id)}>
-                      {mapGeneration(move.generation.name)}
+                      {mapGeneration(move.generation?.name)}
                     </DataCell>
                   </TableRow>
                 );
