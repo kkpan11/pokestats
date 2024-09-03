@@ -10,7 +10,6 @@ import { useMachines, usePokemonMoves } from '@/hooks';
 // components
 import { AnimatePresence, motion } from 'framer-motion';
 import Loading from '@/components/Loading';
-import MovesTable from '@/components/MovesTable';
 import { Grid2, Grid2Props, Typography } from '@mui/material';
 import DropdownV2 from '@/components/DropdownV2';
 import GameGenSelect from '@/components/GameGenSelect';
@@ -72,7 +71,6 @@ const PokemonMoves = ({ pokemon, ...rest }: PokemonMovesProps): JSX.Element => {
       ) : (
         <AnimatePresence mode="wait">
           {filteredMoves.length ? (
-            // <MovesTable moves={filteredMoves} machineNames={machines} learnMethod={learnMethod} />
             <MovesTableV2 moves={filteredMoves} machineNames={machines} learnMethod={learnMethod} />
           ) : (
             <Typography
