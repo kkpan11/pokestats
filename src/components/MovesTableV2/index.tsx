@@ -12,7 +12,7 @@ import { Stack, TableProps, Theme, Typography } from '@mui/material';
 // components
 import { AnimatePresence, motion } from 'framer-motion';
 import TypeBadge from '@/components/TypeBadge';
-import CustomTable from '@/components/CustomTable';
+import CustomTable, { CustomTableProps } from '@/components/CustomTable';
 
 interface TypeMovesProps extends TableProps {
   moves: (FilteredMove | Move)[];
@@ -26,7 +26,6 @@ const MovesTableV2 = ({
   machineNames,
   ...rest
 }: TypeMovesProps): JSX.Element => {
-  // hooks
   const router = useRouter();
   const plausible = usePlausible();
 
@@ -51,7 +50,7 @@ const MovesTableV2 = ({
     [plausible, router],
   );
 
-  // Define the columns for DataTable
+  // Define the columns for CustomTable
   const columns = useMemo(() => {
     const baseColumns = [
       { field: 'name', headerName: 'Name' },
@@ -64,17 +63,15 @@ const MovesTableV2 = ({
       { field: 'generation', headerName: 'Generation' },
     ];
 
-    // Add dynamic column for learn method
     if (learnMethod) {
       return [{ field: 'method', headerName: mapMethodName }, ...baseColumns];
     }
     return baseColumns;
   }, [learnMethod, mapMethodName]);
 
-  // Transform data for DataTable
-  const tableData = useMemo(() => {
+  // Transform data for CustomTable
+  const tableData: CustomTableProps['data'] = useMemo(() => {
     return moves.map((move, index) => {
-      // Render move cell dynamically based on learn method
       const methodCellContent = (() => {
         if (!learnMethod) return '-';
 
@@ -107,23 +104,35 @@ const MovesTableV2 = ({
       })();
 
       return {
-        method: methodCellContent,
-        name: (
-          <Typography onClick={() => onCellClick(move.name, move.id)} textTransform="capitalize">
-            {removeDash(move.name)}
-          </Typography>
-        ),
-        type: <TypeBadge $iconOnly $typename={move.type.name as keyof Theme['palette']['types']} />,
-        category: (
-          <Typography textTransform="capitalize" onClick={() => onCellClick(move.name, move.id)}>
-            {move.damage_class?.name}
-          </Typography>
-        ),
-        power: move.power || '-',
-        pp: move.pp || '-',
-        accuracy: move.accuracy || '-',
-        priority: move.priority,
-        generation: mapGeneration(move.generation?.name) || '-',
+        method: {
+          render: methodCellContent,
+          onClick: () => onCellClick(move.name, move.id),
+        },
+        name: {
+          render: <Typography textTransform="capitalize">{removeDash(move.name)}</Typography>,
+          onClick: () => onCellClick(move.name, move.id),
+        },
+        type: {
+          render: (
+            <TypeBadge $iconOnly $typename={move.type.name as keyof Theme['palette']['types']} />
+          ),
+          onClick: () => onCellClick(move.name, move.id),
+        },
+        category: {
+          render: <Typography textTransform="capitalize">{move.damage_class?.name}</Typography>,
+          onClick: () => onCellClick(move.name, move.id),
+        },
+        power: { render: move.power || '-', onClick: () => onCellClick(move.name, move.id) },
+        pp: { render: move.pp || '-', onClick: () => onCellClick(move.name, move.id) },
+        accuracy: {
+          render: move.accuracy || '-',
+          onClick: () => onCellClick(move.name, move.id),
+        },
+        priority: { render: move.priority, onClick: () => onCellClick(move.name, move.id) },
+        generation: {
+          render: mapGeneration(move.generation?.name) || '-',
+          onClick: () => onCellClick(move.name, move.id),
+        },
       };
     });
   }, [moves, learnMethod, machineNames, onCellClick]);
@@ -131,7 +140,12 @@ const MovesTableV2 = ({
   return (
     <AnimatePresence mode="wait">
       {moves.length > 0 ? (
-        <CustomTable columns={columns} data={tableData} key="moves-table-container" {...rest} />
+        <CustomTable
+          columns={columns}
+          data={tableData}
+          key={`moves-table-container-${learnMethod}`}
+          {...rest}
+        />
       ) : (
         <Typography
           variant="sectionMessage"

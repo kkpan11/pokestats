@@ -72,7 +72,8 @@ const PokemonMoves = ({ pokemon, ...rest }: PokemonMovesProps): JSX.Element => {
       ) : (
         <AnimatePresence mode="wait">
           {filteredMoves.length ? (
-            <MovesTable moves={filteredMoves} machineNames={machines} learnMethod={learnMethod} />
+            // <MovesTable moves={filteredMoves} machineNames={machines} learnMethod={learnMethod} />
+            <MovesTableV2 moves={filteredMoves} machineNames={machines} learnMethod={learnMethod} />
           ) : (
             <Typography
               variant="sectionMessage"
@@ -85,9 +86,6 @@ const PokemonMoves = ({ pokemon, ...rest }: PokemonMovesProps): JSX.Element => {
             >
               {`No ${learnMethod} moves for currently selected game version.`}
             </Typography>
-          )}
-          {filteredMoves.length > 0 && (
-            <MovesTableV2 moves={filteredMoves} machineNames={machines} learnMethod={learnMethod} />
           )}
         </AnimatePresence>
       )}
