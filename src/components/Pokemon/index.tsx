@@ -31,7 +31,7 @@ const PokemonPage = ({
       <Grid2
         container
         direction={{ xxs: 'column-reverse', lg: 'row' }}
-        alignItems="center"
+        alignItems="stretch"
         justifyContent="flex-start"
         spacing={4}
         size={12}
@@ -64,6 +64,10 @@ const PokemonPage = ({
         <PokemonForms pokemonId={id} species={species} size={{ xxs: 12, md: 6, lg: 4 }} />
         <BaseStats stats={stats} size={{ xxs: 12, lg: 8 }} />
       </Grid2>
+      {/** ENCOUNTERS */}
+      <Stack alignItems="flex-start" justifyContent="flex-start">
+        <Encounters species={species} />
+      </Stack>
       {/** EVOLUTION CHAIN */}
       <Stack alignItems="flex-start" justifyContent="flex-start">
         <EvolutionChain evolutionChain={evolutionData} pokemonSpecies={species} />
@@ -71,10 +75,6 @@ const PokemonPage = ({
       {/** MOVES */}
       <Stack alignItems="flex-start" justifyContent="flex-start">
         <Moves pokemon={pokemon} />
-      </Stack>
-      {/** ENCOUNTERS */}
-      <Stack alignItems="flex-start" justifyContent="flex-start">
-        <Encounters species={species} />
       </Stack>
       {/** SPRITES & NAVIGATION */}
       <Stack alignItems="flex-start" justifyContent="flex-start" gap={4}>

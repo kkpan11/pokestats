@@ -5,10 +5,10 @@ import type { MoveType, Pokemon, PokemonType } from '@/types';
 // hooks
 import { useRouter } from 'next/router';
 import { usePlausible } from 'next-plausible';
-import type { AutocompleteListOption } from '@/hooks';
+import type { AutocompleteListOption, PokestatsRegion } from '@/hooks';
 import { useAutocompleteOptions } from '@/hooks';
 // helpers
-import { removeDash } from '@/helpers';
+import { formatPokemonId, mapGeneration, removeDash } from '@/helpers';
 import { fadeInDownVariant } from '@/animations';
 // components
 import type { AutocompleteProps, Theme } from '@mui/material';
@@ -35,20 +35,30 @@ export interface AutocompleteV2Props extends HTMLMotionProps<'div'> {
 }
 
 interface AutocompleteIconProps {
-  assetType: PokemonType['assetType'] | Pokemon['assetType'] | MoveType['assetType'];
+  assetType:
+    | PokemonType['assetType']
+    | Pokemon['assetType']
+    | MoveType['assetType']
+    | PokestatsRegion['assetType'];
   name: string;
   id?: number;
 }
 
-const AutocompleteIcon = ({ assetType, name, id }: AutocompleteIconProps): JSX.Element | null => {
+const AutocompleteIcon = ({
+  assetType,
+  name,
+  id,
+}: AutocompleteIconProps): JSX.Element | undefined => {
   switch (assetType) {
     case 'pokemon':
-      return (
+      return id ? (
         <ItemIcon
           alt={`${name} pokemon`}
-          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+          src={`https://raw.githubusercontent.com/andreferreiradlw/pokestats_media/main/assets/images/${formatPokemonId(
+            id,
+          )}.png`}
         />
-      );
+      ) : undefined;
     case 'type':
       return <TypeIcon type={name as keyof Theme['palette']['types']} />;
     case 'move':
@@ -58,8 +68,15 @@ const AutocompleteIcon = ({ assetType, name, id }: AutocompleteIconProps): JSX.E
           src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/grass-memory.png"
         />
       );
+    case 'region':
+      return (
+        <ItemIcon
+          alt={`${name} region`}
+          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/old-sea-map.png"
+        />
+      );
     default:
-      return null;
+      return undefined;
   }
 };
 
@@ -126,13 +143,17 @@ const AutocompleteV2 = ({
             />
           );
         }}
-        renderOption={({ key, ...optionProps }, { assetType, id, name }) => (
+        // @ts-expect-error: generation not inherited from type
+        renderOption={({ key, ...optionProps }, { assetType, id, name, generation }) => (
           <OptionWrapper role="option" key={key} {...optionProps}>
             <Stack flexDirection="row" justifyContent="flex-start" alignItems="center" gap="1em">
               <AutocompleteIcon assetType={assetType} name={name} id={id} />
               <Option variant="subtitle1">{removeDash(name)}</Option>
             </Stack>
             {assetType === 'pokemon' && <PokeID variant="h5">{`#${id}`}</PokeID>}
+            {assetType === 'region' && (
+              <PokeID variant="caption">{mapGeneration(generation)}</PokeID>
+            )}
           </OptionWrapper>
         )}
         // @ts-expect-error
@@ -146,11 +167,21 @@ const AutocompleteV2 = ({
           variants: fadeInDownVariant,
         }}
         onHighlightChange={async (_, option) => {
-          if (option) await router.prefetch(`/${option.assetType}/${option.name}`);
+          if (option) {
+            if (option.assetType === 'region') {
+              await router.prefetch(`/regions/${option.generation}/${option.name}`);
+            } else {
+              await router.prefetch(`/${option.assetType}/${option.name}`);
+            }
+          }
         }}
         onChange={async (_, optionSelected) => {
           plausible('Autocomplete Selection');
-          await router.push(`/${optionSelected.assetType}/${optionSelected.name}`);
+          if (optionSelected.assetType === 'region') {
+            await router.push(`/regions/${optionSelected.generation}/${optionSelected.name}`);
+          } else {
+            await router.push(`/${optionSelected.assetType}/${optionSelected.name}`);
+          }
         }}
         noOptionsText="Nothing was found!"
         loadingText="Rummaging..."
