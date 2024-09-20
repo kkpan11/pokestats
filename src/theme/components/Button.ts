@@ -1,5 +1,4 @@
-import type { Theme } from '@mui/material';
-import type { Components } from '@mui/material';
+import type { Components, Theme } from '@mui/material';
 
 const Button: {
   MuiButton: Components<Theme>['MuiButton'];
@@ -12,15 +11,11 @@ const Button: {
       disableTouchRipple: true,
     },
     styleOverrides: {
-      root: {
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'nowrap',
-        gap: '1em',
-        justifyContent: 'center',
-        alignItems: 'center',
+      root: ({ theme }) => ({
+        gap: theme.spacing(1),
+        justifyContent: 'space-between',
         textTransform: 'capitalize',
-      },
+      }),
     },
   },
 };

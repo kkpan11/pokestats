@@ -8,8 +8,8 @@ import { scaleInVariant } from '@/animations';
 import { JpnName } from '@/components/BaseStyles';
 import { ImageContainer } from './StyledFeatureImage';
 // components
-import ImageNext from '@/components/ImageNext';
 import { Grid2, ToggleButton, ToggleButtonGroup, type Grid2Props } from '@mui/material';
+import ImageNextV2 from '@/components/ImageNextV2';
 
 interface FeaturedImageProps extends Grid2Props {
   specieNames: PokemonSpecies['names'];
@@ -46,12 +46,12 @@ const FeaturedImage = ({ specieNames, pokemonId, ...rest }: FeaturedImageProps):
   return (
     <Grid2 flexDirection="column" spacing={2} {...rest}>
       <ImageContainer alignItems="center" justifyContent="center" size={12} version={version}>
-        <ImageNext
-          priority
-          loading="eager"
+        <ImageNextV2
+          imageProps={{ priority: true }}
           placeholderwidth="20%"
           alt={englishName!}
-          src={imageURL}
+          imageUrl={imageURL}
+          customKey={`${pokemonId}-feature-image-${version}`}
         />
         {specieNames && (
           <JpnName
@@ -71,12 +71,12 @@ const FeaturedImage = ({ specieNames, pokemonId, ...rest }: FeaturedImageProps):
           value={version}
           exclusive
           onChange={(_, value) => setVersion(value)}
-          aria-label="Pokemon Version"
+          aria-label="Pokémon Version"
         >
-          <ToggleButton disableRipple value="normal">
+          <ToggleButton disableRipple disabled={version === 'normal'} value="normal">
             Normal
           </ToggleButton>
-          <ToggleButton disableRipple value="shiny">
+          <ToggleButton disableRipple disabled={version === 'shiny'} value="shiny">
             Shiny
           </ToggleButton>
         </ToggleButtonGroup>
