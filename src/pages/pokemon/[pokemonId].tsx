@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 // types
 import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import type { Pokemon, PokemonType, PokemonMove, MoveType } from '@/types';
 import type {
   Pokemon as PokenodePokemon,
   EvolutionChain,
   PokemonSpecies,
   Ability,
+  NamedAPIResource,
 } from 'pokenode-ts';
 // helpers
 import {
@@ -22,15 +22,12 @@ import PokemonPage from '@/components/Pokemon';
 import Loading from '@/components/Loading';
 import { AbilityApi, EvolutionApi, PokemonApi, SpeciesApi } from '@/services';
 import LayoutV2 from '@/components/LayoutV2';
-import { GameVersionProvider } from '@/context';
 
 export interface PokestatsPokemonPageProps {
-  allPokemon: Pokemon[];
-  autocompleteList: (PokemonType | MoveType)[];
+  allPokemon: NamedAPIResource[];
   pokemon: PokenodePokemon;
   abilities: Ability[];
   species: PokemonSpecies;
-  pokemonMoves: PokemonMove[];
   evolutionData: EvolutionChain;
 }
 
@@ -62,7 +59,7 @@ const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({ allPokemon,
   const pageKeywords = `${pokemonName}, ${pokemonName} gg, Pokemon, Pokémon, Pokédex, Pokestats, Pokestats gg, ${pokemonName} Shiny, ${generationDescriptions}`;
 
   return (
-    <GameVersionProvider pokemon={props.species}>
+    <>
       <Seo
         title={pageTitle}
         description={pageDescription}
@@ -72,7 +69,7 @@ const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({ allPokemon,
       <LayoutV2 withHeader showGenSelect customKey={`pokemon-${props.species.id}`}>
         <PokemonPage allPokemon={allPokemon} {...props} />
       </LayoutV2>
-    </GameVersionProvider>
+    </>
   );
 };
 
