@@ -1,12 +1,19 @@
 import MainClient from './MainClient';
 
 export const ItemApi = {
+  listItems: async (offset = 0, limit = 1137) => await MainClient.item.listItems(offset, limit),
+
+  listItemAttributes: async () => await MainClient.item.listItemAttributes(),
+
+  getAllItemNames: async () =>
+    await MainClient.item.listItems(0, 1137).then(({ results }) => results.map(({ name }) => name)),
+
   getByName: async (name: string) => await MainClient.item.getItemByName(name),
 
   getByNames: async (names: Array<string>) =>
     await Promise.all(names.map(name => MainClient.item.getItemByName(name))),
 
-  getAllItemPockets: async () =>
+  getAllItemPocketNames: async () =>
     await MainClient.item.listItemPockets().then(({ results }) => results.map(({ name }) => name)),
 
   getItemPocketByName: async (name: string) => await MainClient.item.getItemPocketByName(name),
@@ -17,6 +24,12 @@ export const ItemApi = {
   getItemCategoriesByNames: async (names: Array<string>) =>
     await Promise.all(names.map(name => MainClient.item.getItemCategoryByName(name))),
 
-  getAllItems: async () =>
-    await MainClient.item.listItems(0, 1137).then(({ results }) => results.map(({ name }) => name)),
+  getCategoryByName: async (categoryName: string) =>
+    await MainClient.item.getItemCategoryByName(categoryName),
+
+  getAttributesByNames: async (names: Array<string>) =>
+    await Promise.all(names.map(name => MainClient.item.getItemAttributeByName(name))),
+
+  getFlingEffectByName: async (name: string) =>
+    await MainClient.item.getItemFlingEffectByName(name),
 };

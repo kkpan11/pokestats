@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 // types
 import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import type {
@@ -19,7 +18,6 @@ import {
 // components
 import Seo from '@/components/Seo';
 import PokemonPage from '@/components/Pokemon';
-import Loading from '@/components/Loading';
 import { AbilityApi, EvolutionApi, PokemonApi, SpeciesApi } from '@/services';
 import LayoutV2 from '@/components/LayoutV2';
 
@@ -31,20 +29,7 @@ export interface PokestatsPokemonPageProps {
   evolutionData: EvolutionChain;
 }
 
-const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({ allPokemon, ...props }) => {
-  const router = useRouter();
-
-  if (router.isFallback) {
-    return (
-      <Loading
-        height="100vh"
-        icon="pokeball"
-        text="Catching Pokémon"
-        $iconWidth={{ xxs: '20%', xs: '15%', md: '10%', lg: '5%' }}
-      />
-    );
-  }
-
+const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = props => {
   // SEO-related variables
   const pokemonName = findEnglishName(props.species.names);
   const pageTitle = `${pokemonName} (Pokémon #${props.pokemon.id})`;
@@ -67,7 +52,7 @@ const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = ({ allPokemon,
         keywords={pageKeywords}
       />
       <LayoutV2 withHeader showGenSelect customKey={`pokemon-${props.species.id}`}>
-        <PokemonPage allPokemon={allPokemon} {...props} />
+        <PokemonPage {...props} />
       </LayoutV2>
     </>
   );
@@ -86,11 +71,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
   // return static paths
   return {
     paths,
-    fallback: true,
+    fallback: 'blocking',
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps<PokestatsPokemonPageProps> = async ({ params }) => {
   // get current pokemon name from url params
   const pokemonName = params?.pokemonId as string;
 
@@ -146,7 +131,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         abilities: pokemonAbilitiesResults.map(ability => ({
           name: ability.name,
           effect_entries: ability.effect_entries.filter(entry => entry.language.name === 'en'),
-        })),
+        })) as Ability[],
         species: pokemonSpeciesResults,
         evolutionData: evolutionDataResults,
         revalidate: 120,
