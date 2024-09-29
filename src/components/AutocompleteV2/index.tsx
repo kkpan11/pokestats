@@ -110,7 +110,7 @@ const AutocompleteV2 = ({
     matchFrom: 'any',
     stringify: ({ name, id, assetType }) =>
       assetType === 'pokemon' ? `${removeDash(name)} ${id}` : removeDash(name),
-    limit: 10,
+    limit: 8,
     ignoreCase: true,
   });
 
@@ -145,8 +145,9 @@ const AutocompleteV2 = ({
                       {isLoading && (
                         <Loading
                           width="auto"
+                          flexGrow={0}
                           alignItems="flex-end"
-                          $iconWidth={autocompleteOptions?.size === 'small' ? 3 : 5}
+                          $iconWidth={autocompleteOptions?.size === 'small' ? 3 : 4}
                           py={0}
                         />
                       )}

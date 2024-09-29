@@ -1,8 +1,8 @@
 // types
 import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import type { ItemAttribute, ItemCategory, ItemFlingEffect } from 'pokenode-ts';
+import type { Berry, ItemAttribute, ItemCategory, ItemFlingEffect } from 'pokenode-ts';
 // helpers
-import { ItemApi } from '@/services';
+import { BerryApi, ItemApi } from '@/services';
 // components
 import LayoutV2 from '@/components/LayoutV2';
 import { type ExtractedItem, findEnglishName, formatItemData } from '@/helpers';
@@ -15,6 +15,7 @@ export interface PokestatsItemPageProps {
   categoryItems: ExtractedItem[];
   flingEffect: ItemFlingEffect | null;
   attributes: ItemAttribute[];
+  berryData: Berry | null;
 }
 
 const PokestatsItemPage: NextPage<PokestatsItemPageProps> = props => {
@@ -91,6 +92,14 @@ export const getStaticProps: GetStaticProps<PokestatsItemPageProps> = async ({ p
       .filter(({ name }) => name !== itemName)
       .sort((a, b) => a.name.localeCompare(b.name));
 
+    // Get berry data if applied
+
+    const [berryData] = await Promise.all([
+      categoryData.pocket.name === 'berries'
+        ? BerryApi.getByName(itemData.name.split('-')[0])
+        : Promise.resolve(null),
+    ]);
+
     return {
       props: {
         item: formattedItemData,
@@ -98,6 +107,7 @@ export const getStaticProps: GetStaticProps<PokestatsItemPageProps> = async ({ p
         categoryItems: categoryItemsData,
         flingEffect: flingEffectData,
         attributes: attributesData,
+        berryData,
       },
     };
   } catch (error) {
