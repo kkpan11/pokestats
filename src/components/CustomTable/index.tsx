@@ -40,7 +40,7 @@ export interface Column {
 // Cell interface defines the structure of a cell in a row
 export interface Cell extends Omit<TableCellProps, 'children'> {
   render: string | number | JSX.Element; // What is rendered in the cell
-  sortBy?: string | number; // Value used for sorting, if different from render
+  sortBy?: string | number | null; // Value used for sorting, if different from render
 }
 
 // Row interface defines the structure of a data row
@@ -117,18 +117,35 @@ const CustomTable = ({
   const sortedData = useMemo(() => {
     if (!sortConfig) return data;
 
-    return [...data].sort((a, b) => {
-      const aValue = a[sortConfig.key].sortBy ?? a[sortConfig.key].render;
-      const bValue = b[sortConfig.key].sortBy ?? b[sortConfig.key].render;
+    setPage(0); // Reset to the first page
 
+    return [...data].sort((a, b) => {
+      let aValue: string | number | JSX.Element | null =
+        a[sortConfig.key].sortBy ?? a[sortConfig.key].render;
+      let bValue: string | number | JSX.Element | null =
+        b[sortConfig.key].sortBy ?? b[sortConfig.key].render;
+
+      // Treat "-" as undefined or null (no value)
+      if (aValue === '-') aValue = null;
+      if (bValue === '-') bValue = null;
+
+      // Handle null or undefined values: move them to the top for ascending order and bottom for descending order
+      if (aValue === null && bValue === null) return 0;
+      if (aValue === null) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (bValue === null) return sortConfig.direction === 'asc' ? 1 : -1;
+
+      // Regular comparison for strings
       if (typeof aValue === 'string' && typeof bValue === 'string') {
         return sortConfig.direction === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       }
+
+      // Regular comparison for numbers
       if (typeof aValue === 'number' && typeof bValue === 'number') {
         return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
       }
+
       return 0;
     });
   }, [data, sortConfig]);
@@ -253,6 +270,7 @@ const CustomTable = ({
         <TableRow
           key={rowIndex}
           component={motion.tr}
+          initial="rest"
           whileHover="hover"
           whileTap="tap"
           variants={rowVariant}
