@@ -59,7 +59,7 @@ const PokestatsPokemonPage: NextPage<PokestatsPokemonPageProps> = props => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const pokemonList = await PokemonApi.listPokemons(0, 250);
+  const pokemonList = await PokemonApi.listPokemons(0, 1024);
   // paths
   const paths = pokemonList.results.map(pokemon => {
     return {
@@ -83,7 +83,7 @@ export const getStaticProps: GetStaticProps<PokestatsPokemonPageProps> = async (
     // fetch data
     const [pokemonDataResults, { results: allPokemonData }] = await Promise.all([
       PokemonApi.getByName(pokemonName),
-      PokemonApi.listPokemons(0, 905),
+      PokemonApi.listPokemons(0, 1024),
     ]);
 
     if (!allPokemonData || !pokemonDataResults) {
@@ -91,14 +91,10 @@ export const getStaticProps: GetStaticProps<PokestatsPokemonPageProps> = async (
       return { notFound: true };
     }
 
-    if (pokemonDataResults.id > 905) return { notFound: true };
-
-    const pokemonAbilitiesResults = await AbilityApi.getPokemonAbilities(pokemonDataResults);
-
-    // get evolution chain id from url
-    const pokemonSpeciesResults = await SpeciesApi.getById(
-      getResourceId(pokemonDataResults.species.url),
-    );
+    const [pokemonAbilitiesResults, pokemonSpeciesResults] = await Promise.all([
+      AbilityApi.getPokemonAbilities(pokemonDataResults),
+      SpeciesApi.getByName(pokemonDataResults.species.name),
+    ]);
 
     if (!pokemonSpeciesResults || !pokemonAbilitiesResults) {
       console.log('Failed to fetch pokemonSpeciesResults or pokemonAbilitiesResults');
@@ -128,11 +124,11 @@ export const getStaticProps: GetStaticProps<PokestatsPokemonPageProps> = async (
       props: {
         allPokemon: allPokemonData,
         pokemon: pokemonDataResults,
+        species: pokemonSpeciesResults,
         abilities: pokemonAbilitiesResults.map(ability => ({
           name: ability.name,
           effect_entries: ability.effect_entries.filter(entry => entry.language.name === 'en'),
         })) as Ability[],
-        species: pokemonSpeciesResults,
         evolutionData: evolutionDataResults,
         revalidate: 120,
       },

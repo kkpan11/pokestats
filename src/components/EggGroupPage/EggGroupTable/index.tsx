@@ -41,10 +41,10 @@ const EggGroupTable = ({
   const plausible = usePlausible();
 
   const onCellClick = useCallback(
-    (name: Pokemon['name'], id: Pokemon['id']) => {
-      if (id <= 905) {
+    (forms?: Pokemon['forms']) => {
+      if (forms) {
         plausible('Egg Group Table Click');
-        router.push(`/pokemon/${name}`);
+        router.push(`/pokemon/${forms[0].name}`);
       }
     },
     [plausible, router],
@@ -89,6 +89,7 @@ const EggGroupTable = ({
       ({
         id = 1,
         name = '',
+        forms,
         sprites,
         types,
         egg_groups,
@@ -100,7 +101,7 @@ const EggGroupTable = ({
       }) => ({
         id: {
           render: <Typography>{`#${id}`}</Typography>,
-          onClick: () => onCellClick(name, id),
+          onClick: () => onCellClick(forms),
           sortBy: id,
           align: 'center',
         },
@@ -111,7 +112,7 @@ const EggGroupTable = ({
               <Typography textTransform="capitalize">{removeDash(name)}</Typography>
             </Stack>
           ),
-          onClick: () => onCellClick(name, id),
+          onClick: () => onCellClick(forms),
           sortBy: removeDash(name),
         },
         type: {
@@ -178,7 +179,7 @@ const EggGroupTable = ({
             ) : (
               ' - '
             ),
-          onClick: () => onCellClick(name, id),
+          onClick: () => onCellClick(forms),
         },
         cycles: {
           render: hatch_counter ? (
@@ -192,12 +193,12 @@ const EggGroupTable = ({
           ) : (
             'Unavailable'
           ),
-          onClick: () => onCellClick(name, id),
+          onClick: () => onCellClick(forms),
           sortBy: hatch_counter,
         },
         growthRate: {
           render: capitalise(removeDash(growth_rate?.name)),
-          onClick: () => onCellClick(name, id),
+          onClick: () => onCellClick(forms),
         },
         genderRatio: {
           render:
@@ -214,13 +215,13 @@ const EggGroupTable = ({
                 <FemaleIcon />
               </Typography>
             ),
-          onClick: () => onCellClick(name, id),
+          onClick: () => onCellClick(forms),
           sortBy: gender_rate,
           align: 'center',
         },
         habitat: {
           render: habitat ? capitalise(removeDash(habitat?.name)) : 'None',
-          onClick: () => onCellClick(name, id),
+          onClick: () => onCellClick(forms),
           sortBy: habitat?.name ?? '',
         },
       }),
@@ -248,7 +249,7 @@ const EggGroupTable = ({
           variants={fadeInUpVariant}
           key="type-nomoves-message"
         >
-          {noMovesText || 'No Pokemon found to match current criteria.'}
+          {noMovesText || 'No Pokémon found to match current criteria.'}
         </Typography>
       )}
     </AnimatePresence>

@@ -90,9 +90,7 @@ const LocationTableV2 = ({
             aria-controls={`${areaName}-${areaId}-controls`}
             id={`${areaName}-${areaId}-header`}
           >
-            <Typography variant="sectionSubTitle" gutterBottom>
-              {findEnglishName(names)}
-            </Typography>
+            {findEnglishName(names)}
           </AccordionSummary>
           <AccordionDetails>
             {formattedEncounters.length > 0 ? (
@@ -105,7 +103,7 @@ const LocationTableV2 = ({
                         Method
                       </TableCell>
                       <TableCell rowSpan={2} align="center">
-                        Pokemon
+                        Pokémon
                       </TableCell>
                       <TableCell rowSpan={2} align="center">
                         Versions

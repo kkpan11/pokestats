@@ -11,7 +11,14 @@ import { formatPokemonId, mapGeneration, removeDash } from '@/helpers';
 import { fadeInDownVariant } from '@/animations';
 // components
 import type { AutocompleteProps, Theme } from '@mui/material';
-import { Autocomplete, capitalize, createFilterOptions, Stack, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  Box,
+  capitalize,
+  createFilterOptions,
+  Stack,
+  TextField,
+} from '@mui/material';
 import Loading from '@/components/Loading';
 // styles
 import {
@@ -37,7 +44,7 @@ export interface AutocompleteV2Props extends HTMLMotionProps<'div'> {
 interface AutocompleteIconProps {
   assetType: AutocompleteListOption['assetType'];
   name: string;
-  id?: number;
+  id: number;
 }
 
 const AutocompleteIcon = ({
@@ -50,9 +57,13 @@ const AutocompleteIcon = ({
       return id ? (
         <ItemIcon
           alt={`${name} pokémon`}
-          src={`https://raw.githubusercontent.com/andreferreiradlw/pokestats_media/main/assets/images/${formatPokemonId(
-            id,
-          )}.png`}
+          src={
+            id > 905
+              ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
+              : `https://raw.githubusercontent.com/andreferreiradlw/pokestats_media/main/assets/images/${formatPokemonId(
+                  id,
+                )}.png`
+          }
         />
       ) : undefined;
     case 'type':
@@ -84,7 +95,9 @@ const AutocompleteIcon = ({
           return undefined;
       }
     case 'item':
-      return (
+      return id > 846 ? (
+        <Box width={40} height={40} />
+      ) : (
         <ItemIcon
           alt={`${name} pokémon item`}
           src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${name}.png`}

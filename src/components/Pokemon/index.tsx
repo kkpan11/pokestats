@@ -1,6 +1,7 @@
 // types
 import type { PokestatsPokemonPageProps } from '@/pages/pokemon/[pokemonId]';
 // components
+import { Divider, Grid2, Stack } from '@mui/material';
 import Details from './Details';
 import FeaturedImage from './FeatureImage';
 import EvolutionChain from './EvolutionChain';
@@ -11,8 +12,7 @@ import BaseStats from './BaseStats';
 import PokemonForms from './Forms';
 import Moves from './Moves';
 import Sprites from './Sprites';
-import Navigation from './Navigation';
-import { Divider, Grid2, Stack } from '@mui/material';
+import Navigation from '../Navigation';
 import Encounters from './Encounters';
 
 const PokemonPage = ({
@@ -23,8 +23,7 @@ const PokemonPage = ({
   evolutionData,
 }: Omit<PokestatsPokemonPageProps, 'autocompleteList' | 'pokemonGen'>): JSX.Element => {
   // data
-  const { id, stats, types, sprites } = pokemon;
-  const { names, varieties } = species;
+  const { stats, types, sprites } = pokemon;
 
   return (
     <Stack divider={<Divider />} gap={4}>
@@ -42,7 +41,7 @@ const PokemonPage = ({
           abilities={abilities}
           species={species}
         />
-        <FeaturedImage size={{ xxs: 12, lg: 7 }} specieNames={names} pokemonId={id} />
+        <FeaturedImage size={{ xxs: 12, lg: 7 }} species={species} sprites={sprites} />
       </Grid2>
       {/** BREEDING, TRAINING, MULTIPLIERS */}
       <Grid2
@@ -61,7 +60,7 @@ const PokemonPage = ({
         />
         <Training pokemon={pokemon} species={species} size={{ xxs: 12, md: 6, lg: 4 }} />
         <Multipliers pokemonTypes={types} size={{ xxs: 12, md: 6, lg: 4 }} />
-        <PokemonForms pokemonId={id} species={species} size={{ xxs: 12, md: 6, lg: 4 }} />
+        <PokemonForms pokemon={pokemon} species={species} size={{ xxs: 12, md: 6, lg: 4 }} />
         <BaseStats stats={stats} size={{ xxs: 12, lg: 8 }} />
       </Grid2>
       {/** ENCOUNTERS */}
@@ -77,10 +76,8 @@ const PokemonPage = ({
         <Moves pokemon={pokemon} />
       </Stack>
       {/** SPRITES & NAVIGATION */}
-      <Stack alignItems="flex-start" justifyContent="flex-start" gap={4}>
-        <Sprites pokemonSprites={sprites} pokemonId={id} forms={varieties} />
-        <Navigation allPokemon={allPokemon} pokemonId={id} />
-      </Stack>
+      <Sprites pokemon={pokemon} />
+      <Navigation allPokemon={allPokemon} pokemonSpecies={species} />
     </Stack>
   );
 };

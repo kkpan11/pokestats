@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 // types
-import type { Pokemon, PokemonSpecies } from 'pokenode-ts';
+import type { PokemonSpecies, PokemonSprites } from 'pokenode-ts';
 // helpers
 import { formatPokemonId } from '@/helpers';
 import { scaleInVariant } from '@/animations';
@@ -8,57 +8,64 @@ import { scaleInVariant } from '@/animations';
 import { JpnName } from '@/components/BaseStyles';
 import { ImageContainer } from './StyledFeatureImage';
 // components
-import { Grid2, ToggleButton, ToggleButtonGroup, type Grid2Props } from '@mui/material';
+import { Grid2, ToggleButton, ToggleButtonGroup, Typography, type Grid2Props } from '@mui/material';
 import ImageNextV2 from '@/components/ImageNextV2';
 
 interface FeaturedImageProps extends Grid2Props {
-  specieNames: PokemonSpecies['names'];
-  pokemonId: Pokemon['id'];
+  species: PokemonSpecies;
+  sprites: PokemonSprites;
 }
 
 export type PokemonVersion = 'normal' | 'shiny';
 
-const FeaturedImage = ({ specieNames, pokemonId, ...rest }: FeaturedImageProps): JSX.Element => {
+const FeaturedImage = ({ species, sprites, ...rest }: FeaturedImageProps): JSX.Element => {
+  // data
+  const { names, varieties, id } = species;
+
   // state
   const [version, setVersion] = useState<PokemonVersion>('normal');
 
   // memo
-  const englishName = useMemo(
-    () => specieNames.find(name => name.language.name === 'en')?.name,
-    [specieNames],
-  );
+  const englishName = useMemo(() => names.find(name => name.language.name === 'en')?.name, [names]);
 
   const hiraganaName = useMemo(
-    () => specieNames.find(name => name.language.name === 'ja')?.name,
-    [specieNames],
+    () => names.find(name => name.language.name === 'ja')?.name,
+    [names],
   );
 
   const imageURL = useMemo(() => {
-    if (version === 'normal') {
-      const formattedId = formatPokemonId(pokemonId);
-
-      return `https://raw.githubusercontent.com/andreferreiradlw/pokestats_media/main/assets/images/${formattedId}.png`;
+    if (varieties.length > 1 || id > 905) {
+      return version === 'normal'
+        ? (sprites?.other?.['official-artwork']?.front_default as string)
+        : // @ts-expect-error: incorrect type
+          (sprites?.other?.['official-artwork']?.front_shiny as string);
     }
 
-    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/${pokemonId}.png`;
-  }, [pokemonId, version]);
+    return version === 'normal'
+      ? `https://raw.githubusercontent.com/andreferreiradlw/pokestats_media/main/assets/images/${formatPokemonId(id)}.png`
+      : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/${id}.png`;
+  }, [id, version, varieties, sprites]);
 
   return (
     <Grid2 flexDirection="column" spacing={2} {...rest}>
       <ImageContainer alignItems="center" justifyContent="center" size={12} version={version}>
-        <ImageNextV2
-          imageProps={{ priority: true }}
-          placeholderwidth="20%"
-          alt={englishName!}
-          imageUrl={imageURL}
-          customKey={`${pokemonId}-feature-image-${version}`}
-        />
-        {specieNames && (
+        {imageURL ? (
+          <ImageNextV2
+            imageProps={{ priority: true, unoptimized: false }}
+            placeholderwidth="20%"
+            alt={englishName!}
+            imageUrl={imageURL}
+            customKey={`${id}-feature-image-${version}`}
+          />
+        ) : (
+          <Typography>Image not available</Typography>
+        )}
+        {hiraganaName && (
           <JpnName
             initial="hidden"
             animate="show"
             variants={scaleInVariant}
-            key={`jpn-name-${pokemonId}`}
+            key={`hiragana-name-${id}`}
           >
             {hiraganaName}
           </JpnName>

@@ -1,7 +1,9 @@
+// types
 import type { GetServerSideProps } from 'next';
-import type { Pokemon, PokemonType, MoveType } from '@/types';
-import { fetchAutocompleteData } from '@/helpers';
-import type { PokestatsEggGroupOption, PokestatsItemOption, PokestatsRegion } from '@/hooks';
+import type { PokestatsRegion } from '@/hooks';
+import type { NamedAPIResource } from 'pokenode-ts';
+// helpers
+import { fetchSitemapData } from '@/helpers';
 
 const toUrl = (host: string, route: string, priority = '1.0'): string => `
   <url>
@@ -16,11 +18,11 @@ const createSitemap = (
   host: string,
   routes: string[],
   regionList: PokestatsRegion[],
-  pokemonList: Pokemon[],
-  pokemonTypes: PokemonType[],
-  movesList: MoveType[],
-  allItemsData: PokestatsItemOption[],
-  allEggGroupsData: PokestatsEggGroupOption[],
+  pokemonList: NamedAPIResource[],
+  pokemonTypes: NamedAPIResource[],
+  movesList: NamedAPIResource[],
+  allItemsData: NamedAPIResource[],
+  allEggGroupsData: NamedAPIResource[],
 ): string => {
   const urls = [
     ...routes.map(route => toUrl(host, route)),
@@ -30,6 +32,7 @@ const createSitemap = (
     ...movesList.map(move => toUrl(host, `/move/${move.name}`, '0.9')),
     ...allItemsData.map(item => toUrl(host, `/item/${item.name}`, '0.8')),
     ...allEggGroupsData.map(item => toUrl(host, `/egg-group/${item.name}`, '0.8')),
+    ...pokemonList.map(pokemon => toUrl(host, `/sprites/${pokemon.name}`), '0.8'),
   ];
 
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -58,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
       allRegionsData,
       allItemsData,
       allEggGroupsData,
-    } = await fetchAutocompleteData();
+    } = await fetchSitemapData();
 
     if (!allPokemonData || !allTypesData || !allMovesData || !allItemsData || !allEggGroupsData) {
       return { notFound: true };

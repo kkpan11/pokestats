@@ -2,17 +2,19 @@ import { useMemo } from 'react';
 // helpers
 import { capitalise, removeDash } from '@/helpers';
 import { styled } from '@mui/material/styles';
+import { usePlausible } from 'next-plausible';
 // types
 import type { PokemonSpecies, EvolutionChain } from 'pokenode-ts';
 // styles
 import { Table } from '@/components/BaseStyles';
 // components
 import type { Grid2Props } from '@mui/material';
-import { capitalize, Chip, Grid2, Stack, Typography } from '@mui/material';
+import { capitalize, Grid2, Stack, Typography } from '@mui/material';
 // icons
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import Link from 'next/link';
+import CustomButton from '@/components/CustomButton';
 
 const Ratio = styled(Typography)`
   white-space: nowrap;
@@ -29,6 +31,9 @@ interface BreedingProps extends Grid2Props {
 }
 
 const Breeding = ({ species, babyTriggerItem, ...rest }: BreedingProps): JSX.Element => {
+  // analytics
+  const plausible = usePlausible();
+
   // data
   const { gender_rate, egg_groups, hatch_counter, habitat, growth_rate } = species;
 
@@ -47,16 +52,19 @@ const Breeding = ({ species, babyTriggerItem, ...rest }: BreedingProps): JSX.Ele
     if (!egg_groups || egg_groups.length === 0) return 'No Egg Groups';
 
     return (
-      <Stack flexDirection="row" gap={1} flexWrap="wrap">
+      <Stack gap={1}>
         {egg_groups.map(({ name }) => (
           <Link key={name} href={`/egg-group/${name}`} legacyBehavior passHref>
-            <Chip
-              label={capitalise(name)}
-              // size="small"
-              sx={{ width: 'fit-content' }}
-              clickable
-              component="a"
-            />
+            <CustomButton
+              variant="outlined"
+              size="small"
+              fullWidth
+              color="inherit"
+              sx={{ justifyContent: 'center' }}
+              onClick={() => plausible('Pokemon Egg Group Click')}
+            >
+              {capitalise(name)}
+            </CustomButton>
           </Link>
         ))}
       </Stack>
