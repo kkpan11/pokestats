@@ -1,14 +1,16 @@
+'use client';
+
 import { type PropsWithChildren, useRef, useState } from 'react';
 // helpers
 import { mapGeneration, type GameGenValue } from '@/helpers';
-import { usePlausible } from 'next-plausible';
+import { track } from '@vercel/analytics';
 import { alpha } from '@mui/material/styles';
 // components
 import CanvasMapper, { type CanvasMapperArea, type CanvasMapperHandle } from './CanvasMapper';
 import { Grid2, Stack, Typography, useTheme } from '@mui/material';
 import LocationDetails from './LocationDetails';
-import { AnimatePresence } from 'framer-motion';
-import CustomButton from '../CustomButton';
+import { AnimatePresence } from '@/client';
+import CustomButton from '@/components/CustomButton';
 
 interface RegionPageProps extends PropsWithChildren {
   areas: CanvasMapperArea[];
@@ -35,7 +37,6 @@ const RegionPage = ({
   const canvasMapperRef = useRef<CanvasMapperHandle>(null);
 
   // hooks
-  const plausible = usePlausible();
   const theme = useTheme();
 
   return (
@@ -52,7 +53,7 @@ const RegionPage = ({
               size="large"
               onClick={() => {
                 setHighlightAllAreas(prev => !prev);
-                plausible('Highlight All Areas Click');
+                track('Highlight All Areas Click');
               }}
               variant={highlightAllAreas ? 'contained' : 'outlined'}
             >
@@ -89,7 +90,7 @@ const RegionPage = ({
             strokeColor={theme.palette.secondary.dark}
             onClick={area => {
               setSelectedArea(area);
-              plausible('Map Canvas Click');
+              track('Map Canvas Click');
             }}
             defaultArea={defaultLocation}
           />

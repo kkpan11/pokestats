@@ -1,3 +1,5 @@
+'use client';
+
 import {
   useState,
   useEffect,
@@ -11,7 +13,7 @@ import {
 import { fadeInUpVariant, rowVariant } from '@/animations';
 import { visuallyHidden } from '@mui/utils';
 // components
-import { type HTMLMotionProps, motion } from 'framer-motion';
+import { type HTMLMotionProps, motion } from '@/client';
 import {
   Box,
   Paper,
