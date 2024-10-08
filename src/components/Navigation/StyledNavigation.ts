@@ -1,5 +1,7 @@
+'use client';
+
 // components
-import { motion } from 'framer-motion';
+import { motion } from '@/client';
 import { styled } from '@mui/material/styles';
 import Link from 'next/link';
 import type { NavigationButtonProps } from './NavigationButton';

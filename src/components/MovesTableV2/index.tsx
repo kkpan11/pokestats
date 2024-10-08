@@ -1,9 +1,12 @@
+'use client';
+
 import { useMemo, useCallback } from 'react';
 // hooks
-import { useRouter } from 'next/router';
-import { usePlausible } from 'next-plausible';
+import { useRouter } from 'next/navigation';
+import { track } from '@vercel/analytics';
 // types
 import type { Move, MoveLearnMethod } from 'pokenode-ts';
+import type { PartialMove } from '@/app/moves/page';
 // helpers
 import type { FilteredMove, GameGenValue } from '@/helpers';
 import { removeDash, mapGeneration, findEnglishVerboseEffect } from '@/helpers';
@@ -12,7 +15,7 @@ import { fadeInUpVariant } from '@/animations';
 import type { Theme } from '@mui/material';
 import { Stack, Typography } from '@mui/material';
 // components
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from '@/client';
 import TypeBadge from '@/components/TypeBadge';
 import CustomTable, {
   type Row,
@@ -22,7 +25,7 @@ import CustomTable, {
 import Loading from '@/components/Loading';
 
 interface MovesTableV2Props extends Partial<CustomTableProps> {
-  moves?: (FilteredMove | Move)[];
+  moves?: (FilteredMove | Move | PartialMove)[];
   learnMethod?: MoveLearnMethod['name'];
   machineNames?: string[];
   isLoading?: boolean;
@@ -39,7 +42,6 @@ const MovesTableV2 = ({
 }: MovesTableV2Props): JSX.Element => {
   // hooks
   const router = useRouter();
-  const plausible = usePlausible();
 
   const mapMethodName = useMemo(() => {
     switch (learnMethod) {
@@ -54,10 +56,10 @@ const MovesTableV2 = ({
 
   const onCellClick = useCallback(
     (moveName: Move['name']) => {
-      plausible('Move Table Click');
+      track('Move Table Click', { moveName });
       router.push(`/move/${moveName}`);
     },
-    [plausible, router],
+    [track, router],
   );
 
   // Define the columns for CustomTable
@@ -146,7 +148,7 @@ const MovesTableV2 = ({
                 <Stack flexDirection="row" justifyContent="center" alignItems="center" gap={1}>
                   <span>{machineNames[index].toUpperCase()}</span>
                   <img
-                    src={`https://raw.githubusercontent.com/msikma/pokesprite/master/items/${machineNames[index].includes('hm') ? 'hm' : 'tm'}/${type.name}.png`}
+                    src={`https://raw.githubusercontent.com/msikma/pokesprite/master/items/${!machineNames[index].includes('hm') || type.name === 'ground' ? 'tm' : 'hm'}/${type.name}.png`}
                     alt={type.name}
                     width="30"
                   />
