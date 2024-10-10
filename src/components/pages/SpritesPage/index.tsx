@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import type { PokestatsSpritePageProps } from '@/app/sprites/[pokemonName]/page';
 // helpers
 import { findEnglishName, formatSpriteData, removeDash } from '@/helpers';
-import { track } from '@vercel/analytics';
+import { useUmami } from '@/hooks';
 // components
 import { Divider, Stack, Typography } from '@mui/material';
 import SpriteAccordion from '@/components/SpriteAccordion';
@@ -19,15 +19,16 @@ const SpritesPage = ({
   pokemonSpecies,
   allPokemonData,
 }: PokestatsSpritePageProps): JSX.Element => {
+  // analytics
+  const { track } = useUmami();
+
   // data
   const { name, sprites } = pokemon;
+  const { id, names } = pokemonSpecies;
 
   const englishName = useMemo(() => removeDash(name), [name]);
 
-  const speciesEnglishName = useMemo(
-    () => (pokemonSpecies?.names ? findEnglishName(pokemonSpecies.names) : ''),
-    [pokemonSpecies],
-  );
+  const speciesEnglishName = useMemo(() => (names ? findEnglishName(names) : ''), [names]);
 
   const { generationSprites, otherSprites, mainSprites, otherForms } = useMemo(
     () => formatSpriteData(sprites, otherFormsData),
@@ -126,7 +127,7 @@ const SpritesPage = ({
         </>
       )}
       <Divider />
-      <Navigation prefix="sprites" allPokemon={allPokemonData} pokemonSpecies={pokemonSpecies} />
+      <Navigation prefix="sprites" allPokemon={allPokemonData} speciesId={id} />
     </Stack>
   );
 };

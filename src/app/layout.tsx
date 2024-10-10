@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 // components
 import Providers from './providers';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: {
@@ -30,6 +31,17 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => (
   <html lang="en">
     <body>
+      <head>
+        {process.env.NEXT_PUBLIC_ENV_VAR === 'prod' && (
+          <Script
+            async
+            defer
+            src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL}
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+            strategy="lazyOnload"
+          />
+        )}
+      </head>
       <Providers>{children}</Providers>
     </body>
   </html>

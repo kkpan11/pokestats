@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 // types
 import type { Pokemon, PokemonSpecies, NamedAPIResource } from 'pokenode-ts';
 import type { Metadata } from 'next';
@@ -9,8 +11,14 @@ import { findEnglishName, removeDash } from '@/helpers';
 import { SpritesPage } from '@/PageComponents';
 
 export interface PokestatsSpritePageProps {
-  pokemon: Pokemon;
-  pokemonSpecies: PokemonSpecies;
+  pokemon: {
+    sprites: Pokemon['sprites'];
+    name: Pokemon['name'];
+  };
+  pokemonSpecies: {
+    id: PokemonSpecies['id'];
+    names: PokemonSpecies['names'];
+  };
   allPokemonData: NamedAPIResource[];
   otherFormsData: Pokemon[];
 }
@@ -81,10 +89,17 @@ const PokestatsSpritePage = async ({ params: { pokemonName } }: PokemonSpritesPa
 
     const otherFormsData = await Promise.all(otherForms);
 
+    // lean data props
     const props: PokestatsSpritePageProps = {
-      pokemon: pokemonData,
+      pokemon: {
+        sprites: pokemonData.sprites,
+        name: pokemonData.name,
+      },
+      pokemonSpecies: {
+        id: pokemonSpeciesData.id,
+        names: pokemonSpeciesData.names,
+      },
       allPokemonData,
-      pokemonSpecies: pokemonSpeciesData,
       otherFormsData,
     };
 

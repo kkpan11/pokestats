@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 // types
 import type { EggGroup, Pokemon, PokemonSpecies } from 'pokenode-ts';
 import type { Metadata } from 'next';
@@ -80,6 +82,7 @@ const PokestatsEggGroupPage = async ({ params: { eggGroupName } }: EggGroupPageP
 
         if (!species) return null;
 
+        // lean data
         return {
           name: species.name,
           egg_groups: species.egg_groups,
